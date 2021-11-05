@@ -10,23 +10,27 @@ platform:
   arch: amd64
 
 steps:
-  - name: build
+  - name: initialize
     image: grafana/grafana-plugin-ci:1.2.1-alpine
     commands:
-      - mage -v build
+      - mkdir -p bin
+      - curl -fL -o bin/grabpl https://grafana-downloads.storage.googleapis.com/grafana-build-pipeline/v0.5.27/grabpl
+      - chmod +x bin/grabpl
+      - mkdir ci
+      - yarn install --frozen-lockfile --no-progress
+      - rm -rf node_modules/@grafana/data/node_modules
 
-  - name: lint
+  - name: build-and-test-frontend
     image: grafana/grafana-plugin-ci:1.2.1-alpine
     commands:
-      - mage -v lint
-
-  - name: test
-    image: grafana/grafana-plugin-ci:1.2.1-alpine
-    commands:
-      - mage -v test
+      - yarn eslint ./src --ext .js,.jsx,.ts,.tsx
+      - yarn build
+      - yarn test-ci
+    depends_on:
+      - initialize
 
 ---
 kind: signature
-hmac: b980986bcf4841da3d58e4adb04bd532480c15b1a719570cece295970e5d7265
+hmac: b63300304a0dad7f76ee99c27e2fc095c1be56d60501d9ad93d371324f2eb637
 
 ...
