@@ -1,6 +1,5 @@
 import '@testing-library/jest-dom/extend-expect';
 import React from 'react';
-import renderer from 'react-test-renderer';
 import { render, screen, waitFor } from '@testing-library/react';
 import { AwsAuthDataSourceJsonData, AwsAuthDataSourceSecureJsonData, AwsAuthType } from './types';
 import { ConnectionConfig, ConnectionConfigProps } from './ConnectionConfig';
@@ -10,6 +9,7 @@ const getProps = (propOverrides?: object) => {
     options: {
       id: 21,
       typeName: 'aws',
+      uid: '',
       orgId: 1,
       name: 'aws-plugin-name',
       type: 'aws',
@@ -65,13 +65,6 @@ const resetWindow = () => {
 describe('ConnectionConfig', () => {
   beforeEach(() => resetWindow());
   afterEach(() => resetWindow());
-
-  it('should render component', () => {
-    const props = getProps();
-    const tree = renderer.create(<ConnectionConfig {...props} />).toJSON();
-
-    expect(tree).toMatchSnapshot();
-  });
 
   it('should use auth type from props if its set', async () => {
     const onOptionsChange = jest.fn();
