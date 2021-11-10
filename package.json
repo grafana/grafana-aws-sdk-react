@@ -26,6 +26,7 @@
     "@babel/preset-react": "^7.13.13",
     "@babel/preset-typescript": "^7.13.0",
     "@grafana/data": "^8.2.1",
+    "@grafana/runtime": "^8.2.1",
     "@grafana/toolkit": "^8.2.1",
     "@grafana/tsconfig": "^1.0.0-rc1",
     "@grafana/ui": "^8.2.1",
