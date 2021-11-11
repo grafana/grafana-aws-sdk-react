@@ -20,7 +20,7 @@ export interface ConfigSelectProps
 export function ConfigSelect(props: ConfigSelectProps) {
   const { jsonData } = props.options;
   const commonProps = {
-    title: jsonData.defaultRegion ? '' : 'save connection details to proceed',
+    title: jsonData.defaultRegion ? '' : 'select a default region',
     disabled: !jsonData.defaultRegion,
     labelWidth: 28,
     className: 'width-30',
