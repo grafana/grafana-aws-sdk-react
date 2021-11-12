@@ -43,10 +43,7 @@ export function ConfigSelect(props: ConfigSelectProps) {
     props.options.jsonData.endpoint,
     props.options.jsonData.externalId,
     props.options.jsonData.profile,
-  ];
-  if (props.dependencies) {
-    props.dependencies.forEach((dep) => dependencies.push(get(props.options.jsonData, dep)));
-  }
+  ].concat(props.dependencies);
   return (
     <ResourceSelector
       label={props.label}
