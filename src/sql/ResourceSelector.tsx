@@ -12,6 +12,7 @@ export type ResourceSelectorProps = {
   tooltip?: string;
   label?: string;
   'data-testid'?: string;
+  hidden?: boolean;
   // Options only needed for QueryEditor
   default?: string;
   // Options only needed for the ConfigEditor
@@ -99,7 +100,7 @@ export function ResourceSelector(props: ResourceSelectorProps) {
   };
 
   return (
-    <InlineField label={props.label} labelWidth={props.labelWidth} tooltip={props.tooltip}>
+    <InlineField label={props.label} labelWidth={props.labelWidth} tooltip={props.tooltip} hidden={props.hidden}>
       <div data-testid={props['data-testid']} title={props.title}>
         <Select
           aria-label={props.label}
