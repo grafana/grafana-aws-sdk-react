@@ -8,7 +8,7 @@ const props: InlineInputProps = {
   jsonDataPath: 'foo',
 };
 
-describe('InlineText', () => {
+describe('InlineInput', () => {
   it('should show jsonData value', () => {
     render(<InlineInput {...props} options={{ ...props.options, jsonData: { foo: 'bar' } }} />);
     expect(screen.queryByDisplayValue('bar')).toBeInTheDocument();
