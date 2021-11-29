@@ -1,4 +1,4 @@
-import { DataSourceJsonData } from '@grafana/data';
+import { DataSourceJsonData, DataSourceSettings } from '@grafana/data';
 
 export enum AwsAuthType {
   Keys = 'keys',
@@ -25,3 +25,5 @@ export interface AwsAuthDataSourceSecureJsonData {
   secretKey?: string;
   sessionToken?: string;
 }
+
+export type AwsAuthDataSourceSettings = DataSourceSettings<AwsAuthDataSourceJsonData, AwsAuthDataSourceSecureJsonData>;
