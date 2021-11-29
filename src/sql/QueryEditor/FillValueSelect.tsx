@@ -50,12 +50,13 @@ export function FillValueSelect<TQuery extends DataQuery & Record<string, any>>(
         <InlineField label="Value" labelWidth={11}>
           <Input
             type="number"
+            aria-label="Value"
             value={props.query.fillMode.value}
             onChange={({ currentTarget }: React.FormEvent<HTMLInputElement>) =>
               props.onChange({
                 ...props.query,
                 fillMode: {
-                  mode: props.query.fillMode.mode ?? FillValueOptions.Previous,
+                  mode: FillValueOptions.Value,
                   value: currentTarget.valueAsNumber,
                 },
               })

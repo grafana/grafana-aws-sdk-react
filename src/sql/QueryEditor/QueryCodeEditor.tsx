@@ -3,9 +3,21 @@ import { defaults } from 'lodash';
 import React, { useRef, useEffect } from 'react';
 import { CodeEditor, CodeEditorSuggestionItem } from '@grafana/ui';
 import { DataQuery } from '@grafana/data';
+import { MonacoOptions } from '@grafana/ui/components/Monaco/types';
+
+type EditorProps = {
+  width?: number | string;
+  height?: number | string;
+  readOnly?: boolean;
+  showMiniMap?: boolean;
+  showLineNumbers?: boolean;
+  monacoOptions?: MonacoOptions;
+};
 
 type Props<TQuery extends DataQuery> = {
   query: TQuery;
+  language: string;
+  editorProps?: EditorProps;
   onChange: (value: TQuery) => void;
   onRunQuery: () => void;
   getSuggestions: (templateSrv: any, query: TQuery) => CodeEditorSuggestionItem[];
@@ -13,6 +25,7 @@ type Props<TQuery extends DataQuery> = {
 };
 
 export function QueryCodeEditor<TQuery extends DataQuery>(props: Props<TQuery>) {
+  const { getSuggestions, getTemplateSrv, query } = props;
   const { rawSQL } = defaults(props.query, { rawSQL: '' });
   const onRawSqlChange = (rawSQL: string) => {
     const query = {
@@ -22,20 +35,23 @@ export function QueryCodeEditor<TQuery extends DataQuery>(props: Props<TQuery>) 
     props.onChange(query);
     props.onRunQuery();
   };
+
+  // Use a reference for suggestions because a bug in CodeEditor getSuggestions
+  // https://github.com/grafana/grafana/issues/40121
   const suggestionsRef = useRef<CodeEditorSuggestionItem[]>([]);
   useEffect(() => {
-    suggestionsRef.current = props.getSuggestions(props.getTemplateSrv(), props.query);
-  }, [props.query]);
+    suggestionsRef.current = getSuggestions(getTemplateSrv(), query);
+  }, [getSuggestions, getTemplateSrv, query]);
 
   return (
     <CodeEditor
-      height={'240px'}
-      language={'sql'}
+      language={props.language}
       value={rawSQL}
       onBlur={onRawSqlChange}
       showMiniMap={false}
       showLineNumbers={true}
       getSuggestions={() => suggestionsRef.current}
+      {...props.editorProps}
     />
   );
 }

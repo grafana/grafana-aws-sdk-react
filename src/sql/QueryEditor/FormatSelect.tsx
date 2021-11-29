@@ -21,7 +21,13 @@ export function FormatSelect<TQuery extends DataQuery & Record<string, any>, For
   };
   return (
     <InlineField label="Format as" labelWidth={11}>
-      <Select options={props.options} value={props.query.format} onChange={onChangeFormat} className="width-12" />
+      <Select
+        aria-label="Format as"
+        options={props.options}
+        value={props.query.format}
+        onChange={onChangeFormat}
+        className="width-12"
+      />
     </InlineField>
   );
 }
