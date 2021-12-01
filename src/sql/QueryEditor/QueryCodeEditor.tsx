@@ -51,6 +51,7 @@ export function QueryCodeEditor<TQuery extends DataQuery>(props: Props<TQuery>) 
       showMiniMap={false}
       showLineNumbers={true}
       getSuggestions={() => suggestionsRef.current}
+      height="240px"
       {...props.editorProps}
     />
   );

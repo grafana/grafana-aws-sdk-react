@@ -1,9 +1,10 @@
 import '@testing-library/jest-dom/extend-expect';
 import React from 'react';
-import { render, screen, fireEvent } from '@testing-library/react';
-import { mockQuery, SQLOptions, SQLQuery } from './__mocks__/query';
+import { render, screen } from '@testing-library/react';
+import { mockQuery, SQLOptions } from './__mocks__/query';
 import { select } from 'react-select-event';
 import { FormatSelect, FormatSelectProps } from './FormatSelect';
+import { SQLQuery } from '../types';
 
 const props: FormatSelectProps<SQLQuery, SQLOptions> = {
   query: mockQuery,

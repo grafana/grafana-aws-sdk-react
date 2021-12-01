@@ -1,8 +1,7 @@
 import '@testing-library/jest-dom/extend-expect';
 import React from 'react';
-import { render, screen, waitFor, waitForElementToBeRemoved } from '@testing-library/react';
-import { mockQuery, SQLOptions, SQLQuery } from './__mocks__/query';
-import { select } from 'react-select-event';
+import { render, screen, waitFor } from '@testing-library/react';
+import { mockQuery } from './__mocks__/query';
 import { QueryCodeEditor } from './QueryCodeEditor';
 
 const props = {

@@ -1,9 +1,10 @@
 import '@testing-library/jest-dom/extend-expect';
 import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
-import { mockQuery, SQLQuery } from './__mocks__/query';
+import { mockQuery } from './__mocks__/query';
 import { FillValueSelect, FillValueSelectProps, FillValueOptions } from './FillValueSelect';
 import { select } from 'react-select-event';
+import { SQLQuery } from '../types';
 
 const props: FillValueSelectProps<SQLQuery> = {
   query: mockQuery,
