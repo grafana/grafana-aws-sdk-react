@@ -13,7 +13,6 @@ export interface ConfigSelectProps
   'data-testid'?: string;
   hidden?: boolean;
   disabled?: boolean;
-  jsonDataPathLabel?: string;
   saveOptions: () => Promise<void>;
 }
 
