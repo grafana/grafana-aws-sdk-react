@@ -38,6 +38,8 @@ export function QueryCodeEditor<TQuery extends DataQuery>(props: Props<TQuery>) 
 
   // Use a reference for suggestions because a bug in CodeEditor getSuggestions
   // https://github.com/grafana/grafana/issues/40121
+  // It was been fixed in 8.3 but keeping the workaround here to support older
+  // versions.
   const suggestionsRef = useRef<CodeEditorSuggestionItem[]>([]);
   useEffect(() => {
     suggestionsRef.current = getSuggestions(getTemplateSrv(), query);
