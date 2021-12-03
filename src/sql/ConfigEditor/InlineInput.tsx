@@ -3,10 +3,10 @@ import { DataSourcePluginOptionsEditorProps } from '@grafana/data';
 import { AwsAuthDataSourceSecureJsonData } from '../../types';
 import { InlineField, Input } from '@grafana/ui';
 import { FormEvent } from 'react-dom/node_modules/@types/react';
-import { get, set } from 'lodash';
 
 export interface InlineInputProps extends DataSourcePluginOptionsEditorProps<{}, AwsAuthDataSourceSecureJsonData> {
-  jsonDataPath: string;
+  value: string;
+  onChange: (e: FormEvent<HTMLInputElement>) => void;
   label?: string;
   tooltip?: string;
   placeholder?: string;
@@ -16,14 +16,6 @@ export interface InlineInputProps extends DataSourcePluginOptionsEditorProps<{},
 }
 
 export function InlineInput(props: InlineInputProps) {
-  const onChange = (e: FormEvent<HTMLInputElement>) => {
-    const newOptions = {
-      ...props.options,
-    };
-    set(newOptions.jsonData, props.jsonDataPath, e.currentTarget.value || '');
-    props.onOptionsChange(newOptions);
-  };
-
   return (
     <InlineField
       label={props.label}
@@ -35,8 +27,8 @@ export function InlineInput(props: InlineInputProps) {
       <Input
         data-testid={props['data-testid']}
         className="width-30"
-        value={get(props.options.jsonData, props.jsonDataPath, '')}
-        onChange={onChange}
+        value={props.value}
+        onChange={props.onChange}
         placeholder={props.placeholder}
         disabled={props.disabled}
       />

@@ -6,50 +6,23 @@ import { select } from 'react-select-event';
 
 const props: ConfigSelectProps = {
   ...mockDatasourceOptions,
-  jsonDataPath: 'foo',
+  value: 'foo',
+  onChange: jest.fn(),
   fetch: jest.fn(),
   saveOptions: jest.fn(),
 };
 
 describe('SQLTextInput', () => {
-  it('should update jsonData', async () => {
+  it('should call onChange with the new value', async () => {
     const fetch = jest.fn().mockResolvedValue(['bar']);
-    const onOptionsChange = jest.fn();
+    const onChange = jest.fn();
     const label = 'foo-id';
-    render(<ConfigSelect {...props} label={label} fetch={fetch} onOptionsChange={onOptionsChange} />);
+    render(<ConfigSelect {...props} label={label} fetch={fetch} onChange={onChange} />);
 
     const selectEl = screen.getByLabelText(label);
     expect(selectEl).toBeInTheDocument();
     await select(selectEl, 'bar', { container: document.body });
     expect(fetch).toHaveBeenCalled();
-    expect(onOptionsChange).toHaveBeenCalledWith({
-      ...props.options,
-      jsonData: {
-        ...props.options.jsonData,
-        foo: 'bar',
-      },
-    });
-  });
-
-  it('should call deep nested jsonData value', async () => {
-    const onOptionsChange = jest.fn();
-    const fetch = jest.fn().mockResolvedValue(['foobar']);
-    const label = 'foo-id';
-    render(
-      <ConfigSelect {...props} label={label} jsonDataPath="foo.bar" fetch={fetch} onOptionsChange={onOptionsChange} />
-    );
-    const selectEl = screen.getByLabelText(label);
-    expect(selectEl).toBeInTheDocument();
-    await select(selectEl, 'foobar', { container: document.body });
-    expect(fetch).toHaveBeenCalled();
-    expect(onOptionsChange).toHaveBeenCalledWith({
-      ...props.options,
-      jsonData: {
-        ...props.options.jsonData,
-        foo: {
-          bar: 'foobar',
-        },
-      },
-    });
+    expect(onChange).toHaveBeenCalledWith({ label: 'bar', value: 'bar' });
   });
 });
