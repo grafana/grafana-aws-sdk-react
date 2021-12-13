@@ -41,7 +41,7 @@ export function FillValueSelect<TQuery extends DataQuery & Record<string, any>>(
             props.onChange({
               ...props.query,
               // Keep the fillMode.value in case FillValueOptions.Value mode is selected back
-              fillMode: { mode: value, value: props.query.fillMode?.value },
+              fillMode: { ...props.query.fillMode, mode: value },
             });
             props.onRunQuery();
           }}
