@@ -5,11 +5,15 @@ import { CodeEditorSuggestionItem, CodeEditorSuggestionItemKind } from '@grafana
 /**
  * Do not execute queries that do not exist yet
  */
-export function filterQuery(query: SQLQuery): boolean {
+export function filterSQLQuery(query: SQLQuery): boolean {
   return !!query.rawSQL;
 }
 
-export function applyTemplateVariables(query: SQLQuery, scopedVars: ScopedVars, getTemplateSrv: () => any): SQLQuery {
+export function applySQLTemplateVariables(
+  query: SQLQuery,
+  scopedVars: ScopedVars,
+  getTemplateSrv: () => any
+): SQLQuery {
   const templateSrv = getTemplateSrv();
   return {
     ...query,
@@ -32,20 +36,21 @@ function quoteLiteral(value: any) {
   return "'" + String(value).replace(/'/g, "''") + "'";
 }
 
-export const getSuggestions = (getTemplateSrv: () => any, sugs: CodeEditorSuggestionItem[]) => {
+export const appendTemplateVariablesAsSuggestions = (getTemplateSrv: () => any, sugs: CodeEditorSuggestionItem[]) => {
   const templateSrv = getTemplateSrv();
+  const templateSugs: CodeEditorSuggestionItem[] = [];
   templateSrv.getVariables().forEach((variable: VariableModel) => {
     const label = '$' + variable.name;
     let val = templateSrv.replace(label);
     if (val === label) {
       val = '';
     }
-    sugs.push({
+    templateSugs.push({
       label,
       kind: CodeEditorSuggestionItemKind.Text,
       detail: `(Template Variable) ${val}`,
     });
   });
 
-  return sugs;
+  return sugs.concat(templateSugs);
 };

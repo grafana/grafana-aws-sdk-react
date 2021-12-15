@@ -1,12 +1,12 @@
 import { ScopedVars } from '@grafana/data';
-import { applyTemplateVariables, filterQuery, getSuggestions } from './utils';
+import { applySQLTemplateVariables, filterSQLQuery, appendTemplateVariablesAsSuggestions } from './utils';
 import { mockQuery } from '../QueryEditor/__mocks__/query';
 import { CodeEditorSuggestionItem } from '@grafana/ui';
 
 describe('filterQuery', () => {
   it("should filter the query if it's empty", () => {
-    expect(filterQuery({ ...mockQuery, rawSQL: 'query' })).toBe(true);
-    expect(filterQuery({ ...mockQuery, rawSQL: '' })).toBe(false);
+    expect(filterSQLQuery({ ...mockQuery, rawSQL: 'query' })).toBe(true);
+    expect(filterSQLQuery({ ...mockQuery, rawSQL: '' })).toBe(false);
   });
 });
 
@@ -25,14 +25,18 @@ const replace = jest.fn((target?: string, scopedVars?: ScopedVars, format?: stri
 const getVariables = jest.fn().mockReturnValue([{ name: 'simple' }, { name: 'multiple' }]);
 const getTemplateSrv = jest.fn().mockImplementation(() => ({ getVariables, replace }));
 
-describe('applyTemplateVariables', () => {
+describe('applySQLTemplateVariables', () => {
   it('should replace a simple var', () => {
-    const res = applyTemplateVariables({ ...mockQuery, rawSQL: 'select * from $simple' }, scopedVars, getTemplateSrv);
+    const res = applySQLTemplateVariables(
+      { ...mockQuery, rawSQL: 'select * from $simple' },
+      scopedVars,
+      getTemplateSrv
+    );
     expect(res.rawSQL).toEqual('select * from foo');
   });
 
   it('should replace a multiple var', () => {
-    const res = applyTemplateVariables(
+    const res = applySQLTemplateVariables(
       { ...mockQuery, rawSQL: 'select * from foo where var in ($multiple)' },
       scopedVars,
       getTemplateSrv
@@ -44,7 +48,7 @@ describe('applyTemplateVariables', () => {
 describe('applyTemplateVariables', () => {
   it('should append template variables to suggestions', () => {
     const sugs: CodeEditorSuggestionItem[] = [{ label: 'foo' }];
-    const res = getSuggestions(getTemplateSrv, sugs);
+    const res = appendTemplateVariablesAsSuggestions(getTemplateSrv, sugs);
     expect(res).toEqual([
       { label: 'foo' },
       { label: '$simple', kind: 'text', detail: '(Template Variable) ' },
