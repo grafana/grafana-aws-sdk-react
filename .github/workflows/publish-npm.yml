@@ -18,8 +18,8 @@ jobs:
         uses: EndBug/version-check@v1
         id: version_check
         with:
-          # diff the commits rather than commit message for version changes
-          diff_search: true
+          file-url: https://unpkg.com/@grafana/aws-sdk@latest/package.json
+          static-checking: localIsNew
 
       - name: Version update detected
         if: steps.version_check.outputs.changed == 'true'
