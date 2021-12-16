@@ -2,7 +2,7 @@ name: publish-npm
 on:
   push:
     branches:
-      - master
+      - main
 
 jobs:
   publish:
@@ -12,14 +12,14 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2
         with:
-          ref: master
+          ref: main
       # limit releases to version changes - https://github.com/EndBug/version-check
       - name: Check version changes
         uses: EndBug/version-check@v1
         id: version_check
         with:
-          # diff the commits rather than commit message for version changes
-          diff_search: true
+          file-url: https://unpkg.com/@grafana/aws-sdk@latest/package.json
+          static-checking: localIsNew
 
       - name: Version update detected
         if: steps.version_check.outputs.changed == 'true'
@@ -29,12 +29,16 @@ jobs:
         if: steps.version_check.outputs.changed == 'true'
         uses: actions/setup-node@v2
         with:
-          node-version: '14'
+          node-version: '16'
           registry-url: 'https://registry.npmjs.org'
 
       - name: Install dependencies
         if: steps.version_check.outputs.changed == 'true'
         run: yarn
+
+      - name: Build library
+        if: steps.version_check.outputs.changed == 'true'
+        run: yarn build
 
       - name: Publish package to NPM
         if: steps.version_check.outputs.changed == 'true'
@@ -46,7 +50,7 @@ jobs:
         if: steps.version_check.outputs.changed == 'true'
         uses: actions/setup-node@v2
         with:
-          node-version: '14'
+          node-version: '16'
           registry-url: 'https://npm.pkg.github.com'
           scope: '@grafana'
 
