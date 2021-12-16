@@ -20,12 +20,11 @@ type Props<TQuery extends DataQuery> = {
   editorProps?: EditorProps;
   onChange: (value: TQuery) => void;
   onRunQuery: () => void;
-  getSuggestions: (templateSrv: any, query: TQuery) => CodeEditorSuggestionItem[];
-  getTemplateSrv: () => any;
+  getSuggestions: (query: TQuery) => CodeEditorSuggestionItem[];
 };
 
 export function QueryCodeEditor<TQuery extends DataQuery>(props: Props<TQuery>) {
-  const { getSuggestions, getTemplateSrv, query } = props;
+  const { getSuggestions, query } = props;
   const { rawSQL } = defaults(props.query, { rawSQL: '' });
   const onRawSqlChange = (rawSQL: string) => {
     const query = {
@@ -42,8 +41,8 @@ export function QueryCodeEditor<TQuery extends DataQuery>(props: Props<TQuery>) 
   // versions.
   const suggestionsRef = useRef<CodeEditorSuggestionItem[]>([]);
   useEffect(() => {
-    suggestionsRef.current = getSuggestions(getTemplateSrv(), query);
-  }, [getSuggestions, getTemplateSrv, query]);
+    suggestionsRef.current = getSuggestions(query);
+  }, [getSuggestions, query]);
 
   return (
     <CodeEditor
