@@ -42,7 +42,7 @@ jobs:
 
       - name: Publish package to NPM
         if: steps.version_check.outputs.changed == 'true'
-        run: yarn run publish
+        run: npm publish  --access=public --scope=grafana
         env:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
 
