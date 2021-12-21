@@ -44,7 +44,7 @@ jobs:
         if: steps.version_check.outputs.changed == 'true'
         run: yarn run publish
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - name: Setup .npmrc file for GitHub Packages
         if: steps.version_check.outputs.changed == 'true'
@@ -58,4 +58,4 @@ jobs:
         if: steps.version_check.outputs.changed == 'true'
         run: npm publish
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.GH_PACKAGE_TOKEN }}
+          NPM_TOKEN: ${{ secrets.GH_PACKAGE_TOKEN }}
