@@ -1,6 +1,6 @@
 {
   "name": "@grafana/aws-sdk",
-  "version": "0.0.32-pre.3",
+  "version": "0.0.32",
   "description": "Common AWS features for grafana",
   "main": "dist/index.js",
   "scripts": {
@@ -9,7 +9,6 @@
     "bundle": "rollup -c rollup.config.ts",
     "clean": "rimraf ./dist ./compiled",
     "typecheck": "tsc --noEmit",
-    "publish": "npm publish  --access=public --scope=grafana",
     "test": "jest --notify --watch",
     "test-ci": "grafana-toolkit plugin:test"
   },
