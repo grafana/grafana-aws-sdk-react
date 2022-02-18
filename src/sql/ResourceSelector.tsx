@@ -1,12 +1,12 @@
-import React, { useState, useEffect, useMemo } from 'react';
 import { SelectableValue } from '@grafana/data';
 import { InlineField, Select } from '@grafana/ui';
 import { isEqual } from 'lodash';
+import React, { useEffect, useMemo, useState } from 'react';
+
 import { defaultKey } from './types';
 
 export type ResourceSelectorProps = {
   value: string | null;
-  fetch: () => Promise<Array<string | SelectableValue<string>>>;
   onChange: (e: SelectableValue<string> | null) => void;
   dependencies?: Array<string | null | undefined>;
   tooltip?: string;
@@ -21,6 +21,9 @@ export type ResourceSelectorProps = {
   labelWidth?: number;
   className?: string;
   saveOptions?: () => Promise<void>;
+  // Either set a way of fetching resources or the resource list
+  fetch?: () => Promise<Array<string | SelectableValue<string>>>;
+  resources?: string[];
 };
 
 export function ResourceSelector(props: ResourceSelectorProps) {
@@ -44,8 +47,13 @@ export function ResourceSelector(props: ResourceSelectorProps) {
   }, [props.default, props.value]);
   const [options, setOptions] = useState<Array<SelectableValue<string>>>(props.default ? defaultOpts : []);
   useEffect(() => {
+    if (props.resources !== undefined) {
+      setResources(props.resources);
+    }
+  }, [props.resources]);
+  useEffect(() => {
+    const newOptions: Array<SelectableValue<string>> = props.default ? defaultOpts : [];
     if (resources.length) {
-      const newOptions: Array<SelectableValue<string>> = props.default ? defaultOpts : [];
       resources.forEach((r) => {
         const value = typeof r === 'string' ? r : r.value;
         if (!newOptions.find((o) => o.value === value)) {
@@ -62,7 +70,6 @@ export function ResourceSelector(props: ResourceSelectorProps) {
     // A change in the dependencies cause a state clean-up
     if (!isEqual(props.dependencies, dependencies)) {
       setFetched(false);
-      setResources([]);
       setResource(null);
       props.onChange(null);
       setDependencies(props.dependencies);
@@ -110,7 +117,7 @@ export function ResourceSelector(props: ResourceSelectorProps) {
           isLoading={isLoading}
           className={props.className || 'min-width-6'}
           disabled={props.disabled}
-          onOpenMenu={onClick}
+          onOpenMenu={() => props.fetch && onClick()}
         />
       </div>
     </InlineField>
