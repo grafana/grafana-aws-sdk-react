@@ -1,7 +1,8 @@
-import React from 'react';
 import { render, screen } from '@testing-library/react';
-import { ResourceSelector, ResourceSelectorProps } from './ResourceSelector';
+import React from 'react';
 import { select } from 'react-select-event';
+
+import { ResourceSelector, ResourceSelectorProps } from './ResourceSelector';
 import { defaultKey } from './types';
 
 const props: ResourceSelectorProps = {
@@ -28,6 +29,18 @@ describe('ResourceSelector', () => {
 
     await select(selectEl, 'bar', { container: document.body });
     expect(fetch).toHaveBeenCalled();
+    expect(onChange).toHaveBeenCalledWith({ label: 'bar', value: 'bar' });
+  });
+
+  it('should select pre-loaded resource', async () => {
+    const onChange = jest.fn();
+    const resources = ['foo', 'bar'];
+    render(<ResourceSelector {...props} fetch={undefined} onChange={onChange} resources={resources} />);
+
+    const selectEl = screen.getByLabelText(props.label);
+    expect(selectEl).toBeInTheDocument();
+
+    await select(selectEl, 'bar', { container: document.body });
     expect(onChange).toHaveBeenCalledWith({ label: 'bar', value: 'bar' });
   });
 });
