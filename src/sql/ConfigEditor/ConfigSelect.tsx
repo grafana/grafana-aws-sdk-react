@@ -20,7 +20,6 @@ export function ConfigSelect(props: ConfigSelectProps) {
   const { jsonData } = props.options;
   const commonProps = {
     title: jsonData.defaultRegion ? '' : 'select a default region',
-    disabled: !jsonData.defaultRegion,
     labelWidth: 28,
     className: 'width-30',
   };
@@ -43,7 +42,7 @@ export function ConfigSelect(props: ConfigSelectProps) {
       saveOptions={props.saveOptions}
       dependencies={dependencies}
       hidden={props.hidden}
-      disabled={props.disabled}
+      disabled={props.disabled && !jsonData.defaultRegion}
       {...commonProps}
     />
   );
