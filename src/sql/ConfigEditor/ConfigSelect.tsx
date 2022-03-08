@@ -42,7 +42,7 @@ export function ConfigSelect(props: ConfigSelectProps) {
       saveOptions={props.saveOptions}
       dependencies={dependencies}
       hidden={props.hidden}
-      disabled={props.disabled && !jsonData.defaultRegion}
+      disabled={props.disabled || !jsonData.defaultRegion}
       {...commonProps}
     />
   );
