@@ -18,6 +18,7 @@ export type ResourceSelectorProps = {
   // Options only needed for the ConfigEditor
   title?: string;
   disabled?: boolean;
+  allowCustomValue?: boolean;
   labelWidth?: number;
   className?: string;
   saveOptions?: () => Promise<void>;
@@ -118,6 +119,8 @@ export function ResourceSelector(props: ResourceSelectorProps) {
           className={props.className || 'min-width-6'}
           disabled={props.disabled}
           onOpenMenu={() => props.fetch && onClick()}
+          allowCustomValue={props.allowCustomValue}
+          menuShouldPortal={true}
         />
       </div>
     </InlineField>
