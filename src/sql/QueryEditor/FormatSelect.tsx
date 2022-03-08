@@ -27,6 +27,7 @@ export function FormatSelect<TQuery extends DataQuery & Record<string, any>, For
         value={props.query.format}
         onChange={onChangeFormat}
         className="width-12"
+        menuShouldPortal={true}
       />
     </InlineField>
   );

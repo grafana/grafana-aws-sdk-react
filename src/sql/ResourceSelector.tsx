@@ -118,6 +118,7 @@ export function ResourceSelector(props: ResourceSelectorProps) {
           className={props.className || 'min-width-6'}
           disabled={props.disabled}
           onOpenMenu={() => props.fetch && onClick()}
+          menuShouldPortal={true}
         />
       </div>
     </InlineField>
