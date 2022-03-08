@@ -13,6 +13,7 @@ export interface ConfigSelectProps
   'data-testid'?: string;
   hidden?: boolean;
   disabled?: boolean;
+  allowCustomValue?: boolean;
   saveOptions: () => Promise<void>;
 }
 
@@ -43,6 +44,7 @@ export function ConfigSelect(props: ConfigSelectProps) {
       dependencies={dependencies}
       hidden={props.hidden}
       disabled={props.disabled || !jsonData.defaultRegion}
+      allowCustomValue={props.allowCustomValue}
       {...commonProps}
     />
   );
