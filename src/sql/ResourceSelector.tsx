@@ -120,7 +120,6 @@ export function ResourceSelector(props: ResourceSelectorProps) {
           disabled={props.disabled}
           onOpenMenu={() => props.fetch && onClick()}
           allowCustomValue={props.allowCustomValue}
-          menuShouldPortal={true}
         />
       </div>
     </InlineField>
