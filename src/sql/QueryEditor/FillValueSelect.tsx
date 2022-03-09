@@ -46,6 +46,7 @@ export function FillValueSelect<TQuery extends DataQuery & Record<string, any>>(
             props.onRunQuery();
           }}
           className="width-12"
+          menuShouldPortal={true}
         />
       </InlineField>
       {props.query.fillMode?.mode === FillValueOptions.Value && (

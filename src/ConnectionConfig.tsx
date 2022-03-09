@@ -80,6 +80,7 @@ export const ConnectionConfig: FC<ConnectionConfigProps> = (props: ConnectionCon
           onChange={(option) => {
             onUpdateDatasourceJsonDataOptionSelect(props, 'authType')(option);
           }}
+          menuShouldPortal={true}
         />
       </InlineField>
       {options.jsonData.authType === 'credentials' && (
@@ -199,6 +200,7 @@ export const ConnectionConfig: FC<ConnectionConfigProps> = (props: ConnectionCon
           allowCustomValue={true}
           onChange={onUpdateDatasourceJsonDataOptionSelect(props, 'defaultRegion')}
           formatCreateLabel={(r) => `Use region: ${r}`}
+          menuShouldPortal={true}
         />
       </InlineField>
       {props.children}
