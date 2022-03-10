@@ -108,15 +108,13 @@ export function ResourceSelector(props: ResourceSelectorProps) {
     <InlineField label={props.label} labelWidth={props.labelWidth} tooltip={props.tooltip} hidden={props.hidden}>
       <div data-testid={props['data-testid']} title={props.title}>
         <Select
+          {...props}
           aria-label={props.label}
           options={options}
-          value={props.value}
           onChange={onChange}
           isLoading={isLoading}
           className={props.className || 'min-width-6'}
-          disabled={props.disabled}
           onOpenMenu={() => props.fetch && onClick()}
-          allowCustomValue={props.allowCustomValue}
           menuShouldPortal={true}
         />
       </div>

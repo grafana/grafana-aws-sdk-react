@@ -10,6 +10,7 @@
     "clean": "rimraf ./dist ./compiled",
     "typecheck": "tsc --noEmit",
     "test": "jest --notify --watch",
+    "test:coverage": "jest --coverage",
     "test-ci": "grafana-toolkit plugin:test"
   },
   "files": [

@@ -66,6 +66,26 @@ export function ConfigSelect(props: ConfigSelectProps) {
       hidden={props.hidden}
       disabled={props.disabled || !jsonData.defaultRegion}
       allowCustomValue={props.allowCustomValue}
+      autoFocus={props.autoFocus}
+      backspaceRemovesValue={props.backspaceRemovesValue}
+      className={props.className}
+      invalid={props.invalid}
+      isClearable={props.isClearable}
+      isMulti={props.isMulti}
+      inputId={props.inputId}
+      showAllSelectedWhenOpen={props.showAllSelectedWhenOpen}
+      maxMenuHeight={props.maxMenuHeight}
+      minMenuHeight={props.minMenuHeight}
+      maxVisibleValues={props.maxVisibleValues}
+      menuPlacement={props.menuPlacement}
+      menuPosition={props.menuPosition}
+      noOptionsMessage={props.noOptionsMessage}
+      onBlur={props.onBlur}
+      onCreateOption={props.onCreateOption}
+      onInputChange={props.onInputChange}
+      placeholder={props.placeholder}
+      width={props.width}
+      isOptionDisabled={props.isOptionDisabled}
       {...commonProps}
     />
   );
