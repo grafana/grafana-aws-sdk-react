@@ -1,5 +1,6 @@
 import React from 'react';
 import { DataSourcePluginOptionsEditorProps, SelectableValue } from '@grafana/data';
+import { InputActionMeta } from '@grafana/ui/components/Select/types';
 import { AwsAuthDataSourceJsonData, AwsAuthDataSourceSecureJsonData } from '../../types';
 import { ResourceSelector } from '../ResourceSelector';
 
@@ -15,6 +16,26 @@ export interface ConfigSelectProps
   disabled?: boolean;
   allowCustomValue?: boolean;
   saveOptions: () => Promise<void>;
+  autoFocus?: boolean;
+  backspaceRemovesValue?: boolean;
+  className?: string;
+  invalid?: boolean;
+  isClearable?: boolean;
+  isMulti?: boolean;
+  inputId?: string;
+  showAllSelectedWhenOpen?: boolean;
+  maxMenuHeight?: number;
+  minMenuHeight?: number;
+  maxVisibleValues?: number;
+  menuPlacement?: 'auto' | 'bottom' | 'top';
+  menuPosition?: 'fixed' | 'absolute';
+  noOptionsMessage?: string;
+  onBlur?: () => void;
+  onCreateOption?: (value: string) => void;
+  onInputChange?: (value: string, actionMeta: InputActionMeta) => void;
+  placeholder?: string;
+  width?: number;
+  isOptionDisabled?: () => boolean;
 }
 
 export function ConfigSelect(props: ConfigSelectProps) {
