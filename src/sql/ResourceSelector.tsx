@@ -1,13 +1,13 @@
 import { SelectableValue } from '@grafana/data';
 import { InlineField, Select } from '@grafana/ui';
+import { SelectCommonProps } from '@grafana/ui/components/Select/types';
 import { isEqual } from 'lodash';
 import React, { useEffect, useMemo, useState } from 'react';
 
 import { defaultKey } from './types';
 
-export type ResourceSelectorProps = {
+export interface ResourceSelectorProps extends SelectCommonProps<string> {
   value: string | null;
-  onChange: (e: SelectableValue<string> | null) => void;
   dependencies?: Array<string | null | undefined>;
   tooltip?: string;
   label?: string;
@@ -17,14 +17,12 @@ export type ResourceSelectorProps = {
   default?: string;
   // Options only needed for the ConfigEditor
   title?: string;
-  disabled?: boolean;
   labelWidth?: number;
-  className?: string;
   saveOptions?: () => Promise<void>;
   // Either set a way of fetching resources or the resource list
   fetch?: () => Promise<Array<string | SelectableValue<string>>>;
   resources?: string[];
-};
+}
 
 export function ResourceSelector(props: ResourceSelectorProps) {
   const [resource, setResource] = useState<string | null>(props.value || props.default || null);
@@ -110,13 +108,12 @@ export function ResourceSelector(props: ResourceSelectorProps) {
     <InlineField label={props.label} labelWidth={props.labelWidth} tooltip={props.tooltip} hidden={props.hidden}>
       <div data-testid={props['data-testid']} title={props.title}>
         <Select
+          {...props}
           aria-label={props.label}
           options={options}
-          value={props.value}
           onChange={onChange}
           isLoading={isLoading}
           className={props.className || 'min-width-6'}
-          disabled={props.disabled}
           onOpenMenu={() => props.fetch && onClick()}
           menuShouldPortal={true}
         />
