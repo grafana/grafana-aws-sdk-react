@@ -20,11 +20,12 @@ type Props<TQuery extends DataQuery> = {
   editorProps?: EditorProps;
   onChange: (value: TQuery) => void;
   onRunQuery: () => void;
+  disableRunOnBlur?: boolean;
   getSuggestions: (query: TQuery) => CodeEditorSuggestionItem[];
 };
 
 export function QueryCodeEditor<TQuery extends DataQuery>(props: Props<TQuery>) {
-  const { getSuggestions, query } = props;
+  const { getSuggestions, query, disableRunOnBlur } = props;
   const { rawSQL } = defaults(props.query, { rawSQL: '' });
   const onRawSqlChange = (rawSQL: string) => {
     const query = {
@@ -32,7 +33,10 @@ export function QueryCodeEditor<TQuery extends DataQuery>(props: Props<TQuery>) 
       rawSQL,
     };
     props.onChange(query);
-    props.onRunQuery();
+
+    if (!disableRunOnBlur) {
+      props.onRunQuery();
+    }
   };
 
   // Use a reference for suggestions because a bug in CodeEditor getSuggestions
