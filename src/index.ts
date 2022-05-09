@@ -1,4 +1,5 @@
 export { ConnectionConfig, ConnectionConfigProps } from './ConnectionConfig';
+export { SIGV4ConnectionConfig } from './SIGV4ConnectionConfig';
 export { ConfigSelect, InlineInput } from './sql/ConfigEditor';
 export { ResourceSelector, ResourceSelectorProps } from './sql/ResourceSelector';
 export { SQLQuery } from './sql/types';
