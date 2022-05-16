@@ -1,6 +1,6 @@
 import { DataSourcePluginOptionsEditorProps } from '@grafana/data';
 import React from 'react';
-import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { fireEvent, render, screen } from '@testing-library/react';
 import { SIGV4ConnectionConfig } from 'SIGV4ConnectionConfig';
 import { AwsAuthType } from 'types';
 
