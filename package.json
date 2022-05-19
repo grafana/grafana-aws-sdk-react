@@ -29,6 +29,7 @@
     "@grafana/toolkit": "^8.2.1",
     "@grafana/tsconfig": "^1.0.0-rc1",
     "@grafana/ui": "^8.2.1",
+    "@grafana/runtime": "^8.5.2",
     "@rollup/plugin-commonjs": "11.0.2",
     "@rollup/plugin-json": "4.0.3",
     "@rollup/plugin-node-resolve": "7.1.1",

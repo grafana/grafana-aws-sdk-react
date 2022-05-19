@@ -11,6 +11,7 @@ import {
 import { standardRegions } from './regions';
 import { AwsAuthDataSourceJsonData, AwsAuthDataSourceSecureJsonData, AwsAuthType } from './types';
 import { awsAuthProviderOptions } from './providers';
+import { config } from '@grafana/runtime';
 
 const toOption = (value: string) => ({ value, label: value });
 
@@ -25,7 +26,6 @@ export interface ConnectionConfigProps<J = AwsAuthDataSourceJsonData, S = AwsAut
 }
 
 export const ConnectionConfig: FC<ConnectionConfigProps> = (props: ConnectionConfigProps) => {
-  const [regions, setRegions] = useState((props.standardRegions || standardRegions).map(toOption));
   const { loadRegions, onOptionsChange, skipHeader = false, skipEndpoint = false } = props;
   const options = props.options;
   let profile = options.jsonData.profile;
@@ -33,24 +33,19 @@ export const ConnectionConfig: FC<ConnectionConfigProps> = (props: ConnectionCon
     profile = options.database;
   }
 
-  const settings = (window as any).grafanaBootData.settings;
-  const awsAllowedAuthProviders = settings.awsAllowedAuthProviders ?? [
-    AwsAuthType.Default,
-    AwsAuthType.Keys,
-    AwsAuthType.Credentials,
-  ];
-  const awsAssumeRoleEnabled = settings.awsAssumeRoleEnabled ?? true;
+  const awsAssumeRoleEnabled = config.awsAssumeRoleEnabled ?? true;
 
   const currentProvider = awsAuthProviderOptions.find((p) => p.value === options.jsonData.authType);
+  const [regions, setRegions] = useState((props.standardRegions || standardRegions).map(toOption));
 
   useEffect(() => {
     // Make sure a authType exists in the current model
-    if (!currentProvider && awsAllowedAuthProviders.length) {
+    if (!currentProvider && config.awsAllowedAuthProviders.length) {
       onOptionsChange({
         ...options,
         jsonData: {
           ...options.jsonData,
-          authType: awsAllowedAuthProviders[0],
+          authType: config.awsAllowedAuthProviders[0] as AwsAuthType,
         },
       });
     }
@@ -75,7 +70,7 @@ export const ConnectionConfig: FC<ConnectionConfigProps> = (props: ConnectionCon
           aria-label="Authentication Provider"
           className="width-30"
           value={currentProvider}
-          options={awsAuthProviderOptions.filter((opt) => awsAllowedAuthProviders.includes(opt.value!))}
+          options={awsAuthProviderOptions.filter((opt) => config.awsAllowedAuthProviders.includes(opt.value!))}
           defaultValue={options.jsonData.authType}
           onChange={(option) => {
             onUpdateDatasourceJsonDataOptionSelect(props, 'authType')(option);
