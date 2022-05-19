@@ -7,7 +7,6 @@ import { AwsAuthDataSourceSecureJsonData, AwsAuthDataSourceJsonData } from './ty
 export const SIGV4ConnectionConfig: React.FC<DataSourcePluginOptionsEditorProps<any, any>> = (
   props: DataSourcePluginOptionsEditorProps<any, any>
 ) => {
-  console.log('sigv4', props);
   const { onOptionsChange, options } = props;
 
   // Map HttpSettings props to ConnectionConfigProps
