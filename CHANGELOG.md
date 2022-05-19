@@ -2,6 +2,6 @@
 
 All notable changes to this project will be documented in this file.
 
-## v1.0.0
+## v0.0.36
 
-- Initial Release
+- Expose SIGV4 component
