@@ -53,6 +53,8 @@ export function ConfigSelect(props: ConfigSelectProps) {
     props.options.jsonData.endpoint,
     props.options.jsonData.externalId,
     props.options.jsonData.profile,
+    props.options.secureJsonData?.accessKey,
+    props.options.secureJsonData?.secretKey,
   ].concat(props.dependencies);
   return (
     <ResourceSelector
