@@ -10,4 +10,5 @@ Want to install this repo locally?
     - back in aws-sdk run `yarn link` copy the instructions
     - run those instructions in the external consumer (athena)
   - if you got back a yarn version >2:
+  - if you get a yarn version >2:
     - in consumer package (ex grafana) `yarn link path-to-sdk` it should add a portal resolution to your package.json
