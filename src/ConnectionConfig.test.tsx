@@ -3,6 +3,7 @@ import React from 'react';
 import { render, screen, waitFor } from '@testing-library/react';
 import { AwsAuthDataSourceJsonData, AwsAuthDataSourceSecureJsonData, AwsAuthType } from './types';
 import { ConnectionConfig, ConnectionConfigProps } from './ConnectionConfig';
+import { config } from '@grafana/runtime';
 
 const getProps = (propOverrides?: object) => {
   const props: ConnectionConfigProps<AwsAuthDataSourceJsonData, AwsAuthDataSourceSecureJsonData> = {
@@ -53,18 +54,16 @@ const getProps = (propOverrides?: object) => {
   return props;
 };
 
-const resetWindow = () => {
-  (window as any).grafanaBootData = {
-    settings: {
-      awsAllowedAuthProviders: [AwsAuthType.EC2IAMRole, AwsAuthType.Keys],
-      awsAssumeRoleEnabled: false,
-    },
-  };
-};
-
 describe('ConnectionConfig', () => {
-  beforeEach(() => resetWindow());
-  afterEach(() => resetWindow());
+  beforeEach(() => {
+    config.awsAllowedAuthProviders = [AwsAuthType.EC2IAMRole, AwsAuthType.Keys];
+    config.awsAssumeRoleEnabled = false;
+  });
+
+  afterEach(() => {
+    config.awsAllowedAuthProviders = [AwsAuthType.EC2IAMRole, AwsAuthType.Keys];
+    config.awsAssumeRoleEnabled = false;
+  });
 
   it('should use auth type from props if its set', async () => {
     const onOptionsChange = jest.fn();
@@ -143,28 +142,24 @@ describe('ConnectionConfig', () => {
   });
 
   it('should use default auth if awsAllowedAuthProviders was not found on window obj', async () => {
-    (window as any).grafanaBootData = {
-      settings: {},
-    };
+    config.awsAllowedAuthProviders = undefined;
     const onOptionsChange = jest.fn();
     const props = getProps({ onOptionsChange });
     render(<ConnectionConfig {...props} />);
     await waitFor(() => expect(screen.getByTestId('connection-config')).toBeInTheDocument());
 
-    const config = props.options;
+    const options = props.options;
     expect(onOptionsChange).toHaveBeenCalledWith({
-      ...config,
+      ...options,
       jsonData: {
-        ...config.jsonData,
+        ...options.jsonData,
         authType: AwsAuthType.Default,
       },
     });
   });
 
   it('should render assume role if awsAssumeRoleEnabled was not found on window obj', async () => {
-    (window as any).grafanaBootData = {
-      settings: {},
-    };
+    config.awsAssumeRoleEnabled = undefined;
     const props = getProps();
     render(<ConnectionConfig {...props} />);
     await waitFor(() => expect(screen.getByTestId('connection-config')).toBeInTheDocument());
@@ -172,11 +167,7 @@ describe('ConnectionConfig', () => {
   });
 
   it('should not render assume role if awsAssumeRoleEnabled was set to false', async () => {
-    (window as any).grafanaBootData = {
-      settings: {
-        awsAssumeRoleEnabled: false,
-      },
-    };
+    config.awsAssumeRoleEnabled = false;
     const props = getProps();
     render(<ConnectionConfig {...props} />);
     await waitFor(() => expect(screen.getByTestId('connection-config')).toBeInTheDocument());
@@ -184,11 +175,7 @@ describe('ConnectionConfig', () => {
   });
 
   it('should render assume role if awsAssumeRoleEnabled was set to true', async () => {
-    (window as any).grafanaBootData = {
-      settings: {
-        awsAssumeRoleEnabled: true,
-      },
-    };
+    config.awsAssumeRoleEnabled = true;
     const props = getProps();
     render(<ConnectionConfig {...props} />);
     await waitFor(() => expect(screen.getByTestId('connection-config')).toBeInTheDocument());
