@@ -7,4 +7,5 @@ export interface SQLQuery extends DataQuery {
   rawSQL: string;
   format?: number;
   fillMode?: { mode: FillValueOptions; value?: number };
+  meta?: { queryFlow: 'async' | 'sync' };
 }
