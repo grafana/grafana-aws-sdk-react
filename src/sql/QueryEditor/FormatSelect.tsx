@@ -17,7 +17,7 @@ export function FormatSelect<TQuery extends DataQuery & Record<string, any>, For
       ...props.query,
       format: e.value || 0,
     });
-    props.onRunQuery?.();
+    props?.onRunQuery?.();
   };
   return (
     <InlineField label="Format as" labelWidth={11}>
