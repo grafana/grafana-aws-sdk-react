@@ -54,6 +54,7 @@ export const ConnectionConfig: FC<ConnectionConfigProps> = (props: ConnectionCon
         },
       });
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentProvider, options, onOptionsChange]);
 
   useEffect(() => {

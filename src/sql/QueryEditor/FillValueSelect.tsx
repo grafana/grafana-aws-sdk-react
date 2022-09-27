@@ -64,7 +64,7 @@ export function FillValueSelect<TQuery extends DataQuery & Record<string, any>>(
                 },
               })
             }
-            onBlur={() => props?.onRunQuery?.()}
+            onBlur={() => props.onRunQuery?.()}
           />
         </InlineField>
       )}
