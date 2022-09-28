@@ -1,4 +1,4 @@
-import React, { FC, useEffect, useState } from 'react';
+import React, { FC, useEffect, useMemo, useState } from 'react';
 import { Input, Select, InlineField, ButtonGroup, ToolbarButton, FieldSet } from '@grafana/ui';
 import {
   DataSourcePluginOptionsEditorProps,
@@ -34,11 +34,10 @@ export const ConnectionConfig: FC<ConnectionConfigProps> = (props: ConnectionCon
   }
 
   const settings = (window as any).grafanaBootData.settings;
-  const awsAllowedAuthProviders = settings.awsAllowedAuthProviders ?? [
-    AwsAuthType.Default,
-    AwsAuthType.Keys,
-    AwsAuthType.Credentials,
-  ];
+  const awsAllowedAuthProviders = useMemo(
+    () => settings.awsAllowedAuthProviders ?? [AwsAuthType.Default, AwsAuthType.Keys, AwsAuthType.Credentials],
+    [settings.awsAllowedAuthProviders]
+  );
   const awsAssumeRoleEnabled = settings.awsAssumeRoleEnabled ?? true;
 
   const currentProvider = awsAuthProviderOptions.find((p) => p.value === options.jsonData.authType);
@@ -54,8 +53,7 @@ export const ConnectionConfig: FC<ConnectionConfigProps> = (props: ConnectionCon
         },
       });
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currentProvider, options, onOptionsChange]);
+  }, [currentProvider, options, onOptionsChange, awsAllowedAuthProviders]);
 
   useEffect(() => {
     if (!loadRegions) {
