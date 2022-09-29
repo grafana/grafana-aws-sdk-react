@@ -1,5 +1,6 @@
 export { ConnectionConfig, ConnectionConfigProps } from './ConnectionConfig';
 export { SIGV4ConnectionConfig } from './SIGV4ConnectionConfig';
+export { AsyncDatasourceWithBackend } from './AsyncDatasourceWithBackend';
 export { RunQueryButtons } from './RunQueryButtons';
 export { ConfigSelect, InlineInput } from './sql/ConfigEditor';
 export { ResourceSelector, ResourceSelectorProps } from './sql/ResourceSelector';
