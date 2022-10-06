@@ -147,13 +147,7 @@ export class AsyncDatasourceWithBackend<
 
           return getBackendSrv()
             .fetch<BackendDataSourceResponse>(options)
-            .pipe(map((result) => result.data))
-            .pipe(
-              map((r) => {
-                const frames: DataFrame[] = toDataQueryResponse({ data: r }).data;
-                return { data: frames };
-              })
-            );
+            .pipe(map((result) => ({ data: toDataQueryResponse(result).data })));
         },
 
         /**

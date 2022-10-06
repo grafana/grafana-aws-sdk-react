@@ -1,5 +1,5 @@
 import { DataFrame, DataQuery, DataQueryRequest, DataQueryResponse, LoadingState } from '@grafana/data';
-import { Observable, Subscription } from 'rxjs';
+import { Observable, Subscription, Observer } from 'rxjs';
 
 export interface RequestLoopOptions<TQuery extends DataQuery = DataQuery> {
   /**
@@ -44,7 +44,7 @@ export function getRequestLooper<T extends DataQuery = DataQuery>(
     let shouldCancel = false;
 
     // Single observer gets reused for each request
-    const observer = {
+    const observer: Observer<DataQueryResponse> = {
       next: (rsp: DataQueryResponse) => {
         loadingState = rsp.state;
         let checkstate = false;
@@ -80,7 +80,7 @@ export function getRequestLooper<T extends DataQuery = DataQuery>(
         }
         subscriber.next({ ...rsp, data, state: loadingState, key: req.requestId });
       },
-      error: (err: any) => {
+      error: (err) => {
         subscriber.error(err);
       },
       complete: () => {
@@ -105,10 +105,10 @@ export function getRequestLooper<T extends DataQuery = DataQuery>(
       },
     };
 
-    // First request
+    // This runs the initial query, subsequent queries are run in the `complete` callback of the observer.
     subscription = options.query(req).subscribe(observer);
 
-    return () => {
+    return function unsubscribe() {
       observer.complete();
       if (nextQuery || shouldCancel) {
         options.onCancel();
