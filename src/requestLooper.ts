@@ -63,7 +63,7 @@ export function getRequestLooper<T extends DataQuery = DataQuery>(
         }
         const data = options.process(rsp.data);
 
-        // Show the spinner or streaming (streaming will show data)
+        // Set the loading status to show a spinner if loading or to show data if streaming.
         if (checkstate) {
           if (nextQuery) {
             if (data.length && data[0].length) {
@@ -84,13 +84,14 @@ export function getRequestLooper<T extends DataQuery = DataQuery>(
         subscriber.error(err);
       },
       complete: () => {
-        // Completion of one query
+        // We unsubscribe from the internal subscription after completing a request
         if (subscription) {
           subscription.unsubscribe();
           subscription = undefined;
         }
 
-        // Let the previous request finish first
+        // Queues up a new request if the current query is still in a running state.
+        // The timeout is set in the `next` callback.
         if (nextQuery) {
           const next = nextQuery;
           setTimeout(() => {
@@ -108,6 +109,7 @@ export function getRequestLooper<T extends DataQuery = DataQuery>(
     // This runs the initial query, subsequent queries are run in the `complete` callback of the observer.
     subscription = options.query(req).subscribe(observer);
 
+    // Cleanup function
     return function unsubscribe() {
       observer.complete();
       if (nextQuery || shouldCancel) {
