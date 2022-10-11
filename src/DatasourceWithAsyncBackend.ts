@@ -27,7 +27,7 @@ const isCustomMeta = (meta: unknown): meta is CustomMeta => {
   return !!(typeof meta === 'object' && meta?.hasOwnProperty('queryID') && meta?.hasOwnProperty('status'));
 };
 
-export class AsyncDatasourceWithBackend<
+export class DatasourceWithAsyncBackend<
   TQuery extends DataQuery = DataQuery,
   TOptions extends DataSourceJsonData = DataSourceJsonData
 > extends DataSourceWithBackend<TQuery, TOptions> {
