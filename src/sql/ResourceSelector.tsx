@@ -22,6 +22,7 @@ export interface ResourceSelectorProps extends SelectCommonProps<string> {
   // Either set a way of fetching resources or the resource list
   fetch?: () => Promise<Array<string | SelectableValue<string>>>;
   resources?: string[];
+  onChange: (e: SelectableValue<string> | null) => void;
 }
 
 export function ResourceSelector(props: ResourceSelectorProps) {
