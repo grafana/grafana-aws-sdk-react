@@ -1,18 +1,20 @@
 import React, { useEffect, useState } from 'react';
 import { HorizontalGroup, Button, Spinner } from '@grafana/ui';
-import { LoadingState } from '@grafana/data';
+import { DataQuery, LoadingState } from '@grafana/data';
 
-interface RunQueryButtonsProps {
-  state?: LoadingState;
+interface RunQueryButtonsProps<TQuery extends DataQuery> {
   onRunQuery: () => void;
-  onCancelQuery: () => void;
+  onCancelQuery: (query: TQuery) => void;
+  query: TQuery;
+  state?: LoadingState;
 }
 
-export const RunQueryButtons = (props: RunQueryButtonsProps) => {
+export const RunQueryButtons = <TQuery extends DataQuery>(props: RunQueryButtonsProps<TQuery>) => {
   const { state } = props;
   const [running, setRunning] = useState(false);
   const [stopping, setStopping] = useState(false);
   const [lastState, setLastState] = useState(state);
+  const [lastQuery, setLastQuery] = useState(props.query);
 
   useEffect(() => {
     if (state && lastState !== state && state !== LoadingState.Loading) {
@@ -25,12 +27,13 @@ export const RunQueryButtons = (props: RunQueryButtonsProps) => {
 
   const onRunQuery = () => {
     setRunning(true);
+    setLastQuery(props.query);
     props.onRunQuery();
   };
 
   const onCancelQuery = () => {
+    props.onCancelQuery(lastQuery);
     setStopping(true);
-    props.onCancelQuery();
   };
 
   return (

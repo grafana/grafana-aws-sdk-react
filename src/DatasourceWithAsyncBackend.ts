@@ -187,7 +187,7 @@ export class DatasourceWithAsyncBackend<
   }
 
   // cancel sets shouldCancel to tell requestLooper to cancel the query
-  cancel(target: TQuery) {
+  cancel = (target: TQuery) => {
     this.storeQuery(target, { shouldCancel: true });
-  }
+  };
 }
