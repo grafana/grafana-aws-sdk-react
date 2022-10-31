@@ -11,7 +11,7 @@ platform:
 
 steps:
   - name: initialize
-    image: grafana/grafana-plugin-ci:1.5.0-alpine
+    image: grafana/grafana-plugin-ci:1.5.1-alpine
     commands:
       - mkdir -p bin
       - curl -fL -o bin/grabpl https://grafana-downloads.storage.googleapis.com/grafana-build-pipeline/v0.5.27/grabpl
@@ -21,7 +21,7 @@ steps:
       - rm -rf node_modules/@grafana/data/node_modules
 
   - name: build-and-test-frontend
-    image: grafana/grafana-plugin-ci:1.5.0-alpine
+    image: grafana/grafana-plugin-ci:1.5.1-alpine
     commands:
       - yarn eslint ./src --ext .js,.jsx,.ts,.tsx
       - yarn build
