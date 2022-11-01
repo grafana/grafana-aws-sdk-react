@@ -21,6 +21,10 @@ export interface RunningQueryInfo {
   shouldCancel?: boolean;
 }
 
+interface DataQueryMeta {
+  meta?: { queryFlow?: 'async' | 'sync' };
+}
+
 const RUNNING_STATUSES = ['started', 'submitted', 'running'];
 const isRunning = (status = '') => RUNNING_STATUSES.includes(status);
 const isCustomMeta = (meta: unknown): meta is CustomMeta => {
@@ -109,7 +113,7 @@ export class DatasourceWithAsyncBackend<
         query: (request: DataQueryRequest<TQuery>) => {
           const { range, targets, requestId, intervalMs, maxDataPoints } = request;
           const [_query] = targets;
-          const query: TQuery = {
+          const query: TQuery & DataQueryMeta = {
             ..._query,
             ...(this.asyncQueryDataSupport ? { meta: { queryFlow: 'async' } } : {}),
           };
