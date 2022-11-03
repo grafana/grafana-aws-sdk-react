@@ -26,7 +26,7 @@ export const SelectableFillValueOptions: Array<SelectableValue<FillValueOptions>
 export type FillValueSelectProps<TQuery extends DataQuery> = {
   query: TQuery;
   onChange: (value: TQuery) => void;
-  onRunQuery: () => void;
+  onRunQuery?: () => void;
 };
 
 export function FillValueSelect<TQuery extends DataQuery & Record<string, any>>(props: FillValueSelectProps<TQuery>) {
@@ -43,7 +43,7 @@ export function FillValueSelect<TQuery extends DataQuery & Record<string, any>>(
               // Keep the fillMode.value in case FillValueOptions.Value mode is selected back
               fillMode: { ...props.query.fillMode, mode: value },
             });
-            props.onRunQuery();
+            props.onRunQuery?.();
           }}
           className="width-12"
           menuShouldPortal={true}
@@ -64,7 +64,7 @@ export function FillValueSelect<TQuery extends DataQuery & Record<string, any>>(
                 },
               })
             }
-            onBlur={() => props.onRunQuery()}
+            onBlur={() => props.onRunQuery?.()}
           />
         </InlineField>
       )}
