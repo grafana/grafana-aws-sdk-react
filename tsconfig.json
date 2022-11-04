@@ -6,7 +6,6 @@
     "baseUrl": "./src",
     "typeRoots": ["./node_modules/@types"],
     "declaration": true,
-    "outDir": "dist",
-    "target": "es6"
+    "outDir": "dist"
   }
 }
