@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## v0.0.38
+
+- Make onRunQuery optional in SQL components `FillValueSelect` and `FormatSelect`
+
 ## v0.0.37
 
 - Fix config selector bug for refetching credentials on dependency change.
