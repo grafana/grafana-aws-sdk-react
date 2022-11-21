@@ -1,9 +1,8 @@
 import { defaults } from 'lodash';
 
 import React, { useRef, useEffect } from 'react';
-import { CodeEditor, CodeEditorSuggestionItem } from '@grafana/ui';
+import { CodeEditor, CodeEditorSuggestionItem, CodeEditorMonacoOptions } from '@grafana/ui';
 import { DataQuery } from '@grafana/data';
-import { CodeEditorMonacoOptions } from '@grafana/ui';
 
 type EditorProps = {
   width?: number | string;

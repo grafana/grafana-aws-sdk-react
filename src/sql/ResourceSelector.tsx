@@ -1,6 +1,5 @@
 import { SelectableValue } from '@grafana/data';
-import { InlineField, Select } from '@grafana/ui';
-import { SelectCommonProps } from '@grafana/ui';
+import { InlineField, Select, SelectCommonProps } from '@grafana/ui';
 import { isEqual } from 'lodash';
 import React, { useEffect, useMemo, useState } from 'react';
 
