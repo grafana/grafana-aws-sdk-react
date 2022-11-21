@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## v0.0.39
+
+- Updated grafana/ dependencies to 9.2.3
+
 ## v0.0.38
 
 - Make onRunQuery optional in SQL components `FillValueSelect` and `FormatSelect`
