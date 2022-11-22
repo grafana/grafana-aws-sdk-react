@@ -1,9 +1,8 @@
 import { defaults } from 'lodash';
 
 import React, { useRef, useEffect } from 'react';
-import { CodeEditor, CodeEditorSuggestionItem } from '@grafana/ui';
+import { CodeEditor, CodeEditorSuggestionItem, CodeEditorMonacoOptions } from '@grafana/ui';
 import { DataQuery } from '@grafana/data';
-import { MonacoOptions } from '@grafana/ui/components/Monaco/types';
 
 type EditorProps = {
   width?: number | string;
@@ -11,7 +10,7 @@ type EditorProps = {
   readOnly?: boolean;
   showMiniMap?: boolean;
   showLineNumbers?: boolean;
-  monacoOptions?: MonacoOptions;
+  monacoOptions?: CodeEditorMonacoOptions;
 };
 
 type Props<TQuery extends DataQuery> = {

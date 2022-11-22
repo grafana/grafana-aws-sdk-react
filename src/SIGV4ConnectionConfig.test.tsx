@@ -26,12 +26,10 @@ describe('SIGV4ConnectionConfig', () => {
         typeLogoUrl: '',
         access: 'proxy',
         url: 'http://test.ts',
-        password: '',
         user: '',
         database: '',
         basicAuth: false,
         basicAuthUser: '',
-        basicAuthPassword: '',
         withCredentials: false,
         isDefault: false,
         jsonData: {
