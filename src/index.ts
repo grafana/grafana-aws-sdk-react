@@ -1,8 +1,8 @@
-export { ConnectionConfig, ConnectionConfigProps } from './ConnectionConfig';
+export { ConnectionConfig, type ConnectionConfigProps } from './ConnectionConfig';
 export { SIGV4ConnectionConfig } from './SIGV4ConnectionConfig';
 export { ConfigSelect, InlineInput } from './sql/ConfigEditor';
-export { ResourceSelector, ResourceSelectorProps } from './sql/ResourceSelector';
-export { SQLQuery } from './sql/types';
+export { ResourceSelector, type ResourceSelectorProps } from './sql/ResourceSelector';
+export { type SQLQuery } from './sql/types';
 export { QueryCodeEditor, FormatSelect, FillValueSelect, FillValueOptions } from './sql/QueryEditor';
 export * from './sql/utils';
 export * from './types';

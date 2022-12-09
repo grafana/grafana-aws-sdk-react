@@ -24,6 +24,10 @@ describe('ResourceSelector', () => {
     render(<ResourceSelector {...props} default="foo" value={defaultKey} fetch={fetch} onChange={onChange} />);
     expect(screen.queryByText('default (foo)')).toBeInTheDocument();
 
+    // TODO ResourceSelectorProps should be updated to make `label` required
+    if (!props.label) {
+      throw new Error('label is required');
+    }
     const selectEl = screen.getByLabelText(props.label);
     expect(selectEl).toBeInTheDocument();
 
@@ -37,6 +41,10 @@ describe('ResourceSelector', () => {
     const resources = ['foo', 'bar'];
     render(<ResourceSelector {...props} fetch={undefined} onChange={onChange} resources={resources} />);
 
+    // TODO ResourceSelectorProps should be updated to make `label` required
+    if (!props.label) {
+      throw new Error('label is required');
+    }
     const selectEl = screen.getByLabelText(props.label);
     expect(selectEl).toBeInTheDocument();
 

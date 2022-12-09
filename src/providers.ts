@@ -1,7 +1,7 @@
 import { SelectableValue } from '@grafana/data';
 import { AwsAuthType } from './types';
 
-export const awsAuthProviderOptions = [
+export const awsAuthProviderOptions: Array<SelectableValue<AwsAuthType>> = [
   {
     label: 'Workspace IAM Role',
     value: AwsAuthType.EC2IAMRole,
@@ -18,4 +18,4 @@ export const awsAuthProviderOptions = [
     label: 'Credentials file',
     value: AwsAuthType.Credentials,
   },
-] as Array<SelectableValue<AwsAuthType>>;
+];

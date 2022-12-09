@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { DependencyList } from 'react';
 import { DataSourcePluginOptionsEditorProps, SelectableValue } from '@grafana/data';
 import { InputActionMeta } from '@grafana/ui';
 import { AwsAuthDataSourceJsonData, AwsAuthDataSourceSecureJsonData } from '../../types';
@@ -47,7 +47,7 @@ export function ConfigSelect(props: ConfigSelectProps) {
     className: 'width-30',
   };
   // Any change in the AWS connection details will affect selectors
-  const dependencies: string[] = [
+  const dependencies: DependencyList = [
     props.options.jsonData.assumeRoleArn,
     props.options.jsonData.authType,
     props.options.jsonData.defaultRegion,
@@ -71,7 +71,6 @@ export function ConfigSelect(props: ConfigSelectProps) {
       allowCustomValue={props.allowCustomValue}
       autoFocus={props.autoFocus}
       backspaceRemovesValue={props.backspaceRemovesValue}
-      className={props.className}
       invalid={props.invalid}
       isClearable={props.isClearable}
       isMulti={props.isMulti}
