@@ -9,7 +9,7 @@ export interface ResourceSelectorProps extends SelectCommonProps<string> {
   value: string | null;
   dependencies?: Array<string | null | undefined>;
   tooltip?: string;
-  label?: string;
+  label: string;
   'data-testid'?: string;
   hidden?: boolean;
   // Options only needed for QueryEditor

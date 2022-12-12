@@ -10,7 +10,7 @@ export interface ConfigSelectProps
   fetch: () => Promise<Array<string | SelectableValue<string>>>;
   onChange: (e: SelectableValue<string> | null) => void;
   dependencies?: string[];
-  label?: string;
+  label: string;
   'data-testid'?: string;
   hidden?: boolean;
   disabled?: boolean;

@@ -6,6 +6,7 @@ import { select } from 'react-select-event';
 
 const props: ConfigSelectProps = {
   ...mockDatasourceOptions,
+  label: 'label',
   value: 'foo',
   onChange: jest.fn(),
   fetch: jest.fn(),
