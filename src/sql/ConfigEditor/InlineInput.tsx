@@ -13,13 +13,14 @@ export interface InlineInputProps extends DataSourcePluginOptionsEditorProps<{},
   'data-testid'?: string;
   hidden?: boolean;
   disabled?: boolean;
+  labelWidth?: number;
 }
 
 export function InlineInput(props: InlineInputProps) {
   return (
     <InlineField
       label={props.label}
-      labelWidth={28}
+      labelWidth={props.labelWidth ?? 28}
       tooltip={props.tooltip}
       hidden={props.hidden}
       disabled={props.disabled}

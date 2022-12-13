@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## v0.0.40
+
+- Add support for optional labelWidth prop in Config components
+
 ## v0.0.39
 
 - Updated grafana/ dependencies to 9.2.3
