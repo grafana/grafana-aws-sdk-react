@@ -22,12 +22,13 @@ export interface ConnectionConfigProps<J = AwsAuthDataSourceJsonData, S = AwsAut
   skipHeader?: boolean;
   skipEndpoint?: boolean;
   children?: React.ReactNode;
+  labelWidth?: number;
 }
 
 export const ConnectionConfig: FC<ConnectionConfigProps> = (props: ConnectionConfigProps) => {
   const [regions, setRegions] = useState((props.standardRegions || standardRegions).map(toOption));
   const { loadRegions, onOptionsChange, skipHeader = false, skipEndpoint = false } = props;
-  const options = props.options;
+  const { labelWidth = 28, options } = props;
   let profile = options.jsonData.profile;
   if (profile === undefined) {
     profile = options.database;
@@ -67,7 +68,7 @@ export const ConnectionConfig: FC<ConnectionConfigProps> = (props: ConnectionCon
     <FieldSet label={skipHeader ? '' : 'Connection Details'} data-testid="connection-config">
       <InlineField
         label="Authentication Provider"
-        labelWidth={28}
+        labelWidth={labelWidth}
         tooltip="Specify which AWS credentials chain to use."
       >
         <Select
@@ -85,7 +86,7 @@ export const ConnectionConfig: FC<ConnectionConfigProps> = (props: ConnectionCon
       {options.jsonData.authType === 'credentials' && (
         <InlineField
           label="Credentials Profile Name"
-          labelWidth={28}
+          labelWidth={labelWidth}
           tooltip="Credentials profile name, as specified in ~/.aws/credentials, leave blank for default."
         >
           <Input
@@ -100,7 +101,7 @@ export const ConnectionConfig: FC<ConnectionConfigProps> = (props: ConnectionCon
 
       {options.jsonData.authType === 'keys' && (
         <>
-          <InlineField label="Access Key ID" labelWidth={28}>
+          <InlineField label="Access Key ID" labelWidth={labelWidth}>
             {props.options.secureJsonFields?.accessKey ? (
               <ButtonGroup className="width-30">
                 <Input disabled placeholder="Configured" />
@@ -121,7 +122,7 @@ export const ConnectionConfig: FC<ConnectionConfigProps> = (props: ConnectionCon
             )}
           </InlineField>
 
-          <InlineField label="Secret Access Key" labelWidth={28}>
+          <InlineField label="Secret Access Key" labelWidth={labelWidth}>
             {props.options.secureJsonFields?.secretKey ? (
               <ButtonGroup className="width-30">
                 <Input disabled placeholder="Configured" />
@@ -148,7 +149,7 @@ export const ConnectionConfig: FC<ConnectionConfigProps> = (props: ConnectionCon
         <>
           <InlineField
             label="Assume Role ARN"
-            labelWidth={28}
+            labelWidth={labelWidth}
             tooltip="Optionally, specify the ARN of a role to assume. Specifying a role here will ensure that the selected authentication provider is used to assume the specified role rather than using the credentials directly. Leave blank if you don't need to assume a role at all"
           >
             <Input
@@ -161,7 +162,7 @@ export const ConnectionConfig: FC<ConnectionConfigProps> = (props: ConnectionCon
           </InlineField>
           <InlineField
             label="External ID"
-            labelWidth={28}
+            labelWidth={labelWidth}
             tooltip="If you are assuming a role in another account, that has been created with an external ID, specify the external ID here."
           >
             <Input
@@ -175,7 +176,7 @@ export const ConnectionConfig: FC<ConnectionConfigProps> = (props: ConnectionCon
         </>
       )}
       {!skipEndpoint && (
-        <InlineField label="Endpoint" labelWidth={28} tooltip="Optionally, specify a custom endpoint for the service">
+        <InlineField label="Endpoint" labelWidth={labelWidth} tooltip="Optionally, specify a custom endpoint for the service">
           <Input
             aria-label="Endpoint"
             className="width-30"
@@ -187,7 +188,7 @@ export const ConnectionConfig: FC<ConnectionConfigProps> = (props: ConnectionCon
       )}
       <InlineField
         label="Default Region"
-        labelWidth={28}
+        labelWidth={labelWidth}
         tooltip="Specify the region, such as for US West (Oregon) use ` us-west-2 ` as the region."
       >
         <Select

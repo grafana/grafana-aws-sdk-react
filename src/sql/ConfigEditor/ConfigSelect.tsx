@@ -36,13 +36,15 @@ export interface ConfigSelectProps
   placeholder?: string;
   width?: number;
   isOptionDisabled?: () => boolean;
+  labelWidth?: number;
+
 }
 
 export function ConfigSelect(props: ConfigSelectProps) {
   const { jsonData } = props.options;
   const commonProps = {
     title: jsonData.defaultRegion ? '' : 'select a default region',
-    labelWidth: 28,
+    labelWidth: props.labelWidth ?? 28,
     className: 'width-30',
   };
   // Any change in the AWS connection details will affect selectors
