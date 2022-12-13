@@ -176,7 +176,11 @@ export const ConnectionConfig: FC<ConnectionConfigProps> = (props: ConnectionCon
         </>
       )}
       {!skipEndpoint && (
-        <InlineField label="Endpoint" labelWidth={labelWidth} tooltip="Optionally, specify a custom endpoint for the service">
+        <InlineField
+          label="Endpoint"
+          labelWidth={labelWidth}
+          tooltip="Optionally, specify a custom endpoint for the service"
+        >
           <Input
             aria-label="Endpoint"
             className="width-30"

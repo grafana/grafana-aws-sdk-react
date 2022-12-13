@@ -37,7 +37,6 @@ export interface ConfigSelectProps
   width?: number;
   isOptionDisabled?: () => boolean;
   labelWidth?: number;
-
 }
 
 export function ConfigSelect(props: ConfigSelectProps) {
