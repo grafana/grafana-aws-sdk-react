@@ -12,6 +12,7 @@ import { standardRegions } from './regions';
 import { AwsAuthDataSourceJsonData, AwsAuthDataSourceSecureJsonData, AwsAuthType } from './types';
 import { awsAuthProviderOptions } from './providers';
 
+export const DEFAULT_LABEL_WIDTH = 28;
 const toOption = (value: string) => ({ value, label: value });
 
 export interface ConnectionConfigProps<
@@ -30,7 +31,7 @@ export interface ConnectionConfigProps<
 export const ConnectionConfig: FC<ConnectionConfigProps> = (props: ConnectionConfigProps) => {
   const [regions, setRegions] = useState((props.standardRegions || standardRegions).map(toOption));
   const { loadRegions, onOptionsChange, skipHeader = false, skipEndpoint = false } = props;
-  const { labelWidth = 28, options } = props;
+  const { labelWidth = DEFAULT_LABEL_WIDTH, options } = props;
   let profile = options.jsonData.profile;
   if (profile === undefined) {
     profile = options.database;
