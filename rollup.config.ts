@@ -1,43 +1,44 @@
 import resolve from '@rollup/plugin-node-resolve';
-import commonjs from '@rollup/plugin-commonjs';
-import { terser } from 'rollup-plugin-terser';
+import path from 'path';
+import dts from 'rollup-plugin-dts';
+import esbuild from 'rollup-plugin-esbuild';
+import { externals } from 'rollup-plugin-node-externals';
 
-import typescript from 'rollup-plugin-typescript2';
+const packagePath = './package.json';
+const pkg = require(packagePath);
 
-const pkg = require('./package.json');
-
-const libraryName = pkg.name;
-
-const buildCjsPackage = ({ env }) => {
-  return {
+export default [
+  {
     input: 'src/index.ts',
-    output: [
-      {
-        file: `dist/index.${env}.js`,
-        name: libraryName,
-        format: 'cjs',
-        sourcemap: true,
-        chunkFileNames: `[name].${env}.js`,
-        strict: false,
-        exports: 'named',
-        globals: {
-          react: 'React',
-          'prop-types': 'PropTypes',
-        },
-      },
-    ],
-    external: ['react', '@grafana/data', '@grafana/ui', 'lodash'],
     plugins: [
-      typescript({
-        rollupCommonJSResolveHack: false,
-        clean: true,
-      }),
-      commonjs({
-        include: /node_modules/,
+      externals({
+        deps: true,
+        include: ['react', '@grafana/data', '@grafana/ui', 'lodash'],
+        packagePath,
       }),
       resolve(),
-      env === 'production' && terser(),
+      esbuild(),
     ],
-  };
-};
-export default [buildCjsPackage({ env: 'development' }), buildCjsPackage({ env: 'production' })];
+    output: [
+      {
+        format: 'cjs',
+        sourcemap: true,
+        dir: path.dirname(pkg.publishConfig.main),
+      },
+      {
+        format: 'esm',
+        sourcemap: true,
+        dir: path.dirname(pkg.publishConfig.module),
+        preserveModules: true,
+      },
+    ],
+  },
+  {
+    input: './compiled/index.d.ts',
+    plugins: [dts()],
+    output: {
+      file: pkg.publishConfig.types,
+      format: 'es',
+    },
+  },
+];

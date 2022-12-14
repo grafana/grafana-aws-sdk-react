@@ -14,8 +14,10 @@ import { awsAuthProviderOptions } from './providers';
 
 const toOption = (value: string) => ({ value, label: value });
 
-export interface ConnectionConfigProps<J = AwsAuthDataSourceJsonData, S = AwsAuthDataSourceSecureJsonData>
-  extends DataSourcePluginOptionsEditorProps<J, S> {
+export interface ConnectionConfigProps<
+  J extends AwsAuthDataSourceJsonData = AwsAuthDataSourceJsonData,
+  S = AwsAuthDataSourceSecureJsonData
+> extends DataSourcePluginOptionsEditorProps<J, S> {
   standardRegions?: string[];
   loadRegions?: () => Promise<string[]>;
   defaultEndpoint?: string;

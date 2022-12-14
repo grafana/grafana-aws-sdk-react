@@ -1,2 +1,2 @@
-export { ConfigSelect, ConfigSelectProps } from './ConfigSelect';
-export { InlineInput, InlineInputProps } from './InlineInput';
+export { ConfigSelect, type ConfigSelectProps } from './ConfigSelect';
+export { InlineInput, type InlineInputProps } from './InlineInput';

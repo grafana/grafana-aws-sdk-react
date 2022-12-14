@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## v0.0.41
+
+- Update rollup bundling config https://github.com/grafana/grafana-aws-sdk-react/pull/33
+
 ## v0.0.40
 
 - Add support for optional labelWidth prop in Config components

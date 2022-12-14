@@ -1,13 +1,13 @@
 import { SelectableValue } from '@grafana/data';
 import { InlineField, Select, SelectCommonProps } from '@grafana/ui';
 import { isEqual } from 'lodash';
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState, DependencyList } from 'react';
 
 import { defaultKey } from './types';
 
 export interface ResourceSelectorProps extends SelectCommonProps<string> {
   value: string | null;
-  dependencies?: Array<string | null | undefined>;
+  dependencies?: DependencyList;
   tooltip?: string;
   label?: string;
   'data-testid'?: string;
@@ -82,7 +82,7 @@ export function ResourceSelector(props: ResourceSelectorProps) {
       await props.saveOptions();
     }
     try {
-      const resources = await props.fetch();
+      const resources = (await props.fetch?.()) || [];
       setResources(resources);
     } finally {
       setFetched(true);
