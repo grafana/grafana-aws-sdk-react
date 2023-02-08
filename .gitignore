@@ -8,3 +8,4 @@ dist/
 compiled/
 yarn-error.log
 .idea/
+.DS_Store
