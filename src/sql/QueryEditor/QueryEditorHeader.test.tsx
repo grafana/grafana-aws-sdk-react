@@ -25,5 +25,6 @@ describe('QueryEditorHeader', () => {
   it('should display the run button if showAsyncQueryButtons prop is false', async () => {
     render(<QueryEditorHeader {...props} showAsyncQueryButtons={false} />);
     expect(screen.getByText('Run query')).toBeInTheDocument();
+    expect(screen.queryByText('Cancel query')).not.toBeInTheDocument();
   });
 });
