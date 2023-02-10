@@ -33,31 +33,29 @@ export function QueryEditorHeader<
   cancel,
 }: Props<Datasource, TQuery, JsonData>): JSX.Element {
   return (
-    <>
-      <EditorHeader>
-        {extraHeaderElementLeft}
-        <FlexItem grow={1} />
-        {showAsyncQueryButtons ? (
-          <RunQueryButtons
-            onRunQuery={onRunQuery}
-            enableRun={enableRunButton}
-            query={query}
-            onCancelQuery={cancel}
-            state={data?.state}
-          />
-        ) : (
-          <Button
-            variant={enableRunButton ? 'primary' : 'secondary'}
-            size="sm"
-            onClick={onRunQuery}
-            icon={data?.state === LoadingState.Loading ? 'fa fa-spinner' : undefined}
-            disabled={data?.state === LoadingState.Loading}
-          >
-            Run query
-          </Button>
-        )}
-        {extraHeaderElementRight}
-      </EditorHeader>
-    </>
+    <EditorHeader>
+      {extraHeaderElementLeft}
+      <FlexItem grow={1} />
+      {showAsyncQueryButtons ? (
+        <RunQueryButtons
+          onRunQuery={onRunQuery}
+          enableRun={enableRunButton}
+          query={query}
+          onCancelQuery={cancel}
+          state={data?.state}
+        />
+      ) : (
+        <Button
+          variant={enableRunButton ? 'primary' : 'secondary'}
+          size="sm"
+          onClick={onRunQuery}
+          icon={data?.state === LoadingState.Loading ? 'fa fa-spinner' : undefined}
+          disabled={data?.state === LoadingState.Loading}
+        >
+          Run query
+        </Button>
+      )}
+      {extraHeaderElementRight}
+    </EditorHeader>
   );
 }
