@@ -1,11 +1,8 @@
-import '@testing-library/jest-dom/extend-expect';
+import { fireEvent, render, screen } from '@testing-library/react';
 import React from 'react';
-import { render } from '@testing-library/react';
 import { mockQuery } from './__mocks__/query';
 import { Props as QueryEditorHeaderProps, QueryEditorHeader } from './QueryEditorHeader';
-import { DataQuery, DataSourceApi, DataSourceJsonData } from '@grafana/data';
-import { RunQueryButtons } from '@grafana/async-query-data';
-import { Button } from '@grafana/ui';
+import { DataQuery, DataSourceApi, DataSourceJsonData, LoadingState, PanelData } from '@grafana/data';
 
 const props: QueryEditorHeaderProps<DataSourceApi, DataQuery, DataSourceJsonData> = {
   query: mockQuery,
@@ -14,25 +11,50 @@ const props: QueryEditorHeaderProps<DataSourceApi, DataQuery, DataSourceJsonData
   enableRunButton: false,
   datasource: {} as DataSourceApi,
 };
-jest.mock('@grafana/async-query-data', () => ({
-  RunQueryButtons: jest.fn(() => <div>Buttons</div>),
-}));
-jest.mock('@grafana/ui', () => ({
-  ...jest.requireActual('@grafana/ui'),
-  Button: jest.fn(() => <div>Button</div>),
-}));
 
 describe('QueryEditorHeader', () => {
-  afterEach(() => {
-    jest.clearAllMocks();
-  });
   it('should display RunQueryButtons if showAsyncQueryButtons prop is true', async () => {
-    render(<QueryEditorHeader {...props} showAsyncQueryButtons={true} />);
-    expect(RunQueryButtons).toHaveBeenCalled();
+    render(<QueryEditorHeader {...props} showAsyncQueryButtons={true} cancel={jest.fn()} />);
+    const runButton = screen.getByRole('button', { name: 'Run query' });
+    const stopButton = screen.getByRole('button', { name: 'Stop query' });
+    expect(runButton).toBeInTheDocument();
+    expect(stopButton).toBeInTheDocument();
   });
-  it('should display the run button if showAsyncQueryButtons prop is false', async () => {
+  it('should display just the run button if showAsyncQueryButtons prop is false', async () => {
     render(<QueryEditorHeader {...props} showAsyncQueryButtons={false} />);
-    expect(Button).toHaveBeenCalled();
-    expect(RunQueryButtons).not.toHaveBeenCalled();
+    const runButton = screen.getByRole('button', { name: 'Run query' });
+    const stopButton = screen.queryByRole('button', { name: 'Stop query' });
+    expect(runButton).toBeInTheDocument();
+    expect(stopButton).not.toBeInTheDocument();
+  });
+
+  it('run button should be disabled if enableButton prop is false', () => {
+    render(<QueryEditorHeader {...props} enableRunButton={false} showAsyncQueryButtons={false} />);
+    const runButton = screen.getByRole('button', { name: 'Run query' });
+    expect(runButton).toBeDisabled();
+  });
+
+  it('run button should be disabled if query is loading', () => {
+    render(
+      <QueryEditorHeader
+        {...props}
+        enableRunButton={true}
+        data={{ ...props.data, state: LoadingState.Loading } as PanelData}
+        showAsyncQueryButtons={false}
+      />
+    );
+    const runButton = screen.getByRole('button', { name: 'Run query' });
+    expect(runButton).toBeDisabled();
+  });
+
+  it('should run queries when the run button is clicked', () => {
+    const onRunQuery = jest.fn();
+    render(
+      <QueryEditorHeader {...props} onRunQuery={onRunQuery} showAsyncQueryButtons={false} enableRunButton={true} />
+    );
+    const runButton = screen.getByRole('button', { name: 'Run query' });
+    expect(runButton).toBeInTheDocument();
+    fireEvent.click(runButton);
+    expect(onRunQuery).toBeCalledTimes(1);
   });
 });
