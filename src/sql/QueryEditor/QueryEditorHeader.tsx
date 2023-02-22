@@ -50,7 +50,7 @@ export function QueryEditorHeader<
           size="sm"
           onClick={onRunQuery}
           icon={data?.state === LoadingState.Loading ? 'fa fa-spinner' : undefined}
-          disabled={data?.state === LoadingState.Loading}
+          disabled={data?.state === LoadingState.Loading || !enableRunButton}
         >
           Run query
         </Button>
