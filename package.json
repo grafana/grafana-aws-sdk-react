@@ -10,7 +10,7 @@
     "access": "public"
   },
   "scripts": {
-    "dev": "yarn bundle --watch",
+    "dev": "yarn bundle --watch --watch.onStart=\"yarn typecheck\"",
     "build": "yarn clean && yarn typecheck && yarn bundle",
     "bundle": "rollup -c rollup.config.ts",
     "clean": "rimraf ./dist ./compiled",
