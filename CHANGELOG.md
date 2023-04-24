@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file.
 
+## v0.0.45
+
+- Chore: Move PublishConfig properties (https://github.com/grafana/grafana-aws-sdk-react/pull/41)
+- Chore: Fix yarn dev script (https://github.com/grafana/grafana-aws-sdk-react/pull/40)
+
+## v0.0.44
+
+- Fix/disabled attribute on run query button (https://github.com/grafana/grafana-aws-sdk-react/pull/39)
+
 ## v0.0.43
 
 - Query Editor: Add `QueryEditorHeader` component
