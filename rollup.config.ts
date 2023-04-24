@@ -23,12 +23,12 @@ export default [
       {
         format: 'cjs',
         sourcemap: true,
-        dir: path.dirname(pkg.publishConfig.main),
+        dir: path.dirname(pkg.main),
       },
       {
         format: 'esm',
         sourcemap: true,
-        dir: path.dirname(pkg.publishConfig.module),
+        dir: path.dirname(pkg.module),
         preserveModules: true,
       },
     ],
@@ -37,7 +37,7 @@ export default [
     input: './compiled/index.d.ts',
     plugins: [dts()],
     output: {
-      file: pkg.publishConfig.types,
+      file: pkg.types,
       format: 'es',
     },
     watch: {
