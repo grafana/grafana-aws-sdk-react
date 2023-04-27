@@ -6,27 +6,39 @@ import React, { useEffect, useMemo, useState, DependencyList } from 'react';
 import { defaultKey } from './types';
 
 export interface ResourceSelectorProps extends SelectCommonProps<string> {
+  /**
+   * The Selected Resource
+   */
   value: string | null;
+  /**
+   * when dependencies change, the options and selected option are sent to null
+   */
   dependencies?: DependencyList;
+  /**
+   * side effect onChange (often used to update a query or configuration object for example)
+   */
+  onChange: (e: SelectableValue<string> | null) => void;
+  /**
+   * sometimes it is necessary to save the current settings before fetching (ex save auth before fetching a list of available datasets to choose from)
+   */
+  saveOptions?: () => Promise<void>;
   tooltip?: string;
   label?: string;
   'data-testid'?: string;
   hidden?: boolean;
-  // Options only needed for QueryEditor
+  /**
+   * represents a default option to show before loading other options
+   */
   default?: string;
-  // Options only needed for the ConfigEditor
   title?: string;
   labelWidth?: number;
-  saveOptions?: () => Promise<void>;
   // Either set a way of fetching resources or the resource list
   fetch?: () => Promise<Array<string | SelectableValue<string>>>;
   resources?: string[];
-  onChange: (e: SelectableValue<string> | null) => void;
 }
 
 export function ResourceSelector(props: ResourceSelectorProps) {
-  const [resource, setResource] = useState<string | null>(props.value || props.default || null);
-  const [resources, setResources] = useState<Array<string | SelectableValue>>(resource ? [resource] : []);
+  const [selectedResource, setSelectedResource] = useState(props.value);
   const [dependencies, setDependencies] = useState(props.dependencies);
   const [isLoading, setIsLoading] = useState(false);
   const [fetched, setFetched] = useState(false);
@@ -44,35 +56,22 @@ export function ResourceSelector(props: ResourceSelectorProps) {
     return opts;
   }, [props.default, props.value]);
   const [options, setOptions] = useState<Array<SelectableValue<string>>>(props.default ? defaultOpts : []);
-  useEffect(() => {
-    if (props.resources !== undefined) {
-      setResources(props.resources);
-    }
-  }, [props.resources]);
-  useEffect(() => {
-    const newOptions: Array<SelectableValue<string>> = props.default ? defaultOpts : [];
-    if (resources.length) {
-      resources.forEach((r) => {
-        const value = typeof r === 'string' ? r : r.value;
-        if (!newOptions.find((o) => o.value === value)) {
-          typeof r === 'string' ? newOptions.push({ label: r, value: r }) : newOptions.push(r);
-        }
-      });
-      setOptions(newOptions);
-    } else {
-      setOptions([]);
-    }
-  }, [resources, defaultOpts, props.default]);
 
+  const { onChange: onChangeSideEffect, dependencies: propsDependencies } = props;
   useEffect(() => {
+    let ignore = false;
     // A change in the dependencies cause a state clean-up
-    if (!isEqual(props.dependencies, dependencies)) {
+    if (!isEqual(propsDependencies, dependencies) && !ignore) {
+      console.log('Resetting dropdown due to dependency change', propsDependencies, dependencies);
+      setDependencies(propsDependencies);
       setFetched(false);
-      setResource(null);
-      props.onChange(null);
-      setDependencies(props.dependencies);
+      setSelectedResource(null);
+      onChangeSideEffect(null);
     }
-  }, [props, dependencies]);
+    return () => {
+      ignore = true;
+    };
+  }, [onChangeSideEffect, propsDependencies, dependencies]);
 
   const fetch = async () => {
     if (fetched) {
@@ -83,7 +82,18 @@ export function ResourceSelector(props: ResourceSelectorProps) {
     }
     try {
       const resources = (await props.fetch?.()) || [];
-      setResources(resources);
+      const newOptions: Array<SelectableValue<string>> = props.default ? defaultOpts : [];
+      if (resources.length) {
+        resources.forEach((r) => {
+          const value = typeof r === 'string' ? r : r.value;
+          if (!newOptions.find((o) => o.value === value)) {
+            typeof r === 'string' ? newOptions.push({ label: r, value: r }) : newOptions.push(r);
+          }
+        });
+        setOptions(newOptions);
+      } else {
+        setOptions([]);
+      }
     } finally {
       setFetched(true);
     }
@@ -92,9 +102,10 @@ export function ResourceSelector(props: ResourceSelectorProps) {
   const onChange = (e: SelectableValue<string>) => {
     props.onChange(e);
     if (e.value) {
-      setResource(e.value);
+      setSelectedResource(e.value);
     }
   };
+
   const onClick = async () => {
     setIsLoading(true);
     try {
@@ -116,6 +127,7 @@ export function ResourceSelector(props: ResourceSelectorProps) {
           className={props.className || 'min-width-6'}
           onOpenMenu={() => props.fetch && onClick()}
           menuShouldPortal={true}
+          value={selectedResource}
         />
       </div>
     </InlineField>
