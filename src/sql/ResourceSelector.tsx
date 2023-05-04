@@ -31,7 +31,7 @@ export function ResourceSelector(props: ResourceSelectorProps) {
   const dependencies = useRef(props.dependencies);
   const fetched = useRef<boolean>(false);
   const resource = useRef<string | null>(props.value || props.default || null);
-  
+
   const [resources, setResources] = useState<Array<string | SelectableValue>>(
     resource.current ? [resource.current] : []
   );
@@ -82,8 +82,7 @@ export function ResourceSelector(props: ResourceSelectorProps) {
     ;
     }
   }, [propsDependencies, propsOnChange]);
-
-  console.log('cccompiles!');
+  
   const fetch = async () => {
     if (fetched.current) {
       return;
