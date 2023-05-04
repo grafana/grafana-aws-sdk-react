@@ -1,7 +1,7 @@
 import { SelectableValue } from '@grafana/data';
 import { InlineField, Select, SelectCommonProps } from '@grafana/ui';
 import { isEqual } from 'lodash';
-import React, { useEffect, useMemo, useState, DependencyList } from 'react';
+import React, { useEffect, useMemo, useState, DependencyList, useRef } from 'react';
 
 import { defaultKey } from './types';
 
@@ -25,11 +25,19 @@ export interface ResourceSelectorProps extends SelectCommonProps<string> {
 }
 
 export function ResourceSelector(props: ResourceSelectorProps) {
-  const [resource, setResource] = useState<string | null>(props.value || props.default || null);
-  const [resources, setResources] = useState<Array<string | SelectableValue>>(resource ? [resource] : []);
-  const [dependencies, setDependencies] = useState(props.dependencies);
+  const propsDependencies = props.dependencies;
+  const propsOnChange = props.onChange
+  
+  const dependencies = useRef(props.dependencies);
+  const fetched = useRef<boolean>(false);
+  const resource = useRef<string | null>(props.value || props.default || null);
+  
+  const [resources, setResources] = useState<Array<string | SelectableValue>>(
+    resource.current ? [resource.current] : []
+  );
   const [isLoading, setIsLoading] = useState(false);
-  const [fetched, setFetched] = useState(false);
+
+  
   const defaultOpts = useMemo(() => {
     const opts: Array<SelectableValue<string>> = [
       {
@@ -66,16 +74,18 @@ export function ResourceSelector(props: ResourceSelectorProps) {
 
   useEffect(() => {
     // A change in the dependencies cause a state clean-up
-    if (!isEqual(props.dependencies, dependencies)) {
-      setFetched(false);
-      setResource(null);
-      props.onChange(null);
-      setDependencies(props.dependencies);
+    if (!isEqual(propsDependencies, dependencies.current)) {
+      fetched.current = false;
+      resource.current = null;
+      dependencies.current = propsDependencies
+      propsOnChange(null);
+    ;
     }
-  }, [props, dependencies]);
+  }, [propsDependencies, propsOnChange]);
 
+  console.log('cccompiles!');
   const fetch = async () => {
-    if (fetched) {
+    if (fetched.current) {
       return;
     }
     if (props.saveOptions) {
@@ -85,14 +95,14 @@ export function ResourceSelector(props: ResourceSelectorProps) {
       const resources = (await props.fetch?.()) || [];
       setResources(resources);
     } finally {
-      setFetched(true);
+      fetched.current = true;
     }
   };
 
   const onChange = (e: SelectableValue<string>) => {
     props.onChange(e);
     if (e.value) {
-      setResource(e.value);
+      resource.current = e.value;
     }
   };
   const onClick = async () => {
