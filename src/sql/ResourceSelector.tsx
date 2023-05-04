@@ -82,7 +82,7 @@ export function ResourceSelector(props: ResourceSelectorProps) {
     ;
     }
   }, [propsDependencies, propsOnChange]);
-  
+
   const fetch = async () => {
     if (fetched.current) {
       return;
@@ -99,7 +99,7 @@ export function ResourceSelector(props: ResourceSelectorProps) {
   };
 
   const onChange = (e: SelectableValue<string>) => {
-    props.onChange(e);
+    propsOnChange(e);
     if (e.value) {
       resource.current = e.value;
     }
