@@ -16,6 +16,6 @@ Want to install this repo locally?
 
 Ready to release a new version?
 
-- create a pr and update the package.json and changelog to be how you'd like
-- merge the pr, that's it! (get's published to npm via https://github.com/grafana/grafana-aws-sdk-react/blob/main/.github/workflows/publish-npm.yml)
+- create a pr and update the package.json with the new version, as well as the changelog to be how you'd like
+- merge the pr, that's it! (the change in the version triggers a publish to npm via https://github.com/grafana/grafana-aws-sdk-react/blob/main/.github/workflows/publish-npm.yml)
 - a note we don't currently make tags/releases on github, but perhaps in the future we can do so
