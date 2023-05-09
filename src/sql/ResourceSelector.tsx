@@ -79,7 +79,6 @@ export function ResourceSelector(props: ResourceSelectorProps) {
       resource.current = null;
       dependencies.current = propsDependencies
       propsOnChange(null);
-    ;
     }
   }, [propsDependencies, propsOnChange]);
 
