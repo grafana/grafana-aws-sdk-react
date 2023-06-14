@@ -12,6 +12,7 @@ describe('filterQuery', () => {
 
 const scopedVars: Record<string, any> = {
   $simple: 'foo',
+  $numeric: 123,
   $multiple: ['foo', 'bar'],
 };
 // simplified version of getTemplateSrv().replace
@@ -33,6 +34,15 @@ describe('applySQLTemplateVariables', () => {
       getTemplateSrv
     );
     expect(res.rawSQL).toEqual('select * from foo');
+  });
+
+  it('should replace a numeric var', () => {
+    const res = applySQLTemplateVariables(
+      { ...mockQuery, rawSQL: 'select * from $numeric' },
+      scopedVars,
+      getTemplateSrv
+    );
+    expect(res.rawSQL).toEqual('select * from 123');
   });
 
   it('should replace a multiple var', () => {
