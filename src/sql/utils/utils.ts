@@ -22,7 +22,7 @@ export function applySQLTemplateVariables(
 }
 
 function interpolateVariable(value: string | string[]) {
-  if (typeof value === 'string') {
+  if (typeof value === 'string' || typeof value === 'number') {
     return value;
   }
 
