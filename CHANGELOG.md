@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file.
 
+## v0.0.47
+
+- Support numeric values when applying template variables to SQL queries https://github.com/grafana/grafana-aws-sdk-react/pull/47
+
+## v0.0.46
+
+- Fix: Move state variable from state to ref to prevent infinite loop https://github.com/grafana/grafana-aws-sdk-react/pull/46
+
 ## v0.0.45
 
 - Chore: Move PublishConfig properties (https://github.com/grafana/grafana-aws-sdk-react/pull/41)
