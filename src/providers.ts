@@ -7,6 +7,10 @@ export const awsAuthProviderOptions: Array<SelectableValue<AwsAuthType>> = [
     value: AwsAuthType.EC2IAMRole,
   },
   {
+    label: 'Grafana Assume Role',
+    value: AwsAuthType.GrafanaAssumeRole,
+  },
+  {
     label: 'AWS SDK Default',
     value: AwsAuthType.Default,
   },
@@ -18,4 +22,5 @@ export const awsAuthProviderOptions: Array<SelectableValue<AwsAuthType>> = [
     label: 'Credentials file',
     value: AwsAuthType.Credentials,
   },
+
 ];
