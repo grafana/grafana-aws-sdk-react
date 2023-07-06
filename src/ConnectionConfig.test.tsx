@@ -187,7 +187,7 @@ describe('ConnectionConfig', () => {
 
     await waitFor(() => expect(screen.queryByLabelText('External ID')).not.toBeInTheDocument());
   });
-  it('should not render GrafanaAssumeRole as auth type if it is not enabled', async () => {
+  it('should not render GrafanaAssumeRole as auth type if the feature flag is not enabled', async () => {
     (window as any).grafanaBootData = {
       settings: {
         awsDatasourcesTempCredentials: false,
