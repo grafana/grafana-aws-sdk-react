@@ -3,8 +3,8 @@ import React from 'react';
 import { render, screen, waitFor } from '@testing-library/react';
 import { AwsAuthDataSourceJsonData, AwsAuthDataSourceSecureJsonData, AwsAuthType } from './types';
 import { ConnectionConfig, ConnectionConfigProps } from './ConnectionConfig';
+import selectEvent from 'react-select-event'
 import { config } from '@grafana/runtime';
-import selectEvent from 'react-select-event';
 
 const getProps = (propOverrides?: object) => {
   const props: ConnectionConfigProps<AwsAuthDataSourceJsonData, AwsAuthDataSourceSecureJsonData> = {
@@ -160,21 +160,6 @@ describe('ConnectionConfig', () => {
     render(<ConnectionConfig {...props} />);
     await waitFor(() => expect(screen.getByTestId('connection-config')).toBeInTheDocument());
     expect(screen.queryByText('Assume Role ARN')).toBeInTheDocument();
-  });
-  it('should not render externalId field if GrafanaAssumeRole auth type is selected and the auth type is enabled', async () => {
-    config.awsAssumeRoleEnabled = true;
-    const props = getProps({ options: { jsonData: { authType: AwsAuthType.GrafanaAssumeRole } } });
-    render(<ConnectionConfig {...props} />);
-
-    await waitFor(() => expect(screen.queryByLabelText('External ID')).not.toBeInTheDocument());
-  });
-  it('should not render GrafanaAssumeRole as auth option if it is not enabled', async () => {
-    config.featureToggles.awsDatasourcesTempCredentials = false;
-    const props = getProps();
-    render(<ConnectionConfig {...props} />);
-    await selectEvent.openMenu(screen.getByLabelText('Authentication Provider'));
-    expect(screen.getByText('Credentials file')).toBeInTheDocument();
-    expect(screen.queryByText('Grafana Assume Role')).not.toBeInTheDocument();
   });
   it('should not render externalId field if GrafanaAssumeRole auth type is selected and the auth type is enabled', async () => {
     (window as any).grafanaBootData = {
