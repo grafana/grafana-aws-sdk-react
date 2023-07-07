@@ -22,5 +22,4 @@ export const awsAuthProviderOptions: Array<SelectableValue<AwsAuthType>> = [
     label: 'Credentials file',
     value: AwsAuthType.Credentials,
   },
-
 ];
