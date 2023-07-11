@@ -55,9 +55,6 @@ const getProps = (propOverrides?: object) => {
 jest.mock('@grafana/runtime', () => ({
   ...jest.requireActual('@grafana/runtime'),
   config: {
-    featureToggles: {
-      awsDatasourcesTempCredentials: true,
-    },
     awsAllowedAuthProviders: [AwsAuthType.EC2IAMRole, AwsAuthType.Keys],
     awsAssumeRoleEnabled: false
   },
@@ -65,7 +62,6 @@ jest.mock('@grafana/runtime', () => ({
 
 describe('ConnectionConfig', () => {
   beforeEach(() => {
-    config.featureToggles.awsDatasourcesTempCredentials = true;
     config.awsAllowedAuthProviders = [AwsAuthType.EC2IAMRole, AwsAuthType.Keys];
   });
   it('should use auth type from props if its set', async () => {
