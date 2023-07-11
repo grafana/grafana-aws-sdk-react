@@ -63,6 +63,7 @@ jest.mock('@grafana/runtime', () => ({
 describe('ConnectionConfig', () => {
   beforeEach(() => {
     config.awsAllowedAuthProviders = [AwsAuthType.EC2IAMRole, AwsAuthType.Keys];
+    config.awsAssumeRoleEnabled = false;
   });
   it('should use auth type from props if its set', async () => {
     const onOptionsChange = jest.fn();
