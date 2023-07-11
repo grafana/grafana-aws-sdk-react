@@ -36,15 +36,12 @@ export const ConnectionConfig: FC<ConnectionConfigProps> = (props: ConnectionCon
   if (profile === undefined) {
     profile = options.database;
   }
-
-  const settings = (window as any).grafanaBootData.settings;
   
   const awsAssumeRoleEnabled = config.awsAssumeRoleEnabled
-  const tempCredsFeatureEnabled = config.featureToggles.awsDatasourcesTempCredentials;
   const awsAllowerProvidersConfig = config.awsAllowedAuthProviders as AwsAuthType[]
   const awsAllowedAuthProviders = useMemo(
-    () => awsAllowerProvidersConfig.filter((option: AwsAuthType) => (option === AwsAuthType.GrafanaAssumeRole ? tempCredsFeatureEnabled : true)),
-    [awsAllowerProvidersConfig, tempCredsFeatureEnabled]
+    () => awsAllowerProvidersConfig,
+    [awsAllowerProvidersConfig]
   );
 
   const currentProvider = awsAuthProviderOptions.find((p) => p.value === options.jsonData.authType);

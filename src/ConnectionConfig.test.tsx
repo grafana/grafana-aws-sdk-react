@@ -59,6 +59,7 @@ jest.mock('@grafana/runtime', () => ({
       awsDatasourcesTempCredentials: true,
     },
     awsAllowedAuthProviders: [AwsAuthType.EC2IAMRole, AwsAuthType.Keys],
+    awsAssumeRoleEnabled: false
   },
 }));
 
@@ -84,7 +85,7 @@ describe('ConnectionConfig', () => {
 
     const optionsConfig = props.options;
     expect(onOptionsChange).toHaveBeenCalledWith({
-      ...config,
+      ...optionsConfig,
       jsonData: {
         ...optionsConfig.jsonData,
         authType: AwsAuthType.EC2IAMRole,
