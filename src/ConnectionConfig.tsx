@@ -7,7 +7,7 @@ import {
   onUpdateDatasourceJsonDataOption,
   onUpdateDatasourceSecureJsonDataOption,
 } from '@grafana/data';
-
+import { config } from '@grafana/runtime';
 import { standardRegions } from './regions';
 import { AwsAuthDataSourceJsonData, AwsAuthDataSourceSecureJsonData, AwsAuthType } from './types';
 import { awsAuthProviderOptions } from './providers';
@@ -38,11 +38,14 @@ export const ConnectionConfig: FC<ConnectionConfigProps> = (props: ConnectionCon
   }
 
   const settings = (window as any).grafanaBootData.settings;
+  
+  const awsAssumeRoleEnabled = config.awsAssumeRoleEnabled
+  const tempCredsFeatureEnabled = config.featureToggles.awsDatasourcesTempCredentials;
+  const awsAllowerProvidersConfig = config.awsAllowedAuthProviders as AwsAuthType[]
   const awsAllowedAuthProviders = useMemo(
-    () => settings.awsAllowedAuthProviders ?? [AwsAuthType.Default, AwsAuthType.Keys, AwsAuthType.Credentials],
-    [settings.awsAllowedAuthProviders]
+    () => awsAllowerProvidersConfig.filter((option: AwsAuthType) => (option === AwsAuthType.GrafanaAssumeRole ? tempCredsFeatureEnabled : true)),
+    [awsAllowerProvidersConfig, tempCredsFeatureEnabled]
   );
-  const awsAssumeRoleEnabled = settings.awsAssumeRoleEnabled ?? true;
 
   const currentProvider = awsAuthProviderOptions.find((p) => p.value === options.jsonData.authType);
 
@@ -78,7 +81,7 @@ export const ConnectionConfig: FC<ConnectionConfigProps> = (props: ConnectionCon
           aria-label="Authentication Provider"
           className="width-30"
           value={currentProvider}
-          options={awsAuthProviderOptions.filter((opt) => awsAllowedAuthProviders.includes(opt.value!))}
+          options={awsAuthProviderOptions.filter((opt) => opt.value && awsAllowedAuthProviders.includes(opt.value))}
           defaultValue={options.jsonData.authType}
           onChange={(option) => {
             onUpdateDatasourceJsonDataOptionSelect(props, 'authType')(option);
