@@ -78,7 +78,7 @@ export const ConnectionConfig: FC<ConnectionConfigProps> = (props: ConnectionCon
           aria-label="Authentication Provider"
           className="width-30"
           value={currentProvider}
-          options={awsAuthProviderOptions.filter((opt) => opt.value && awsAllowedAuthProviders.includes(opt.value))}
+          options={awsAuthProviderOptions.filter((opt) => awsAllowedAuthProviders.includes(opt.value!))}
           defaultValue={options.jsonData.authType}
           onChange={(option) => {
             onUpdateDatasourceJsonDataOptionSelect(props, 'authType')(option);
