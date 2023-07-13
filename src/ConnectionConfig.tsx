@@ -14,7 +14,9 @@ import { awsAuthProviderOptions } from './providers';
 
 export const DEFAULT_LABEL_WIDTH = 28;
 const toOption = (value: string) => ({ value, label: value });
-
+const isAwsAuthType = (value: any): value is AwsAuthType => {
+  return typeof value === 'string' && awsAuthProviderOptions.some((opt) => opt.value === value);
+}
 export interface ConnectionConfigProps<
   J extends AwsAuthDataSourceJsonData = AwsAuthDataSourceJsonData,
   S = AwsAuthDataSourceSecureJsonData
@@ -38,10 +40,9 @@ export const ConnectionConfig: FC<ConnectionConfigProps> = (props: ConnectionCon
   }
   
   const awsAssumeRoleEnabled = config.awsAssumeRoleEnabled
-  const awsAllowerProvidersConfig = config.awsAllowedAuthProviders as AwsAuthType[]
   const awsAllowedAuthProviders = useMemo(
-    () => awsAllowerProvidersConfig,
-    [awsAllowerProvidersConfig]
+    () => config.awsAllowedAuthProviders.filter(isAwsAuthType),
+    []
   );
 
   const currentProvider = awsAuthProviderOptions.find((p) => p.value === options.jsonData.authType);
