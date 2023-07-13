@@ -39,7 +39,6 @@ export const ConnectionConfig: FC<ConnectionConfigProps> = (props: ConnectionCon
     profile = options.database;
   }
   const tempCredsFeatureEnabled = config.featureToggles.awsDatasourcesTempCredentials;
-
   const awsAssumeRoleEnabled = config.awsAssumeRoleEnabled;
   const awsAllowedAuthProviders = useMemo(
     () =>

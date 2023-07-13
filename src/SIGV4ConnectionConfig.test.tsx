@@ -8,15 +8,19 @@ import {config} from '@grafana/runtime'
 jest.mock('@grafana/runtime', () => ({
   ...jest.requireActual('@grafana/runtime'),
   config: {
-    awsAllowedAuthProviders: [AwsAuthType.Credentials, AwsAuthType.Keys],
+    awsAllowedAuthProviders: [AwsAuthType.Credentials, AwsAuthType.Keys, AwsAuthType.Credentials],
     awsAssumeRoleEnabled: true,
+    featureToggles: {
+      awsDatasourcesTempCredentials: false
+    }
   },
 }));
 
 describe('SIGV4ConnectionConfig', () => {
   beforeEach(() => {
-    config.awsAllowedAuthProviders = [AwsAuthType.Credentials, AwsAuthType.Keys];
+    config.awsAllowedAuthProviders = [AwsAuthType.Credentials, AwsAuthType.Keys, AwsAuthType.Credentials];
     config.awsAssumeRoleEnabled = true;
+    config.featureToggles.awsDatasourcesTempCredentials = false
   });
   const setup = (onOptionsChange?: () => {}) => {
     const props: DataSourcePluginOptionsEditorProps<any, any> = {

@@ -162,26 +162,27 @@ describe('ConnectionConfig', () => {
     expect(screen.queryByText('Assume Role ARN')).toBeInTheDocument();
   });
   it('should not render externalId field if GrafanaAssumeRole auth type is selected and the auth type is enabled', async () => {
-    (window as any).grafanaBootData = {
-      settings: {
-        awsDatasourcesTempCredentials: true,
-      },
-    };
+    config.featureToggles.awsDatasourcesTempCredentials = true;
     const props = getProps({ options: { jsonData: { authType: AwsAuthType.GrafanaAssumeRole } } });
     render(<ConnectionConfig {...props} />);
 
     await waitFor(() => expect(screen.queryByLabelText('External ID')).not.toBeInTheDocument());
   });
   it('should not render GrafanaAssumeRole as auth type if the feature flag is not enabled', async () => {
-    (window as any).grafanaBootData = {
-      settings: {
-        awsDatasourcesTempCredentials: false,
-      },
-    };
+    config.featureToggles.awsDatasourcesTempCredentials = false;
     const props = getProps();
     render(<ConnectionConfig {...props} />);
     await selectEvent.openMenu(screen.getByLabelText('Authentication Provider'));
     expect(screen.getByText('Credentials file')).toBeInTheDocument();
     expect(screen.queryByText('Grafana Assume Role')).not.toBeInTheDocument();
+  });
+  it('should render GrafanaAssumeRole as auth type if the feature flag is enabled and auth providers has GrafanaAssumeRole', async () => {
+    config.featureToggles.awsDatasourcesTempCredentials = true;
+    config.awsAllowedAuthProviders = [AwsAuthType.GrafanaAssumeRole, AwsAuthType.Credentials]
+    const props = getProps();
+    render(<ConnectionConfig {...props} />);
+    await selectEvent.openMenu(screen.getByLabelText('Authentication Provider'));
+    expect(screen.getByText('Credentials file')).toBeInTheDocument();
+    expect(screen.queryByText('Grafana Assume Role')).toBeInTheDocument();
   });
 });
