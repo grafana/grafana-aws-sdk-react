@@ -13,7 +13,7 @@ export default [
     plugins: [
       externals({
         deps: true,
-        include: ['react', '@grafana/data', '@grafana/ui', 'lodash'],
+        include: ['react', '@grafana/data', '@grafana/ui', '@grafana/runtime', 'lodash'],
         packagePath,
       }),
       resolve(),

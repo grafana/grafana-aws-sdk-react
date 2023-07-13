@@ -1,19 +1,23 @@
 import { DataSourcePluginOptionsEditorProps } from '@grafana/data';
 import React from 'react';
 import { fireEvent, render, screen } from '@testing-library/react';
-import { SIGV4ConnectionConfig } from 'SIGV4ConnectionConfig';
-import { AwsAuthType } from 'types';
+import { AwsAuthType } from './types';
+import { SIGV4ConnectionConfig } from './SIGV4ConnectionConfig';
+import {config} from '@grafana/runtime'
 
-const resetWindow = () => {
-  (window as any).grafanaBootData = {
-    settings: {
-      awsAllowedAuthProviders: [AwsAuthType.Credentials, AwsAuthType.Keys],
-      awsAssumeRoleEnabled: true,
-    },
-  };
-};
+jest.mock('@grafana/runtime', () => ({
+  ...jest.requireActual('@grafana/runtime'),
+  config: {
+    awsAllowedAuthProviders: [AwsAuthType.Credentials, AwsAuthType.Keys],
+    awsAssumeRoleEnabled: true,
+  },
+}));
 
 describe('SIGV4ConnectionConfig', () => {
+  beforeEach(() => {
+    config.awsAllowedAuthProviders = [AwsAuthType.Credentials, AwsAuthType.Keys];
+    config.awsAssumeRoleEnabled = true;
+  });
   const setup = (onOptionsChange?: () => {}) => {
     const props: DataSourcePluginOptionsEditorProps<any, any> = {
       options: {
@@ -55,9 +59,6 @@ describe('SIGV4ConnectionConfig', () => {
 
     render(<SIGV4ConnectionConfig {...props} />);
   };
-
-  beforeEach(() => resetWindow());
-  afterEach(() => resetWindow());
 
   it('should map incoming props correctly', () => {
     setup();

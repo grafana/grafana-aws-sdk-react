@@ -7,14 +7,16 @@ import {
   onUpdateDatasourceJsonDataOption,
   onUpdateDatasourceSecureJsonDataOption,
 } from '@grafana/data';
-
+import { config } from '@grafana/runtime';
 import { standardRegions } from './regions';
 import { AwsAuthDataSourceJsonData, AwsAuthDataSourceSecureJsonData, AwsAuthType } from './types';
 import { awsAuthProviderOptions } from './providers';
 
 export const DEFAULT_LABEL_WIDTH = 28;
 const toOption = (value: string) => ({ value, label: value });
-
+const isAwsAuthType = (value: any): value is AwsAuthType => {
+  return typeof value === 'string' && awsAuthProviderOptions.some((opt) => opt.value === value);
+}
 export interface ConnectionConfigProps<
   J extends AwsAuthDataSourceJsonData = AwsAuthDataSourceJsonData,
   S = AwsAuthDataSourceSecureJsonData
@@ -36,13 +38,12 @@ export const ConnectionConfig: FC<ConnectionConfigProps> = (props: ConnectionCon
   if (profile === undefined) {
     profile = options.database;
   }
-
-  const settings = (window as any).grafanaBootData.settings;
+  
+  const awsAssumeRoleEnabled = config.awsAssumeRoleEnabled
   const awsAllowedAuthProviders = useMemo(
-    () => settings.awsAllowedAuthProviders ?? [AwsAuthType.Default, AwsAuthType.Keys, AwsAuthType.Credentials],
-    [settings.awsAllowedAuthProviders]
+    () => config.awsAllowedAuthProviders.filter(isAwsAuthType),
+    []
   );
-  const awsAssumeRoleEnabled = settings.awsAssumeRoleEnabled ?? true;
 
   const currentProvider = awsAuthProviderOptions.find((p) => p.value === options.jsonData.authType);
 
