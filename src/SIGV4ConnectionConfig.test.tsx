@@ -8,7 +8,7 @@ import {config} from '@grafana/runtime'
 jest.mock('@grafana/runtime', () => ({
   ...jest.requireActual('@grafana/runtime'),
   config: {
-    awsAllowedAuthProviders: [AwsAuthType.Credentials, AwsAuthType.Keys, AwsAuthType.Credentials],
+    awsAllowedAuthProviders: [AwsAuthType.Credentials, AwsAuthType.Keys],
     awsAssumeRoleEnabled: true,
     featureToggles: {
       awsDatasourcesTempCredentials: false
@@ -18,7 +18,7 @@ jest.mock('@grafana/runtime', () => ({
 
 describe('SIGV4ConnectionConfig', () => {
   beforeEach(() => {
-    config.awsAllowedAuthProviders = [AwsAuthType.Credentials, AwsAuthType.Keys, AwsAuthType.Credentials];
+    config.awsAllowedAuthProviders = [AwsAuthType.Credentials, AwsAuthType.Keys];
     config.awsAssumeRoleEnabled = true;
     config.featureToggles.awsDatasourcesTempCredentials = false
   });
