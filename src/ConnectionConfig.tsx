@@ -16,7 +16,7 @@ export const DEFAULT_LABEL_WIDTH = 28;
 const toOption = (value: string) => ({ value, label: value });
 const isAwsAuthType = (value: any): value is AwsAuthType => {
   return typeof value === 'string' && awsAuthProviderOptions.some((opt) => opt.value === value);
-}
+};
 export interface ConnectionConfigProps<
   J extends AwsAuthDataSourceJsonData = AwsAuthDataSourceJsonData,
   S = AwsAuthDataSourceSecureJsonData
@@ -38,11 +38,14 @@ export const ConnectionConfig: FC<ConnectionConfigProps> = (props: ConnectionCon
   if (profile === undefined) {
     profile = options.database;
   }
-  
-  const awsAssumeRoleEnabled = config.awsAssumeRoleEnabled
+  const tempCredsFeatureEnabled = config.featureToggles.awsDatasourcesTempCredentials;
+  const awsAssumeRoleEnabled = config.awsAssumeRoleEnabled;
   const awsAllowedAuthProviders = useMemo(
-    () => config.awsAllowedAuthProviders.filter(isAwsAuthType),
-    []
+    () =>
+      config.awsAllowedAuthProviders
+        .filter((provider) => (provider === AwsAuthType.GrafanaAssumeRole ? tempCredsFeatureEnabled : true))
+        .filter(isAwsAuthType),
+    [tempCredsFeatureEnabled]
   );
 
   const currentProvider = awsAuthProviderOptions.find((p) => p.value === options.jsonData.authType);
@@ -164,19 +167,21 @@ export const ConnectionConfig: FC<ConnectionConfigProps> = (props: ConnectionCon
               onChange={onUpdateDatasourceJsonDataOption(props, 'assumeRoleArn')}
             />
           </InlineField>
-          <InlineField
-            label="External ID"
-            labelWidth={labelWidth}
-            tooltip="If you are assuming a role in another account, that has been created with an external ID, specify the external ID here."
-          >
-            <Input
-              aria-label="External ID"
-              className="width-30"
-              placeholder="External ID"
-              value={options.jsonData.externalId || ''}
-              onChange={onUpdateDatasourceJsonDataOption(props, 'externalId')}
-            />
-          </InlineField>
+          {options.jsonData.authType !== AwsAuthType.GrafanaAssumeRole && (
+            <InlineField
+              label="External ID"
+              labelWidth={labelWidth}
+              tooltip="If you are assuming a role in another account, that has been created with an external ID, specify the external ID here."
+            >
+              <Input
+                aria-label="External ID"
+                className="width-30"
+                placeholder="External ID"
+                value={options.jsonData.externalId || ''}
+                onChange={onUpdateDatasourceJsonDataOption(props, 'externalId')}
+              />
+            </InlineField>
+          )}
         </>
       )}
       {!skipEndpoint && (

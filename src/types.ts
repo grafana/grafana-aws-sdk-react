@@ -9,6 +9,7 @@ export enum AwsAuthType {
    * @deprecated use default
    */
   ARN = 'arn',
+  GrafanaAssumeRole = 'grafana_assume_role'
 }
 
 export interface AwsAuthDataSourceJsonData extends DataSourceJsonData {

@@ -10,6 +10,9 @@ jest.mock('@grafana/runtime', () => ({
   config: {
     awsAllowedAuthProviders: [AwsAuthType.Credentials, AwsAuthType.Keys],
     awsAssumeRoleEnabled: true,
+    featureToggles: {
+      awsDatasourcesTempCredentials: false
+    }
   },
 }));
 
@@ -17,6 +20,7 @@ describe('SIGV4ConnectionConfig', () => {
   beforeEach(() => {
     config.awsAllowedAuthProviders = [AwsAuthType.Credentials, AwsAuthType.Keys];
     config.awsAssumeRoleEnabled = true;
+    config.featureToggles.awsDatasourcesTempCredentials = false
   });
   const setup = (onOptionsChange?: () => {}) => {
     const props: DataSourcePluginOptionsEditorProps<any, any> = {

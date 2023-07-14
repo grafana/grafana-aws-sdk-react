@@ -3,6 +3,7 @@ import React from 'react';
 import { render, screen, waitFor } from '@testing-library/react';
 import { AwsAuthDataSourceJsonData, AwsAuthDataSourceSecureJsonData, AwsAuthType } from './types';
 import { ConnectionConfig, ConnectionConfigProps } from './ConnectionConfig';
+import selectEvent from 'react-select-event'
 import { config } from '@grafana/runtime';
 
 const getProps = (propOverrides?: object) => {
@@ -55,15 +56,19 @@ const getProps = (propOverrides?: object) => {
 jest.mock('@grafana/runtime', () => ({
   ...jest.requireActual('@grafana/runtime'),
   config: {
-    awsAllowedAuthProviders: [AwsAuthType.EC2IAMRole, AwsAuthType.Keys],
-    awsAssumeRoleEnabled: false
+    awsAllowedAuthProviders: [AwsAuthType.EC2IAMRole, AwsAuthType.Keys, AwsAuthType.Credentials],
+    awsAssumeRoleEnabled: false,
+    featureToggles: {
+      awsDatasourcesTempCredentials: false,
+    },
   },
 }));
 
 describe('ConnectionConfig', () => {
   beforeEach(() => {
-    config.awsAllowedAuthProviders = [AwsAuthType.EC2IAMRole, AwsAuthType.Keys];
+    config.awsAllowedAuthProviders = [AwsAuthType.EC2IAMRole, AwsAuthType.Keys, AwsAuthType.Credentials];
     config.awsAssumeRoleEnabled = false;
+    config.featureToggles.awsDatasourcesTempCredentials = false;
   });
   it('should use auth type from props if its set', async () => {
     const onOptionsChange = jest.fn();
@@ -155,5 +160,29 @@ describe('ConnectionConfig', () => {
     render(<ConnectionConfig {...props} />);
     await waitFor(() => expect(screen.getByTestId('connection-config')).toBeInTheDocument());
     expect(screen.queryByText('Assume Role ARN')).toBeInTheDocument();
+  });
+  it('should not render externalId field if GrafanaAssumeRole auth type is selected and the auth type is enabled', async () => {
+    config.featureToggles.awsDatasourcesTempCredentials = true;
+    const props = getProps({ options: { jsonData: { authType: AwsAuthType.GrafanaAssumeRole } } });
+    render(<ConnectionConfig {...props} />);
+
+    await waitFor(() => expect(screen.queryByLabelText('External ID')).not.toBeInTheDocument());
+  });
+  it('should not render GrafanaAssumeRole as auth type if the feature flag is not enabled', async () => {
+    config.featureToggles.awsDatasourcesTempCredentials = false;
+    const props = getProps();
+    render(<ConnectionConfig {...props} />);
+    await selectEvent.openMenu(screen.getByLabelText('Authentication Provider'));
+    expect(screen.getByText('Credentials file')).toBeInTheDocument();
+    expect(screen.queryByText('Grafana Assume Role')).not.toBeInTheDocument();
+  });
+  it('should render GrafanaAssumeRole as auth type if the feature flag is enabled and auth providers has GrafanaAssumeRole', async () => {
+    config.featureToggles.awsDatasourcesTempCredentials = true;
+    config.awsAllowedAuthProviders = [AwsAuthType.GrafanaAssumeRole, AwsAuthType.Credentials]
+    const props = getProps();
+    render(<ConnectionConfig {...props} />);
+    await selectEvent.openMenu(screen.getByLabelText('Authentication Provider'));
+    expect(screen.getByText('Credentials file')).toBeInTheDocument();
+    expect(screen.queryByText('Grafana Assume Role')).toBeInTheDocument();
   });
 });
