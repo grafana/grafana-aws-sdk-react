@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## v0.0.48
+
+- Add support for experimental Temporary Credentials feature behind feature flag https://github.com/grafana/grafana-aws-sdk-react/pull/49
+- Use @grafana/runtime instead of grafanaBootData https://github.com/grafana/grafana-aws-sdk-react/pull/50
+
 ## v0.0.47
 
 - Support numeric values when applying template variables to SQL queries https://github.com/grafana/grafana-aws-sdk-react/pull/47
