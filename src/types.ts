@@ -19,6 +19,7 @@ export interface AwsAuthDataSourceJsonData extends DataSourceJsonData {
   profile?: string; // Credentials profile name, as specified in ~/.aws/credentials
   defaultRegion?: string; // region if it is not defined by your credentials file
   endpoint?: string;
+  inExperimentalAuthComponent?: boolean;
 }
 
 export interface AwsAuthDataSourceSecureJsonData {
