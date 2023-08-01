@@ -85,7 +85,17 @@ export const ConnectionConfig: FC<ConnectionConfigProps> = (props: ConnectionCon
           options={awsAuthProviderOptions.filter((opt) => awsAllowedAuthProviders.includes(opt.value!))}
           defaultValue={options.jsonData.authType}
           onChange={(option) => {
-            onUpdateDatasourceJsonDataOptionSelect(props, 'authType')(option);
+            onOptionsChange({
+              ...options,
+              jsonData: {
+                ...options.jsonData,
+                authType: option.value,
+                trackingData: {
+                  ...options.jsonData.trackingData,
+                  authType: option.value || '',
+                },
+              },
+            });
           }}
           menuShouldPortal={true}
         />

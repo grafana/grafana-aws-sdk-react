@@ -9,7 +9,7 @@ export enum AwsAuthType {
    * @deprecated use default
    */
   ARN = 'arn',
-  GrafanaAssumeRole = 'grafana_assume_role'
+  GrafanaAssumeRole = 'grafana_assume_role',
 }
 
 export interface AwsAuthDataSourceJsonData extends DataSourceJsonData {
@@ -19,6 +19,9 @@ export interface AwsAuthDataSourceJsonData extends DataSourceJsonData {
   profile?: string; // Credentials profile name, as specified in ~/.aws/credentials
   defaultRegion?: string; // region if it is not defined by your credentials file
   endpoint?: string;
+  trackingData?: {
+    authType?: string;
+  };
 }
 
 export interface AwsAuthDataSourceSecureJsonData {
