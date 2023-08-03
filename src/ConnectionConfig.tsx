@@ -179,7 +179,8 @@ export const ConnectionConfig: FC<ConnectionConfigProps> = (props: ConnectionCon
             </li>
             <li>
               <p>
-                3. Enter the following external ID: <code>{props.externalId}</code> and click <code>Next</code>.
+                3. Enter the following external ID:{' '}
+                <code>{props.externalId || 'External Id is currently unavailable'}</code> and click <code>Next</code>.
               </p>
             </li>
             <li>
