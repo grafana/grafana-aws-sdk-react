@@ -1,5 +1,5 @@
 import React, { FC, useEffect, useMemo, useState } from 'react';
-import { Input, Select, InlineField, ButtonGroup, ToolbarButton, FieldSet } from '@grafana/ui';
+import { Input, Select, InlineField, ButtonGroup, ToolbarButton, FieldSet, Collapse } from '@grafana/ui';
 import {
   DataSourcePluginOptionsEditorProps,
   onUpdateDatasourceJsonDataOptionSelect,
@@ -29,16 +29,14 @@ export interface ConnectionConfigProps<
   children?: React.ReactNode;
   labelWidth?: number;
   inExperimentalAuthComponent?: boolean;
+  externalId?: string;
 }
 
 export const ConnectionConfig: FC<ConnectionConfigProps> = (props: ConnectionConfigProps) => {
+  const [isARNInstructionsOpen, setIsARNInstructionsOpen] = useState(false);
   const [regions, setRegions] = useState((props.standardRegions || standardRegions).map(toOption));
   const { loadRegions, onOptionsChange, skipHeader = false, skipEndpoint = false } = props;
-  const { 
-    labelWidth = DEFAULT_LABEL_WIDTH, 
-    options, 
-    inExperimentalAuthComponent 
-  } = props;
+  const { labelWidth = DEFAULT_LABEL_WIDTH, options, inExperimentalAuthComponent } = props;
   let profile = options.jsonData.profile;
   if (profile === undefined) {
     profile = options.database;
@@ -76,7 +74,7 @@ export const ConnectionConfig: FC<ConnectionConfigProps> = (props: ConnectionCon
     loadRegions().then((regions) => setRegions(regions.map(toOption)));
   }, [loadRegions]);
 
-  const inputWidth = inExperimentalAuthComponent ? "width-20" : "width-30";
+  const inputWidth = inExperimentalAuthComponent ? 'width-20' : 'width-30';
 
   return (
     <FieldSet label={skipHeader ? '' : 'Connection Details'} data-testid="connection-config">
@@ -159,6 +157,60 @@ export const ConnectionConfig: FC<ConnectionConfigProps> = (props: ConnectionCon
         </>
       )}
 
+      {options.jsonData.authType === AwsAuthType.GrafanaAssumeRole && (
+        <Collapse
+          label={'How to create an IAM role for grafana to assume:'}
+          collapsible={true}
+          isOpen={isARNInstructionsOpen}
+          onToggle={() => setIsARNInstructionsOpen(!isARNInstructionsOpen)}
+        >
+          <ol>
+            <li>
+              <p>
+                1. Create a new IAM role in the AWS console, and select <code>Another AWS account</code> as the{' '}
+                <code>Trusted entity</code>.
+              </p>
+            </li>
+            <li>
+              <p>
+                2. Enter the account ID of the Grafana account that has permission to assume this role:
+                <code> 008923505280 </code> and check the <code>Require external ID</code> box.
+              </p>
+            </li>
+            <li>
+              <p>
+                3. Enter the following external ID: <code>{props.externalId}</code> and click <code>Next</code>.
+              </p>
+            </li>
+            <li>
+              <p>
+                4. Add any required permissions you would like Grafana to be able to access on your behalf. For more
+                details on our permissions please{' '}
+                <a
+                  href="https://grafana.com/docs/grafana/latest/datasources/aws-cloudwatch/"
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  read through our documentation
+                </a>
+                .
+              </p>
+            </li>
+            <li>
+              <p>
+                5. Give the role a name and description, and click <code>Create role</code>.
+              </p>
+            </li>
+            <li>
+              <p>
+                6. Copy the ARN of the role you just created and paste it into the <code>Assume Role ARN</code> field
+                below.
+              </p>
+            </li>
+          </ol>
+        </Collapse>
+      )}
+
       {awsAssumeRoleEnabled && (
         <>
           <InlineField
@@ -191,7 +243,7 @@ export const ConnectionConfig: FC<ConnectionConfigProps> = (props: ConnectionCon
           )}
         </>
       )}
-      {!skipEndpoint && (
+      {!skipEndpoint && options.jsonData.authType !== AwsAuthType.GrafanaAssumeRole && (
         <InlineField
           label="Endpoint"
           labelWidth={labelWidth}
