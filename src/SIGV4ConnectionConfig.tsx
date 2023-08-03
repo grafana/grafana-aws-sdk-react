@@ -4,8 +4,12 @@ import { ConnectionConfig, ConnectionConfigProps } from './ConnectionConfig';
 
 import { AwsAuthDataSourceSecureJsonData, AwsAuthDataSourceJsonData } from './types';
 
-export const SIGV4ConnectionConfig: React.FC<DataSourcePluginOptionsEditorProps<any, any>> = (
-  props: DataSourcePluginOptionsEditorProps<any, any>
+export interface SIGV4ConnectionConfigProps extends DataSourcePluginOptionsEditorProps<any, any> {
+  inExperimentalAuthComponent?: boolean;
+};
+
+export const SIGV4ConnectionConfig: React.FC<SIGV4ConnectionConfigProps> = (
+  props: SIGV4ConnectionConfigProps
 ) => {
   const { onOptionsChange, options } = props;
 
@@ -54,6 +58,7 @@ export const SIGV4ConnectionConfig: React.FC<DataSourcePluginOptionsEditorProps<
         secretKey: options.secureJsonData?.sigV4SecretKey,
       },
     },
+    inExperimentalAuthComponent: props.inExperimentalAuthComponent,
   };
 
   return (

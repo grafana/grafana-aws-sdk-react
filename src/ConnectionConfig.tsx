@@ -28,12 +28,17 @@ export interface ConnectionConfigProps<
   skipEndpoint?: boolean;
   children?: React.ReactNode;
   labelWidth?: number;
+  inExperimentalAuthComponent?: boolean;
 }
 
 export const ConnectionConfig: FC<ConnectionConfigProps> = (props: ConnectionConfigProps) => {
   const [regions, setRegions] = useState((props.standardRegions || standardRegions).map(toOption));
   const { loadRegions, onOptionsChange, skipHeader = false, skipEndpoint = false } = props;
-  const { labelWidth = DEFAULT_LABEL_WIDTH, options } = props;
+  const { 
+    labelWidth = DEFAULT_LABEL_WIDTH, 
+    options, 
+    inExperimentalAuthComponent 
+  } = props;
   let profile = options.jsonData.profile;
   if (profile === undefined) {
     profile = options.database;
@@ -70,8 +75,6 @@ export const ConnectionConfig: FC<ConnectionConfigProps> = (props: ConnectionCon
 
     loadRegions().then((regions) => setRegions(regions.map(toOption)));
   }, [loadRegions]);
-
-  const inExperimentalAuthComponent = options.jsonData.inExperimentalAuthComponent;
 
   const inputWidth = inExperimentalAuthComponent ? "width-20" : "width-30";
 
