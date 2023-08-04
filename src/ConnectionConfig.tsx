@@ -28,12 +28,17 @@ export interface ConnectionConfigProps<
   skipEndpoint?: boolean;
   children?: React.ReactNode;
   labelWidth?: number;
+  inExperimentalAuthComponent?: boolean;
 }
 
 export const ConnectionConfig: FC<ConnectionConfigProps> = (props: ConnectionConfigProps) => {
   const [regions, setRegions] = useState((props.standardRegions || standardRegions).map(toOption));
   const { loadRegions, onOptionsChange, skipHeader = false, skipEndpoint = false } = props;
-  const { labelWidth = DEFAULT_LABEL_WIDTH, options } = props;
+  const { 
+    labelWidth = DEFAULT_LABEL_WIDTH, 
+    options, 
+    inExperimentalAuthComponent 
+  } = props;
   let profile = options.jsonData.profile;
   if (profile === undefined) {
     profile = options.database;
@@ -71,6 +76,8 @@ export const ConnectionConfig: FC<ConnectionConfigProps> = (props: ConnectionCon
     loadRegions().then((regions) => setRegions(regions.map(toOption)));
   }, [loadRegions]);
 
+  const inputWidth = inExperimentalAuthComponent ? "width-20" : "width-30";
+
   return (
     <FieldSet label={skipHeader ? '' : 'Connection Details'} data-testid="connection-config">
       <InlineField
@@ -80,7 +87,7 @@ export const ConnectionConfig: FC<ConnectionConfigProps> = (props: ConnectionCon
       >
         <Select
           aria-label="Authentication Provider"
-          className="width-30"
+          className={inputWidth}
           value={currentProvider}
           options={awsAuthProviderOptions.filter((opt) => awsAllowedAuthProviders.includes(opt.value!))}
           defaultValue={options.jsonData.authType}
@@ -98,7 +105,7 @@ export const ConnectionConfig: FC<ConnectionConfigProps> = (props: ConnectionCon
         >
           <Input
             aria-label="Credentials Profile Name"
-            className="width-30"
+            className={inputWidth}
             placeholder="default"
             value={profile}
             onChange={onUpdateDatasourceJsonDataOption(props, 'profile')}
@@ -110,7 +117,7 @@ export const ConnectionConfig: FC<ConnectionConfigProps> = (props: ConnectionCon
         <>
           <InlineField label="Access Key ID" labelWidth={labelWidth}>
             {props.options.secureJsonFields?.accessKey ? (
-              <ButtonGroup className="width-30">
+              <ButtonGroup className={inputWidth}>
                 <Input disabled placeholder="Configured" />
                 <ToolbarButton
                   icon="edit"
@@ -122,7 +129,7 @@ export const ConnectionConfig: FC<ConnectionConfigProps> = (props: ConnectionCon
             ) : (
               <Input
                 aria-label="Access Key ID"
-                className="width-30"
+                className={inputWidth}
                 value={options.secureJsonData?.accessKey ?? ''}
                 onChange={onUpdateDatasourceSecureJsonDataOption(props, 'accessKey')}
               />
@@ -131,7 +138,7 @@ export const ConnectionConfig: FC<ConnectionConfigProps> = (props: ConnectionCon
 
           <InlineField label="Secret Access Key" labelWidth={labelWidth}>
             {props.options.secureJsonFields?.secretKey ? (
-              <ButtonGroup className="width-30">
+              <ButtonGroup className={inputWidth}>
                 <Input disabled placeholder="Configured" />
                 <ToolbarButton
                   icon="edit"
@@ -143,7 +150,7 @@ export const ConnectionConfig: FC<ConnectionConfigProps> = (props: ConnectionCon
             ) : (
               <Input
                 aria-label="Secret Access Key"
-                className="width-30"
+                className={inputWidth}
                 value={options.secureJsonData?.secretKey ?? ''}
                 onChange={onUpdateDatasourceSecureJsonDataOption(props, 'secretKey')}
               />
@@ -161,7 +168,7 @@ export const ConnectionConfig: FC<ConnectionConfigProps> = (props: ConnectionCon
           >
             <Input
               aria-label="Assume Role ARN"
-              className="width-30"
+              className={inputWidth}
               placeholder="arn:aws:iam:*"
               value={options.jsonData.assumeRoleArn || ''}
               onChange={onUpdateDatasourceJsonDataOption(props, 'assumeRoleArn')}
@@ -175,7 +182,7 @@ export const ConnectionConfig: FC<ConnectionConfigProps> = (props: ConnectionCon
             >
               <Input
                 aria-label="External ID"
-                className="width-30"
+                className={inputWidth}
                 placeholder="External ID"
                 value={options.jsonData.externalId || ''}
                 onChange={onUpdateDatasourceJsonDataOption(props, 'externalId')}
@@ -192,7 +199,7 @@ export const ConnectionConfig: FC<ConnectionConfigProps> = (props: ConnectionCon
         >
           <Input
             aria-label="Endpoint"
-            className="width-30"
+            className={inputWidth}
             placeholder={props.defaultEndpoint ?? 'https://{service}.{region}.amazonaws.com'}
             value={options.jsonData.endpoint || ''}
             onChange={onUpdateDatasourceJsonDataOption(props, 'endpoint')}
@@ -206,7 +213,7 @@ export const ConnectionConfig: FC<ConnectionConfigProps> = (props: ConnectionCon
       >
         <Select
           aria-label="Default Region"
-          className="width-30"
+          className={inputWidth}
           value={regions.find((region) => region.value === options.jsonData.defaultRegion)}
           options={regions}
           defaultValue={options.jsonData.defaultRegion}
