@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## v0.1.0
+
+- Temp Credentials: Display External Id https://github.com/grafana/grafana-aws-sdk-react/pull/54
+- Add Support for Experimental Auth Component https://github.com/grafana/grafana-aws-sdk-react/pull/52
+
 ## v0.0.48
 
 - Add support for experimental Temporary Credentials feature behind feature flag https://github.com/grafana/grafana-aws-sdk-react/pull/49
