@@ -61,12 +61,14 @@ export const ConnectionConfig: FC<ConnectionConfigProps> = (props: ConnectionCon
     if (value === '') {
       delete jsonData[key]
     }
-    const config = props.options;
+    else {
+      // @ts-ignore
+       jsonData[key] = value
+    }
     props.onOptionsChange({
-      ...config,
+      ...props.options,
       jsonData: {
-        ...config.jsonData,
-        [key]: value,
+        ...jsonData,
       },
     });
   };
