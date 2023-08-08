@@ -53,6 +53,24 @@ export const ConnectionConfig: FC<ConnectionConfigProps> = (props: ConnectionCon
 
   const currentProvider = awsAuthProviderOptions.find((p) => p.value === options.jsonData.authType);
 
+  //  use this when empty string value will cause bugs
+  const onUpdateOrDeleteDatasourceJsonData = (props: ConnectionConfigProps<AwsAuthDataSourceJsonData, AwsAuthDataSourceSecureJsonData>, key: keyof AwsAuthDataSourceJsonData) =>
+  (event: React.SyntheticEvent<HTMLInputElement | HTMLSelectElement>) => {
+    const {jsonData}  = props.options
+    const {value} = event.currentTarget
+    if (value === '') {
+      delete jsonData[key]
+    }
+    const config = props.options;
+    props.onOptionsChange({
+      ...config,
+      jsonData: {
+        ...config.jsonData,
+        [key]: value,
+      },
+    });
+  };
+
   useEffect(() => {
     // Make sure a authType exists in the current model
     if (!currentProvider && awsAllowedAuthProviders.length) {
@@ -255,7 +273,7 @@ export const ConnectionConfig: FC<ConnectionConfigProps> = (props: ConnectionCon
             className={inputWidth}
             placeholder={props.defaultEndpoint ?? 'https://{service}.{region}.amazonaws.com'}
             value={options.jsonData.endpoint || ''}
-            onChange={onUpdateDatasourceJsonDataOption(props, 'endpoint')}
+            onChange={onUpdateOrDeleteDatasourceJsonData(props, 'endpoint')}
           />
         </InlineField>
       )}
