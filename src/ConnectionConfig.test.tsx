@@ -3,7 +3,7 @@ import React from 'react';
 import { render, screen, waitFor } from '@testing-library/react';
 import { AwsAuthDataSourceJsonData, AwsAuthDataSourceSecureJsonData, AwsAuthType } from './types';
 import { ConnectionConfig, ConnectionConfigProps } from './ConnectionConfig';
-import selectEvent from 'react-select-event'
+import selectEvent from 'react-select-event';
 import { config } from '@grafana/runtime';
 
 const getProps = (propOverrides?: object) => {
@@ -67,8 +67,8 @@ describe('ConnectionConfig', () => {
   afterEach(() => {
     config.awsAllowedAuthProviders = [AwsAuthType.EC2IAMRole, AwsAuthType.Keys, AwsAuthType.Credentials];
     config.featureToggles.awsDatasourcesTempCredentials = false;
-    //@ts-ignore-next-line
-    config.awsAssumeRoleEnabled = undefined
+    //@ts-ignore
+    config.awsAssumeRoleEnabled = undefined;
   });
   it('should use auth type from props if its set', async () => {
     const onOptionsChange = jest.fn();
@@ -158,7 +158,7 @@ describe('ConnectionConfig', () => {
     const props = getProps();
     render(<ConnectionConfig {...props} />);
     expect(screen.queryByText('Assume Role ARN')).toBeInTheDocument();
-  })
+  });
 
   it('should render assume role if awsAssumeRoleEnabled was set to true', async () => {
     config.awsAssumeRoleEnabled = true;
@@ -184,7 +184,7 @@ describe('ConnectionConfig', () => {
   });
   it('should render GrafanaAssumeRole as auth type if the feature flag is enabled and auth providers has GrafanaAssumeRole', async () => {
     config.featureToggles.awsDatasourcesTempCredentials = true;
-    config.awsAllowedAuthProviders = [AwsAuthType.GrafanaAssumeRole, AwsAuthType.Credentials]
+    config.awsAllowedAuthProviders = [AwsAuthType.GrafanaAssumeRole, AwsAuthType.Credentials];
     const props = getProps();
     render(<ConnectionConfig {...props} />);
     await selectEvent.openMenu(screen.getByLabelText('Authentication Provider'));
