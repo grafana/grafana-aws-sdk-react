@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## v0.1.1
+
+- Set awsAssumeRoleEnabled to true if not defined in the config https://github.com/grafana/grafana-aws-sdk-react/pull/57
+
 ## v0.1.0
 
 - Temp Credentials: Display External Id https://github.com/grafana/grafana-aws-sdk-react/pull/54

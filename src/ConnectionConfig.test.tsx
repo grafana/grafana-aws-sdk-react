@@ -3,7 +3,7 @@ import React from 'react';
 import { render, screen, waitFor } from '@testing-library/react';
 import { AwsAuthDataSourceJsonData, AwsAuthDataSourceSecureJsonData, AwsAuthType } from './types';
 import { ConnectionConfig, ConnectionConfigProps } from './ConnectionConfig';
-import selectEvent from 'react-select-event'
+import selectEvent from 'react-select-event';
 import { config } from '@grafana/runtime';
 
 const getProps = (propOverrides?: object) => {
@@ -57,7 +57,6 @@ jest.mock('@grafana/runtime', () => ({
   ...jest.requireActual('@grafana/runtime'),
   config: {
     awsAllowedAuthProviders: [AwsAuthType.EC2IAMRole, AwsAuthType.Keys, AwsAuthType.Credentials],
-    awsAssumeRoleEnabled: false,
     featureToggles: {
       awsDatasourcesTempCredentials: false,
     },
@@ -65,10 +64,11 @@ jest.mock('@grafana/runtime', () => ({
 }));
 
 describe('ConnectionConfig', () => {
-  beforeEach(() => {
+  afterEach(() => {
     config.awsAllowedAuthProviders = [AwsAuthType.EC2IAMRole, AwsAuthType.Keys, AwsAuthType.Credentials];
-    config.awsAssumeRoleEnabled = false;
     config.featureToggles.awsDatasourcesTempCredentials = false;
+    //@ts-ignore
+    config.awsAssumeRoleEnabled = undefined;
   });
   it('should use auth type from props if its set', async () => {
     const onOptionsChange = jest.fn();
@@ -154,6 +154,12 @@ describe('ConnectionConfig', () => {
     expect(screen.queryByText('Assume Role ARN')).not.toBeInTheDocument();
   });
 
+  it('should render assume role input by default if awsAssumeRoleEnabled is not defined in the config', () => {
+    const props = getProps();
+    render(<ConnectionConfig {...props} />);
+    expect(screen.queryByText('Assume Role ARN')).toBeInTheDocument();
+  });
+
   it('should render assume role if awsAssumeRoleEnabled was set to true', async () => {
     config.awsAssumeRoleEnabled = true;
     const props = getProps();
@@ -178,7 +184,7 @@ describe('ConnectionConfig', () => {
   });
   it('should render GrafanaAssumeRole as auth type if the feature flag is enabled and auth providers has GrafanaAssumeRole', async () => {
     config.featureToggles.awsDatasourcesTempCredentials = true;
-    config.awsAllowedAuthProviders = [AwsAuthType.GrafanaAssumeRole, AwsAuthType.Credentials]
+    config.awsAllowedAuthProviders = [AwsAuthType.GrafanaAssumeRole, AwsAuthType.Credentials];
     const props = getProps();
     render(<ConnectionConfig {...props} />);
     await selectEvent.openMenu(screen.getByLabelText('Authentication Provider'));
