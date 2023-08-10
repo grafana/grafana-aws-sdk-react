@@ -57,7 +57,6 @@ jest.mock('@grafana/runtime', () => ({
   ...jest.requireActual('@grafana/runtime'),
   config: {
     awsAllowedAuthProviders: [AwsAuthType.EC2IAMRole, AwsAuthType.Keys, AwsAuthType.Credentials],
-    awsAssumeRoleEnabled: false,
     featureToggles: {
       awsDatasourcesTempCredentials: false,
     },
@@ -65,10 +64,11 @@ jest.mock('@grafana/runtime', () => ({
 }));
 
 describe('ConnectionConfig', () => {
-  beforeEach(() => {
+  afterEach(() => {
     config.awsAllowedAuthProviders = [AwsAuthType.EC2IAMRole, AwsAuthType.Keys, AwsAuthType.Credentials];
-    config.awsAssumeRoleEnabled = false;
     config.featureToggles.awsDatasourcesTempCredentials = false;
+    //@ts-ignore-next-line
+    config.awsAssumeRoleEnabled = undefined
   });
   it('should use auth type from props if its set', async () => {
     const onOptionsChange = jest.fn();
@@ -153,6 +153,12 @@ describe('ConnectionConfig', () => {
     await waitFor(() => expect(screen.getByTestId('connection-config')).toBeInTheDocument());
     expect(screen.queryByText('Assume Role ARN')).not.toBeInTheDocument();
   });
+
+  it('should render assume role input by default if awsAssumeRoleEnabled is not defined in the config', () => {
+    const props = getProps();
+    render(<ConnectionConfig {...props} />);
+    expect(screen.queryByText('Assume Role ARN')).toBeInTheDocument();
+  })
 
   it('should render assume role if awsAssumeRoleEnabled was set to true', async () => {
     config.awsAssumeRoleEnabled = true;
