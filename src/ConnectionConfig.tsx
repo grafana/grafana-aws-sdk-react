@@ -13,6 +13,7 @@ import { AwsAuthDataSourceJsonData, AwsAuthDataSourceSecureJsonData, AwsAuthType
 import { awsAuthProviderOptions } from './providers';
 
 export const DEFAULT_LABEL_WIDTH = 28;
+const DS_TYPES_THAT_SUPPORT_TEMP_CREDS = ['cloudwatch'];
 const toOption = (value: string) => ({ value, label: value });
 const isAwsAuthType = (value: any): value is AwsAuthType => {
   return typeof value === 'string' && awsAuthProviderOptions.some((opt) => opt.value === value);
@@ -41,7 +42,8 @@ export const ConnectionConfig: FC<ConnectionConfigProps> = (props: ConnectionCon
   if (profile === undefined) {
     profile = options.database;
   }
-  const tempCredsFeatureEnabled = config.featureToggles.awsDatasourcesTempCredentials;
+  const tempCredsFeatureEnabled =
+    config.featureToggles.awsDatasourcesTempCredentials && DS_TYPES_THAT_SUPPORT_TEMP_CREDS.includes(options.type);
   const awsAssumeRoleEnabled = config.awsAssumeRoleEnabled ?? true;
   const awsAllowedAuthProviders = useMemo(
     () =>
