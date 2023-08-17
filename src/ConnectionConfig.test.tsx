@@ -14,7 +14,7 @@ const getProps = (propOverrides?: object) => {
       uid: '',
       orgId: 1,
       name: 'aws-plugin-name',
-      type: 'aws',
+      type: 'aws-plugin-id',
       basicAuth: false,
       basicAuthUser: '',
       withCredentials: false,
@@ -174,6 +174,16 @@ describe('ConnectionConfig', () => {
 
     await waitFor(() => expect(screen.queryByLabelText('External ID')).not.toBeInTheDocument());
   });
+  it('should render GrafanaAssumeRole as auth type if the feature flag is enabled and auth providers has GrafanaAssumeRole and the datasource supports temp credentials', async () => {
+    config.featureToggles.awsDatasourcesTempCredentials = true;
+    config.awsAllowedAuthProviders = [AwsAuthType.GrafanaAssumeRole, AwsAuthType.Credentials];
+    const props = getProps();
+    const overwriteOptions = { ...props.options, type: 'cloudwatch' };
+    render(<ConnectionConfig {...props} options={overwriteOptions} />);
+    await selectEvent.openMenu(screen.getByLabelText('Authentication Provider'));
+    expect(screen.getByText('Credentials file')).toBeInTheDocument();
+    expect(screen.queryByText('Grafana Assume Role')).toBeInTheDocument();
+  });
   it('should not render GrafanaAssumeRole as auth type if the feature flag is not enabled', async () => {
     config.featureToggles.awsDatasourcesTempCredentials = false;
     const props = getProps();
@@ -181,15 +191,6 @@ describe('ConnectionConfig', () => {
     await selectEvent.openMenu(screen.getByLabelText('Authentication Provider'));
     expect(screen.getByText('Credentials file')).toBeInTheDocument();
     expect(screen.queryByText('Grafana Assume Role')).not.toBeInTheDocument();
-  });
-  it('should render GrafanaAssumeRole as auth type if the feature flag is enabled and auth providers has GrafanaAssumeRole', async () => {
-    config.featureToggles.awsDatasourcesTempCredentials = true;
-    config.awsAllowedAuthProviders = [AwsAuthType.GrafanaAssumeRole, AwsAuthType.Credentials];
-    const props = getProps();
-    render(<ConnectionConfig {...props} />);
-    await selectEvent.openMenu(screen.getByLabelText('Authentication Provider'));
-    expect(screen.getByText('Credentials file')).toBeInTheDocument();
-    expect(screen.queryByText('Grafana Assume Role')).toBeInTheDocument();
   });
   it('should not render GrafanaAssumeRole if the datasource is not a supported datasource type', async () => {
     config.featureToggles.awsDatasourcesTempCredentials = true;
@@ -199,15 +200,5 @@ describe('ConnectionConfig', () => {
     render(<ConnectionConfig {...props} options={overwriteOptions} />);
     await selectEvent.openMenu(screen.getByLabelText('Authentication Provider'));
     expect(screen.queryByText('Grafana Assume Role')).not.toBeInTheDocument();
-  });
-
-  it('should render GrafanaAssumeRole if the datasource is a supported datasource type', async () => {
-    config.featureToggles.awsDatasourcesTempCredentials = true;
-    config.awsAllowedAuthProviders = [AwsAuthType.GrafanaAssumeRole, AwsAuthType.Credentials];
-    const props = getProps();
-    const overwriteOptions = { ...props.options, type: 'cloudwatch' };
-    render(<ConnectionConfig {...props} options={overwriteOptions} />);
-    await selectEvent.openMenu(screen.getByLabelText('Authentication Provider'));
-    expect(screen.queryByText('Grafana Assume Role')).toBeInTheDocument();
   });
 });
