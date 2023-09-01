@@ -1,5 +1,5 @@
 import React, { FC, useEffect, useMemo, useState } from 'react';
-import { Input, Select, InlineField, ButtonGroup, ToolbarButton, FieldSet, Collapse } from '@grafana/ui';
+import { Input, Select, InlineField, ButtonGroup, ToolbarButton, FieldSet, Collapse, useStyles2 } from '@grafana/ui';
 import {
   DataSourcePluginOptionsEditorProps,
   onUpdateDatasourceJsonDataOptionSelect,
@@ -11,6 +11,7 @@ import { config } from '@grafana/runtime';
 import { standardRegions } from './regions';
 import { AwsAuthDataSourceJsonData, AwsAuthDataSourceSecureJsonData, AwsAuthType } from './types';
 import { awsAuthProviderOptions } from './providers';
+import { css } from '@emotion/css';
 
 export const DEFAULT_LABEL_WIDTH = 28;
 const DS_TYPES_THAT_SUPPORT_TEMP_CREDS = ['cloudwatch'];
@@ -77,6 +78,7 @@ export const ConnectionConfig: FC<ConnectionConfigProps> = (props: ConnectionCon
   }, [loadRegions]);
 
   const inputWidth = inExperimentalAuthComponent ? 'width-20' : 'width-30';
+  const styles = useStyles2(getStyles);
 
   return (
     <FieldSet label={skipHeader ? '' : 'Connection Details'} data-testid="connection-config">
@@ -160,58 +162,60 @@ export const ConnectionConfig: FC<ConnectionConfigProps> = (props: ConnectionCon
       )}
 
       {options.jsonData.authType === AwsAuthType.GrafanaAssumeRole && (
-        <Collapse
-          label={'How to create an IAM role for grafana to assume:'}
-          collapsible={true}
-          isOpen={isARNInstructionsOpen}
-          onToggle={() => setIsARNInstructionsOpen(!isARNInstructionsOpen)}
-        >
-          <ol>
-            <li>
-              <p>
-                1. Create a new IAM role in the AWS console, and select <code>Another AWS account</code> as the{' '}
-                <code>Trusted entity</code>.
-              </p>
-            </li>
-            <li>
-              <p>
-                2. Enter the account ID of the Grafana account that has permission to assume this role:
-                <code> 008923505280 </code> and check the <code>Require external ID</code> box.
-              </p>
-            </li>
-            <li>
-              <p>
-                3. Enter the following external ID:{' '}
-                <code>{props.externalId || 'External Id is currently unavailable'}</code> and click <code>Next</code>.
-              </p>
-            </li>
-            <li>
-              <p>
-                4. Add any required permissions you would like Grafana to be able to access on your behalf. For more
-                details on our permissions please{' '}
-                <a
-                  href="https://grafana.com/docs/grafana/latest/datasources/aws-cloudwatch/"
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  read through our documentation
-                </a>
-                .
-              </p>
-            </li>
-            <li>
-              <p>
-                5. Give the role a name and description, and click <code>Create role</code>.
-              </p>
-            </li>
-            <li>
-              <p>
-                6. Copy the ARN of the role you just created and paste it into the <code>Assume Role ARN</code> field
-                below.
-              </p>
-            </li>
-          </ol>
-        </Collapse>
+        <div className={styles.assumeRoleInstructions}>
+          <Collapse
+            label={'How to create an IAM role for grafana to assume:'}
+            collapsible={true}
+            isOpen={isARNInstructionsOpen}
+            onToggle={() => setIsARNInstructionsOpen(!isARNInstructionsOpen)}
+          >
+            <ol>
+              <li>
+                <p>
+                  1. Create a new IAM role in the AWS console, and select <code>Another AWS account</code> as the{' '}
+                  <code>Trusted entity</code>.
+                </p>
+              </li>
+              <li>
+                <p>
+                  2. Enter the account ID of the Grafana account that has permission to assume this role:
+                  <code> 008923505280 </code> and check the <code>Require external ID</code> box.
+                </p>
+              </li>
+              <li>
+                <p>
+                  3. Enter the following external ID:{' '}
+                  <code>{props.externalId || 'External Id is currently unavailable'}</code> and click <code>Next</code>.
+                </p>
+              </li>
+              <li>
+                <p>
+                  4. Add any required permissions you would like Grafana to be able to access on your behalf. For more
+                  details on our permissions please{' '}
+                  <a
+                    href="https://grafana.com/docs/grafana/latest/datasources/aws-cloudwatch/"
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    read through our documentation
+                  </a>
+                  .
+                </p>
+              </li>
+              <li>
+                <p>
+                  5. Give the role a name and description, and click <code>Create role</code>.
+                </p>
+              </li>
+              <li>
+                <p>
+                  6. Copy the ARN of the role you just created and paste it into the <code>Assume Role ARN</code> field
+                  below.
+                </p>
+              </li>
+            </ol>
+          </Collapse>
+        </div>
       )}
 
       {awsAssumeRoleEnabled && (
@@ -282,3 +286,11 @@ export const ConnectionConfig: FC<ConnectionConfigProps> = (props: ConnectionCon
     </FieldSet>
   );
 };
+
+function getStyles() {
+  return {
+    assumeRoleInstructions: css({
+      maxWidth: '715px',
+    }),
+  };
+}
