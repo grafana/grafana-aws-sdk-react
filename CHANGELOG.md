@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## v0.1.3
+
+- Fix style bug in temp credentials #59
+
 ## v0.1.2
 
 - Only show grafana assume role on enabled datasources #58
