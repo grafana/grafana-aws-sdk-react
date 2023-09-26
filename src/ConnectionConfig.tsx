@@ -23,9 +23,8 @@ import { standardRegions } from './regions';
 import { AwsAuthDataSourceJsonData, AwsAuthDataSourceSecureJsonData, AwsAuthType } from './types';
 import { awsAuthProviderOptions } from './providers';
 import { css } from '@emotion/css';
-import { ConfigSection, Stack } from '@grafana/experimental';
+import { ConfigSection, ConfigSubSection, Stack } from '@grafana/experimental';
 
-export const DEFAULT_LABEL_WIDTH = 28;
 const DS_TYPES_THAT_SUPPORT_TEMP_CREDS = ['cloudwatch'];
 const toOption = (value: string) => ({ value, label: value });
 const isAwsAuthType = (value: any): value is AwsAuthType => {
@@ -50,13 +49,15 @@ export const ConnectionConfig: FC<ConnectionConfigProps> = (props: ConnectionCon
   const [isARNInstructionsOpen, setIsARNInstructionsOpen] = useState(false);
   const [regions, setRegions] = useState((props.standardRegions || standardRegions).map(toOption));
   const { loadRegions, onOptionsChange, skipHeader = false, skipEndpoint = false } = props;
-  const { options, inExperimentalAuthComponent } = props;
+  const { options } = props;
   let profile = options.jsonData.profile;
   if (profile === undefined) {
     profile = options.database;
   }
   const tempCredsFeatureEnabled =
     // @ts-ignore
+    // when we update to grafana 10. should be fine
+    // right now Im testing with 9.4 to ensure compat with AMG, before merging will upgrade to G10
     config.featureToggles.awsDatasourcesTempCredentials && DS_TYPES_THAT_SUPPORT_TEMP_CREDS.includes(options.type);
   const awsAssumeRoleEnabled = config.awsAssumeRoleEnabled ?? true;
   const awsAllowedAuthProviders = useMemo(
@@ -90,230 +91,224 @@ export const ConnectionConfig: FC<ConnectionConfigProps> = (props: ConnectionCon
     loadRegions().then((regions) => setRegions(regions.map(toOption)));
   }, [loadRegions]);
 
-  const inputWidth = inExperimentalAuthComponent ? 'width-20' : 'width-30';
   const styles = useStyles2(getStyles);
 
   return (
     <>
       <ConfigSection title={skipHeader ? '' : 'Connection Details'} data-testid="connection-config">
-        <Field
-          label="Authentication Provider"
-          description="Specify which AWS credentials chain to use."
-          // labelWidth={labelWidth}
-          // tooltip="Specify which AWS credentials chain to use."
-        >
-          <Select
-            aria-label="Authentication Provider"
-            className={inputWidth}
-            value={currentProvider}
-            options={awsAuthProviderOptions.filter((opt) => awsAllowedAuthProviders.includes(opt.value!))}
-            defaultValue={options.jsonData.authType}
-            onChange={(option) => {
-              onUpdateDatasourceJsonDataOptionSelect(props, 'authType')(option);
-            }}
-            menuShouldPortal={true}
-          />
-        </Field>
-        {options.jsonData.authType === 'credentials' && (
+        <ConfigSubSection title="Authentication">
           <Field
-            label="Credentials Profile Name"
+            label="Authentication Provider"
+            description="Specify which AWS credentials chain to use."
             // labelWidth={labelWidth}
-            description="Credentials profile name, as specified in ~/.aws/credentials, leave blank for default."
+            // tooltip="Specify which AWS credentials chain to use."
           >
-            <Input
-              aria-label="Credentials Profile Name"
-              className={inputWidth}
-              placeholder="default"
-              value={profile}
-              onChange={onUpdateDatasourceJsonDataOption(props, 'profile')}
+            <Select
+              aria-label="Authentication Provider"
+              value={currentProvider}
+              options={awsAuthProviderOptions.filter((opt) => awsAllowedAuthProviders.includes(opt.value!))}
+              defaultValue={options.jsonData.authType}
+              onChange={(option) => {
+                onUpdateDatasourceJsonDataOptionSelect(props, 'authType')(option);
+              }}
+              menuShouldPortal={true}
             />
           </Field>
-        )}
-        {options.jsonData.authType === 'keys' && (
-          <>
-            <Field label="Access Key ID">
-              {props.options.secureJsonFields?.accessKey ? (
-                <ButtonGroup className={inputWidth}>
-                  <Input disabled placeholder="Configured" />
-                  <ToolbarButton
-                    icon="edit"
-                    tooltip="Edit Access Key ID"
-                    type="button"
-                    onClick={onUpdateDatasourceResetOption(props as any, 'accessKey')}
-                  />
-                </ButtonGroup>
-              ) : (
-                <Input
-                  aria-label="Access Key ID"
-                  className={inputWidth}
-                  value={options.secureJsonData?.accessKey ?? ''}
-                  onChange={onUpdateDatasourceSecureJsonDataOption(props, 'accessKey')}
-                />
-              )}
-            </Field>
-
-            <Field label="Secret Access Key">
-              {props.options.secureJsonFields?.secretKey ? (
-                <ButtonGroup className={inputWidth}>
-                  <Input disabled placeholder="Configured" />
-                  <ToolbarButton
-                    icon="edit"
-                    type="button"
-                    tooltip="Edit Secret Access Key"
-                    onClick={onUpdateDatasourceResetOption(props as any, 'secretKey')}
-                  />
-                </ButtonGroup>
-              ) : (
-                <Input
-                  aria-label="Secret Access Key"
-                  className={inputWidth}
-                  value={options.secureJsonData?.secretKey ?? ''}
-                  onChange={onUpdateDatasourceSecureJsonDataOption(props, 'secretKey')}
-                />
-              )}
-            </Field>
-          </>
-        )}
-
-        {options.jsonData.authType === AwsAuthType.GrafanaAssumeRole && (
-          <div className={styles.assumeRoleInstructions}>
-            <Collapse
-              label={'How to create an IAM role for grafana to assume:'}
-              collapsible={true}
-              isOpen={isARNInstructionsOpen}
-              onToggle={() => setIsARNInstructionsOpen(!isARNInstructionsOpen)}
-            >
-              <ol>
-                <li>
-                  <p>
-                    1. Create a new IAM role in the AWS console, and select <code>Another AWS account</code> as the{' '}
-                    <code>Trusted entity</code>.
-                  </p>
-                </li>
-                <li>
-                  <p>
-                    2. Enter the account ID of the Grafana account that has permission to assume this role:
-                    <code> 008923505280 </code> and check the <code>Require external ID</code> box.
-                  </p>
-                </li>
-                <li>
-                  <p>
-                    3. Enter the following external ID:{' '}
-                    <code>{props.externalId || 'External Id is currently unavailable'}</code> and click{' '}
-                    <code>Next</code>.
-                  </p>
-                </li>
-                <li>
-                  <p>
-                    4. Add any required permissions you would like Grafana to be able to access on your behalf. For more
-                    details on our permissions please{' '}
-                    <a
-                      href="https://grafana.com/docs/grafana/latest/datasources/aws-cloudwatch/"
-                      target="_blank"
-                      rel="noreferrer"
-                    >
-                      read through our documentation
-                    </a>
-                    .
-                  </p>
-                </li>
-                <li>
-                  <p>
-                    5. Give the role a name and description, and click <code>Create role</code>.
-                  </p>
-                </li>
-                <li>
-                  <p>
-                    6. Copy the ARN of the role you just created and paste it into the <code>Assume Role ARN</code>{' '}
-                    field below.
-                  </p>
-                </li>
-              </ol>
-            </Collapse>
-          </div>
-        )}
-        {awsAssumeRoleEnabled && (
-          <>
+          {options.jsonData.authType === 'credentials' && (
             <Field
-              label={
-                <LabelWithTooltip
-                  htmlFor="assumeRoleArn"
-                  label="Assume Role ARN"
-                  tooltip={
-                    <p>
-                      Optionally, specify the ARN of a role to assume. Specifying a role here will ensure that the
-                      selected authentication provider is used to assume the specified role rather than using the
-                      credentials directly. Leave blank if you don't need to assume a role at all{' '}
-                    </p>
-                  }
-                />
-              }
+              label="Credentials Profile Name"
+              description="Credentials profile name, as specified in ~/.aws/credentials, leave blank for default."
             >
               <Input
-                id="assumeRoleArn"
-                aria-label="Assume Role ARN"
-                className={inputWidth}
-                placeholder="arn:aws:iam:*"
-                value={options.jsonData.assumeRoleArn || ''}
-                onChange={onUpdateDatasourceJsonDataOption(props, 'assumeRoleArn')}
+                aria-label="Credentials Profile Name"
+                placeholder="default"
+                value={profile}
+                onChange={onUpdateDatasourceJsonDataOption(props, 'profile')}
               />
             </Field>
-            {options.jsonData.authType !== AwsAuthType.GrafanaAssumeRole && (
+          )}
+          {options.jsonData.authType === 'keys' && (
+            <>
+              <Field label="Access Key ID">
+                {props.options.secureJsonFields?.accessKey ? (
+                  <ButtonGroup>
+                    <Input disabled placeholder="Configured" />
+                    <ToolbarButton
+                      icon="edit"
+                      tooltip="Edit Access Key ID"
+                      type="button"
+                      onClick={onUpdateDatasourceResetOption(props as any, 'accessKey')}
+                    />
+                  </ButtonGroup>
+                ) : (
+                  <Input
+                    aria-label="Access Key ID"
+                    value={options.secureJsonData?.accessKey ?? ''}
+                    onChange={onUpdateDatasourceSecureJsonDataOption(props, 'accessKey')}
+                  />
+                )}
+              </Field>
+
+              <Field label="Secret Access Key">
+                {props.options.secureJsonFields?.secretKey ? (
+                  <ButtonGroup>
+                    <Input disabled placeholder="Configured" />
+                    <ToolbarButton
+                      icon="edit"
+                      type="button"
+                      tooltip="Edit Secret Access Key"
+                      onClick={onUpdateDatasourceResetOption(props as any, 'secretKey')}
+                    />
+                  </ButtonGroup>
+                ) : (
+                  <Input
+                    aria-label="Secret Access Key"
+                    value={options.secureJsonData?.secretKey ?? ''}
+                    onChange={onUpdateDatasourceSecureJsonDataOption(props, 'secretKey')}
+                  />
+                )}
+              </Field>
+            </>
+          )}
+        </ConfigSubSection>
+
+        <ConfigSubSection title="Assume Role">
+          {options.jsonData.authType === AwsAuthType.GrafanaAssumeRole && (
+            <div className={styles.assumeRoleInstructions}>
+              <Collapse
+                label={'How to create an IAM role for grafana to assume:'}
+                collapsible={true}
+                isOpen={isARNInstructionsOpen}
+                onToggle={() => setIsARNInstructionsOpen(!isARNInstructionsOpen)}
+              >
+                <ol>
+                  <li>
+                    <p>
+                      1. Create a new IAM role in the AWS console, and select <code>Another AWS account</code> as the{' '}
+                      <code>Trusted entity</code>.
+                    </p>
+                  </li>
+                  <li>
+                    <p>
+                      2. Enter the account ID of the Grafana account that has permission to assume this role:
+                      <code> 008923505280 </code> and check the <code>Require external ID</code> box.
+                    </p>
+                  </li>
+                  <li>
+                    <p>
+                      3. Enter the following external ID:{' '}
+                      <code>{props.externalId || 'External Id is currently unavailable'}</code> and click{' '}
+                      <code>Next</code>.
+                    </p>
+                  </li>
+                  <li>
+                    <p>
+                      4. Add any required permissions you would like Grafana to be able to access on your behalf. For
+                      more details on our permissions please{' '}
+                      <a
+                        href="https://grafana.com/docs/grafana/latest/datasources/aws-cloudwatch/"
+                        target="_blank"
+                        rel="noreferrer"
+                      >
+                        read through our documentation
+                      </a>
+                      .
+                    </p>
+                  </li>
+                  <li>
+                    <p>
+                      5. Give the role a name and description, and click <code>Create role</code>.
+                    </p>
+                  </li>
+                  <li>
+                    <p>
+                      6. Copy the ARN of the role you just created and paste it into the <code>Assume Role ARN</code>{' '}
+                      field below.
+                    </p>
+                  </li>
+                </ol>
+              </Collapse>
+            </div>
+          )}
+          {awsAssumeRoleEnabled && (
+            <>
               <Field
-                label="External ID"
-                description="If you are assuming a role in another account, that has been created with an external ID, specify the external ID here."
+                label={
+                  <LabelWithTooltip
+                    htmlFor="assumeRoleArn"
+                    label="Assume Role ARN"
+                    tooltip={
+                      <p>
+                        Optionally, specify the ARN of a role to assume. Specifying a role here will ensure that the
+                        selected authentication provider is used to assume the specified role rather than using the
+                        credentials directly. Leave blank if you don&apos;t need to assume a role at all
+                      </p>
+                    }
+                  />
+                }
               >
                 <Input
-                  aria-label="External ID"
-                  className={inputWidth}
-                  placeholder="External ID"
-                  value={options.jsonData.externalId || ''}
-                  onChange={onUpdateDatasourceJsonDataOption(props, 'externalId')}
+                  id="assumeRoleArn"
+                  aria-label="Assume Role ARN"
+                  placeholder="arn:aws:iam:*"
+                  value={options.jsonData.assumeRoleArn || ''}
+                  onChange={onUpdateDatasourceJsonDataOption(props, 'assumeRoleArn')}
                 />
               </Field>
-            )}
-          </>
-        )}
-        {!skipEndpoint && options.jsonData.authType !== AwsAuthType.GrafanaAssumeRole && (
+              {options.jsonData.authType !== AwsAuthType.GrafanaAssumeRole && (
+                <Field
+                  label="External ID"
+                  description="If you are assuming a role in another account, that has been created with an external ID, specify the external ID here."
+                >
+                  <Input
+                    aria-label="External ID"
+                    placeholder="External ID"
+                    value={options.jsonData.externalId || ''}
+                    onChange={onUpdateDatasourceJsonDataOption(props, 'externalId')}
+                  />
+                </Field>
+              )}
+            </>
+          )}
+        </ConfigSubSection>
+        <ConfigSubSection title="Additional Settings">
+          {!skipEndpoint && options.jsonData.authType !== AwsAuthType.GrafanaAssumeRole && (
+            <Field
+              label="Endpoint"
+              description="Optionally, specify a custom endpoint for the service"
+            >
+              <Input
+                aria-label="Endpoint"
+                placeholder={props.defaultEndpoint ?? 'https://{service}.{region}.amazonaws.com'}
+                value={options.jsonData.endpoint || ''}
+                onChange={onUpdateDatasourceJsonDataOption(props, 'endpoint')}
+              />
+            </Field>
+          )}
+
           <Field
-            label="Endpoint"
-            //labelWidth={labelWidth}
-            description="Optionally, specify a custom endpoint for the service"
+            label="Default Region"
+            description="Specify the region, such as for US West (Oregon) use ` us-west-2 ` as the region."
           >
-            <Input
-              aria-label="Endpoint"
-              className={inputWidth}
-              placeholder={props.defaultEndpoint ?? 'https://{service}.{region}.amazonaws.com'}
-              value={options.jsonData.endpoint || ''}
-              onChange={onUpdateDatasourceJsonDataOption(props, 'endpoint')}
+            <Select
+              aria-label="Default Region"
+              value={regions.find((region) => region.value === options.jsonData.defaultRegion)}
+              options={regions}
+              defaultValue={options.jsonData.defaultRegion}
+              allowCustomValue={true}
+              onChange={onUpdateDatasourceJsonDataOptionSelect(props, 'defaultRegion')}
+              formatCreateLabel={(r) => `Use region: ${r}`}
+              menuShouldPortal={true}
             />
           </Field>
-        )}
-
-        <Field
-          label="Default Region"
-          // labelWidth={labelWidth}
-          description="Specify the region, such as for US West (Oregon) use ` us-west-2 ` as the region."
-        >
-          <Select
-            aria-label="Default Region"
-            className={inputWidth}
-            value={regions.find((region) => region.value === options.jsonData.defaultRegion)}
-            options={regions}
-            defaultValue={options.jsonData.defaultRegion}
-            allowCustomValue={true}
-            onChange={onUpdateDatasourceJsonDataOptionSelect(props, 'defaultRegion')}
-            formatCreateLabel={(r) => `Use region: ${r}`}
-            menuShouldPortal={true}
-          />
-        </Field>
+        </ConfigSubSection>
         {props.children}
       </ConfigSection>
     </>
   );
 };
 
-function LabelWithTooltip({
+export function LabelWithTooltip({
   label,
   tooltip,
   htmlFor,

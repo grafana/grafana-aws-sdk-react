@@ -1,9 +1,10 @@
 import { SelectableValue } from '@grafana/data';
-import { InlineField, Select, SelectCommonProps } from '@grafana/ui';
+import { Field, Select, SelectCommonProps } from '@grafana/ui';
 import { isEqual } from 'lodash';
 import React, { useEffect, useMemo, useState, DependencyList, useRef } from 'react';
 
 import { defaultKey } from './types';
+import { LabelWithTooltip } from '../ConnectionConfig';
 
 export interface ResourceSelectorProps extends SelectCommonProps<string> {
   value: string | null;
@@ -26,8 +27,8 @@ export interface ResourceSelectorProps extends SelectCommonProps<string> {
 
 export function ResourceSelector(props: ResourceSelectorProps) {
   const propsDependencies = props.dependencies;
-  const propsOnChange = props.onChange
-  
+  const propsOnChange = props.onChange;
+
   const dependencies = useRef(props.dependencies);
   const fetched = useRef<boolean>(false);
   const resource = useRef<string | null>(props.value || props.default || null);
@@ -37,7 +38,6 @@ export function ResourceSelector(props: ResourceSelectorProps) {
   );
   const [isLoading, setIsLoading] = useState(false);
 
-  
   const defaultOpts = useMemo(() => {
     const opts: Array<SelectableValue<string>> = [
       {
@@ -77,7 +77,7 @@ export function ResourceSelector(props: ResourceSelectorProps) {
     if (!isEqual(propsDependencies, dependencies.current)) {
       fetched.current = false;
       resource.current = null;
-      dependencies.current = propsDependencies
+      dependencies.current = propsDependencies;
       propsOnChange(null);
     }
   }, [propsDependencies, propsOnChange]);
@@ -113,19 +113,23 @@ export function ResourceSelector(props: ResourceSelectorProps) {
   };
 
   return (
-    <InlineField label={props.label} labelWidth={props.labelWidth} tooltip={props.tooltip} hidden={props.hidden}>
-      <div data-testid={props['data-testid']} title={props.title}>
-        <Select
-          {...props}
-          aria-label={props.label}
-          options={options}
-          onChange={onChange}
-          isLoading={isLoading}
-          className={props.className || 'min-width-6'}
-          onOpenMenu={() => props.fetch && onClick()}
-          menuShouldPortal={true}
-        />
-      </div>
-    </InlineField>
+    <Field
+      description={props.title}
+      label={props.tooltip ? <LabelWithTooltip label={props.label ?? ''} tooltip={props.tooltip} /> : props.label}
+      hidden={props.hidden}
+      data-testid={props['data-testid']}
+    >
+      <Select
+        {...props}
+        aria-label={props.label}
+        options={options}
+        onChange={onChange}
+        isLoading={isLoading}
+        className={props.className || 'min-width-6'}
+        onOpenMenu={() => props.fetch && onClick()}
+        menuShouldPortal={true}
+      />
+    </Field>
   );
 }
+

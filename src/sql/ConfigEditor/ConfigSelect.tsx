@@ -3,7 +3,6 @@ import { DataSourcePluginOptionsEditorProps, SelectableValue } from '@grafana/da
 import { InputActionMeta } from '@grafana/ui';
 import { AwsAuthDataSourceJsonData, AwsAuthDataSourceSecureJsonData } from '../../types';
 import { ResourceSelector } from '../ResourceSelector';
-import { DEFAULT_LABEL_WIDTH } from '../../ConnectionConfig';
 
 export interface ConfigSelectProps
   extends DataSourcePluginOptionsEditorProps<AwsAuthDataSourceJsonData, AwsAuthDataSourceSecureJsonData> {
@@ -44,8 +43,6 @@ export function ConfigSelect(props: ConfigSelectProps) {
   const { jsonData } = props.options;
   const commonProps = {
     title: jsonData.defaultRegion ? '' : 'select a default region',
-    labelWidth: props.labelWidth ?? DEFAULT_LABEL_WIDTH,
-    className: 'width-30',
   };
   // Any change in the AWS connection details will affect selectors
   const dependencies: DependencyList = [

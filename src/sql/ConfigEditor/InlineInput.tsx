@@ -3,7 +3,6 @@ import { DataSourcePluginOptionsEditorProps } from '@grafana/data';
 import { AwsAuthDataSourceSecureJsonData } from '../../types';
 import { InlineField, Input } from '@grafana/ui';
 import { FormEvent } from 'react-dom/node_modules/@types/react';
-import { DEFAULT_LABEL_WIDTH } from '../../ConnectionConfig';
 
 export interface InlineInputProps extends DataSourcePluginOptionsEditorProps<{}, AwsAuthDataSourceSecureJsonData> {
   value: string;
@@ -21,7 +20,7 @@ export function InlineInput(props: InlineInputProps) {
   return (
     <InlineField
       label={props.label}
-      labelWidth={props.labelWidth ?? DEFAULT_LABEL_WIDTH}
+      labelWidth={props.labelWidth}
       tooltip={props.tooltip}
       hidden={props.hidden}
       disabled={props.disabled}

@@ -1,4 +1,5 @@
-export { ConnectionConfig, type ConnectionConfigProps, DEFAULT_LABEL_WIDTH } from './ConnectionConfig';
+export { ConnectionConfig, type ConnectionConfigProps } from './ConnectionConfig';
+export { Divider } from './Divider';
 export { SIGV4ConnectionConfig } from './SIGV4ConnectionConfig';
 export { ConfigSelect, InlineInput } from './sql/ConfigEditor';
 export { ResourceSelector, type ResourceSelectorProps } from './sql/ResourceSelector';
