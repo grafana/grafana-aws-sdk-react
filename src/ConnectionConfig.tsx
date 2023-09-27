@@ -55,9 +55,6 @@ export const ConnectionConfig: FC<ConnectionConfigProps> = (props: ConnectionCon
     profile = options.database;
   }
   const tempCredsFeatureEnabled =
-    // @ts-ignore
-    // when we update to grafana 10. should be fine
-    // right now Im testing with 9.4 to ensure compat with AMG, before merging will upgrade to G10
     config.featureToggles.awsDatasourcesTempCredentials && DS_TYPES_THAT_SUPPORT_TEMP_CREDS.includes(options.type);
   const awsAssumeRoleEnabled = config.awsAssumeRoleEnabled ?? true;
   const awsAllowedAuthProviders = useMemo(
@@ -94,14 +91,12 @@ export const ConnectionConfig: FC<ConnectionConfigProps> = (props: ConnectionCon
   const styles = useStyles2(getStyles);
 
   return (
-    <>
+    <div data-testid="connection-config">
       <ConfigSection title={skipHeader ? '' : 'Connection Details'} data-testid="connection-config">
         <ConfigSubSection title="Authentication">
           <Field
             label="Authentication Provider"
             description="Specify which AWS credentials chain to use."
-            // labelWidth={labelWidth}
-            // tooltip="Specify which AWS credentials chain to use."
           >
             <Select
               aria-label="Authentication Provider"
@@ -273,10 +268,7 @@ export const ConnectionConfig: FC<ConnectionConfigProps> = (props: ConnectionCon
         </ConfigSubSection>
         <ConfigSubSection title="Additional Settings">
           {!skipEndpoint && options.jsonData.authType !== AwsAuthType.GrafanaAssumeRole && (
-            <Field
-              label="Endpoint"
-              description="Optionally, specify a custom endpoint for the service"
-            >
+            <Field label="Endpoint" description="Optionally, specify a custom endpoint for the service">
               <Input
                 aria-label="Endpoint"
                 placeholder={props.defaultEndpoint ?? 'https://{service}.{region}.amazonaws.com'}
@@ -304,7 +296,7 @@ export const ConnectionConfig: FC<ConnectionConfigProps> = (props: ConnectionCon
         </ConfigSubSection>
         {props.children}
       </ConfigSection>
-    </>
+    </div>
   );
 };
 
