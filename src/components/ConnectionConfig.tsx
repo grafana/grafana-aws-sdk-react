@@ -227,8 +227,8 @@ export const ConnectionConfig: FC<ConnectionConfigProps> = (props: ConnectionCon
               <Field
                 htmlFor="assumeRoleArn"
                 label="Assume Role ARN"
-                description="Optionally, specify the ARN of a role to assume. Specifying a role here will ensure that the
-                  selected authentication provider is used to assume the role rather than using the
+                description="Optional. Specifying the ARN of a role will ensure that the
+                  selected authentication provider is used to assume the role rather than the
                   credentials directly."
               >
                 <Input
