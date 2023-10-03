@@ -21,7 +21,7 @@ export function FormatSelect<TQuery extends DataQuery & Record<string, any>, For
   };
   return (
     <Select
-      aria-label="Format frames as"
+      aria-label="Format dataframes as"
       id="formatAs"
       options={props.options}
       value={props.query.format}
