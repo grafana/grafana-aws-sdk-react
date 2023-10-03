@@ -1,16 +1,5 @@
 import React, { FC, useEffect, useMemo, useState } from 'react';
-import {
-  Input,
-  Select,
-  ButtonGroup,
-  ToolbarButton,
-  Collapse,
-  useStyles2,
-  Field,
-  Label,
-  Tooltip,
-  Icon,
-} from '@grafana/ui';
+import { Input, Select, ButtonGroup, ToolbarButton, Collapse, useStyles2, Field } from '@grafana/ui';
 import {
   DataSourcePluginOptionsEditorProps,
   onUpdateDatasourceJsonDataOptionSelect,
@@ -23,7 +12,7 @@ import { standardRegions } from './regions';
 import { AwsAuthDataSourceJsonData, AwsAuthDataSourceSecureJsonData, AwsAuthType } from './types';
 import { awsAuthProviderOptions } from './providers';
 import { css } from '@emotion/css';
-import { ConfigSection, ConfigSubSection, Stack } from '@grafana/experimental';
+import { ConfigSection, ConfigSubSection } from '@grafana/experimental';
 
 const DS_TYPES_THAT_SUPPORT_TEMP_CREDS = ['cloudwatch'];
 const toOption = (value: string) => ({ value, label: value });
@@ -97,6 +86,7 @@ export const ConnectionConfig: FC<ConnectionConfigProps> = (props: ConnectionCon
           <Field
             label="Authentication Provider"
             description="Specify which AWS credentials chain to use."
+            id="authProvider"
           >
             <Select
               aria-label="Authentication Provider"
@@ -113,9 +103,10 @@ export const ConnectionConfig: FC<ConnectionConfigProps> = (props: ConnectionCon
             <Field
               label="Credentials Profile Name"
               description="Credentials profile name, as specified in ~/.aws/credentials, leave blank for default."
+              htmlFor="Credentials Profile Name"
             >
               <Input
-                aria-label="Credentials Profile Name"
+                id="Credentials Profile Name"
                 placeholder="default"
                 value={profile}
                 onChange={onUpdateDatasourceJsonDataOption(props, 'profile')}
@@ -124,7 +115,7 @@ export const ConnectionConfig: FC<ConnectionConfigProps> = (props: ConnectionCon
           )}
           {options.jsonData.authType === 'keys' && (
             <>
-              <Field label="Access Key ID">
+              <Field label="Access Key ID" id="accessKeyId">
                 {props.options.secureJsonFields?.accessKey ? (
                   <ButtonGroup>
                     <Input disabled placeholder="Configured" />
@@ -228,19 +219,11 @@ export const ConnectionConfig: FC<ConnectionConfigProps> = (props: ConnectionCon
           {awsAssumeRoleEnabled && (
             <>
               <Field
-                label={
-                  <LabelWithTooltip
-                    htmlFor="assumeRoleArn"
-                    label="Assume Role ARN"
-                    tooltip={
-                      <p>
-                        Optionally, specify the ARN of a role to assume. Specifying a role here will ensure that the
-                        selected authentication provider is used to assume the specified role rather than using the
-                        credentials directly. Leave blank if you don&apos;t need to assume a role at all
-                      </p>
-                    }
-                  />
-                }
+                id="assumeRoleArn"
+                label="Assume Role ARN"
+                description="Optionally, specify the ARN of a role to assume. Specifying a role here will ensure that the
+                  selected authentication provider is used to assume the role rather than using the
+                  credentials directly."
               >
                 <Input
                   id="assumeRoleArn"
@@ -299,27 +282,6 @@ export const ConnectionConfig: FC<ConnectionConfigProps> = (props: ConnectionCon
     </div>
   );
 };
-
-export function LabelWithTooltip({
-  label,
-  tooltip,
-  htmlFor,
-}: {
-  label: string;
-  tooltip: string | JSX.Element;
-  htmlFor?: string;
-}) {
-  return (
-    <Label htmlFor={htmlFor}>
-      <Stack gap={0.5}>
-        <span>{label}</span>
-        <Tooltip content={<div>{tooltip}</div>}>
-          <Icon name="info-circle" size="sm" />
-        </Tooltip>
-      </Stack>
-    </Label>
-  );
-}
 
 function getStyles() {
   return {

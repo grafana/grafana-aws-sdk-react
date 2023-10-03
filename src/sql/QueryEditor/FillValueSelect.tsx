@@ -1,6 +1,7 @@
 import React from 'react';
 import { DataQuery, SelectableValue } from '@grafana/data';
-import { InlineField, Input, Select } from '@grafana/ui';
+import { Input, Select } from '@grafana/ui';
+import { EditorField } from '@grafana/experimental';
 
 export enum FillValueOptions {
   Previous,
@@ -32,9 +33,10 @@ export type FillValueSelectProps<TQuery extends DataQuery> = {
 export function FillValueSelect<TQuery extends DataQuery & Record<string, any>>(props: FillValueSelectProps<TQuery>) {
   return (
     <>
-      <InlineField label="Fill value" tooltip="value to fill missing points">
+      <EditorField label="Fill value" tooltip="value to fill missing points">
         <Select
           aria-label="Fill value"
+          data-testid="table-fill-value-select"
           options={SelectableFillValueOptions}
           value={props.query.fillMode?.mode ?? FillValueOptions.Previous}
           onChange={({ value }) => {
@@ -45,15 +47,14 @@ export function FillValueSelect<TQuery extends DataQuery & Record<string, any>>(
             });
             props.onRunQuery?.();
           }}
-          className="width-12"
           menuShouldPortal={true}
         />
-      </InlineField>
+      </EditorField>
       {props.query.fillMode?.mode === FillValueOptions.Value && (
-        <InlineField label="Value" labelWidth={11}>
+        <EditorField label="Value" htmlFor="valueToFill" width={6}>
           <Input
+            id="valueToFill"
             type="number"
-            aria-label="Value"
             value={props.query.fillMode.value}
             onChange={({ currentTarget }: React.FormEvent<HTMLInputElement>) =>
               props.onChange({
@@ -66,7 +67,7 @@ export function FillValueSelect<TQuery extends DataQuery & Record<string, any>>(
             }
             onBlur={() => props.onRunQuery?.()}
           />
-        </InlineField>
+        </EditorField>
       )}
     </>
   );

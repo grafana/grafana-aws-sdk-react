@@ -1,18 +1,16 @@
 import { SelectableValue } from '@grafana/data';
-import { Field, Select, SelectCommonProps } from '@grafana/ui';
+import { Select, SelectCommonProps } from '@grafana/ui';
 import { isEqual } from 'lodash';
 import React, { useEffect, useMemo, useState, DependencyList, useRef } from 'react';
 
 import { defaultKey } from './types';
-import { LabelWithTooltip } from '../ConnectionConfig';
 
 export interface ResourceSelectorProps extends SelectCommonProps<string> {
   value: string | null;
   dependencies?: DependencyList;
-  tooltip?: string;
+  id: string;
   label?: string;
   'data-testid'?: string;
-  hidden?: boolean;
   // Options only needed for QueryEditor
   default?: string;
   // Options only needed for the ConfigEditor
@@ -113,23 +111,16 @@ export function ResourceSelector(props: ResourceSelectorProps) {
   };
 
   return (
-    <Field
-      description={props.title}
-      label={props.tooltip ? <LabelWithTooltip label={props.label ?? ''} tooltip={props.tooltip} /> : props.label}
-      hidden={props.hidden}
-      data-testid={props['data-testid']}
-    >
-      <Select
-        {...props}
-        aria-label={props.label}
-        options={options}
-        onChange={onChange}
-        isLoading={isLoading}
-        className={props.className || 'min-width-6'}
-        onOpenMenu={() => props.fetch && onClick()}
-        menuShouldPortal={true}
-      />
-    </Field>
+    <Select
+      {...props}
+      id={props.id}
+      aria-label={props.label}
+      options={options}
+      onChange={onChange}
+      isLoading={isLoading}
+      className={props.className || 'min-width-6'}
+      onOpenMenu={() => props.fetch && onClick()}
+      menuShouldPortal={true}
+    />
   );
 }
-

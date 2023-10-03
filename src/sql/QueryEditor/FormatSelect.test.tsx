@@ -27,7 +27,7 @@ describe('FormatSelect', () => {
     render(<FormatSelect {...props} />);
     expect(screen.getByText('Table')).toBeInTheDocument();
 
-    const selectEl = screen.getByLabelText('Format as');
+    const selectEl = screen.getByLabelText('Format frames as');
     expect(selectEl).toBeInTheDocument();
     await select(selectEl, 'Time Series', { container: document.body });
 

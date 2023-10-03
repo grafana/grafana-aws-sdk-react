@@ -7,12 +7,13 @@ import { ResourceSelector } from '../ResourceSelector';
 export interface ConfigSelectProps
   extends DataSourcePluginOptionsEditorProps<AwsAuthDataSourceJsonData, AwsAuthDataSourceSecureJsonData> {
   value: string;
+  // input id necessary for <Field/> component to apply accessibility attributes
+  id: string;
   fetch: () => Promise<Array<string | SelectableValue<string>>>;
   onChange: (e: SelectableValue<string> | null) => void;
   dependencies?: string[];
   label?: string;
   'data-testid'?: string;
-  hidden?: boolean;
   disabled?: boolean;
   allowCustomValue?: boolean;
   saveOptions: () => Promise<void>;
@@ -57,14 +58,13 @@ export function ConfigSelect(props: ConfigSelectProps) {
   ].concat(props.dependencies);
   return (
     <ResourceSelector
+      id={props.id}
       label={props.label}
-      data-testid={props['data-testid']}
-      onChange={props.onChange}
+      data-testid={props['data-testid']}      onChange={props.onChange}
       fetch={props.fetch}
       value={props.value}
       saveOptions={props.saveOptions}
       dependencies={dependencies}
-      hidden={props.hidden}
       disabled={props.disabled || !jsonData.defaultRegion}
       allowCustomValue={props.allowCustomValue}
       autoFocus={props.autoFocus}

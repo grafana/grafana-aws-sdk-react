@@ -6,6 +6,7 @@ import { ResourceSelector, ResourceSelectorProps } from './ResourceSelector';
 import { defaultKey } from './types';
 
 const props: ResourceSelectorProps = {
+  id: 'foo-id',
   value: null,
   label: 'resource',
   fetch: jest.fn(),

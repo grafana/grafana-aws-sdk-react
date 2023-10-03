@@ -1,6 +1,6 @@
 import React from 'react';
 import { DataQuery, SelectableValue } from '@grafana/data';
-import { InlineField, Select } from '@grafana/ui';
+import { Select } from '@grafana/ui';
 
 export type FormatSelectProps<TQuery extends DataQuery, FormatOptions> = {
   query: TQuery;
@@ -20,15 +20,13 @@ export function FormatSelect<TQuery extends DataQuery & Record<string, any>, For
     props.onRunQuery?.();
   };
   return (
-    <InlineField label="Format as" labelWidth={11}>
-      <Select
-        aria-label="Format as"
-        options={props.options}
-        value={props.query.format}
-        onChange={onChangeFormat}
-        className="width-12"
-        menuShouldPortal={true}
-      />
-    </InlineField>
+    <Select
+      aria-label="Format frames as"
+      id="formatAs"
+      options={props.options}
+      value={props.query.format}
+      onChange={onChangeFormat}
+      menuShouldPortal={true}
+    />
   );
 }
