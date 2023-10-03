@@ -86,9 +86,10 @@ export const ConnectionConfig: FC<ConnectionConfigProps> = (props: ConnectionCon
           <Field
             label="Authentication Provider"
             description="Specify which AWS credentials chain to use."
-            id="authProvider"
+            htmlFor="authProvider"
           >
             <Select
+              id="authProvider"
               aria-label="Authentication Provider"
               value={currentProvider}
               options={awsAuthProviderOptions.filter((opt) => awsAllowedAuthProviders.includes(opt.value!))}
@@ -103,10 +104,11 @@ export const ConnectionConfig: FC<ConnectionConfigProps> = (props: ConnectionCon
             <Field
               label="Credentials Profile Name"
               description="Credentials profile name, as specified in ~/.aws/credentials, leave blank for default."
-              htmlFor="Credentials Profile Name"
+              htmlFor="credentialsProfileName"
             >
               <Input
-                id="Credentials Profile Name"
+                id="credentialsProfileName"
+                aria-label="Credentials Profile Name"
                 placeholder="default"
                 value={profile}
                 onChange={onUpdateDatasourceJsonDataOption(props, 'profile')}
@@ -115,10 +117,10 @@ export const ConnectionConfig: FC<ConnectionConfigProps> = (props: ConnectionCon
           )}
           {options.jsonData.authType === 'keys' && (
             <>
-              <Field label="Access Key ID" id="accessKeyId">
+              <Field label="Access Key ID" htmlFor="accessKeyId">
                 {props.options.secureJsonFields?.accessKey ? (
                   <ButtonGroup>
-                    <Input disabled placeholder="Configured" />
+                    <Input disabled placeholder="Configured" id="accessKeyId" />
                     <ToolbarButton
                       icon="edit"
                       tooltip="Edit Access Key ID"
@@ -128,6 +130,7 @@ export const ConnectionConfig: FC<ConnectionConfigProps> = (props: ConnectionCon
                   </ButtonGroup>
                 ) : (
                   <Input
+                    id="accessKeyId"
                     aria-label="Access Key ID"
                     value={options.secureJsonData?.accessKey ?? ''}
                     onChange={onUpdateDatasourceSecureJsonDataOption(props, 'accessKey')}
@@ -135,11 +138,13 @@ export const ConnectionConfig: FC<ConnectionConfigProps> = (props: ConnectionCon
                 )}
               </Field>
 
-              <Field label="Secret Access Key">
+              <Field label="Secret Access Key" htmlFor="secretKey">
                 {props.options.secureJsonFields?.secretKey ? (
                   <ButtonGroup>
                     <Input disabled placeholder="Configured" />
                     <ToolbarButton
+                      id="secretKey"
+                      aria-label="Edit secret access key"
                       icon="edit"
                       type="button"
                       tooltip="Edit Secret Access Key"
@@ -148,6 +153,7 @@ export const ConnectionConfig: FC<ConnectionConfigProps> = (props: ConnectionCon
                   </ButtonGroup>
                 ) : (
                   <Input
+                    id="secretKey"
                     aria-label="Secret Access Key"
                     value={options.secureJsonData?.secretKey ?? ''}
                     onChange={onUpdateDatasourceSecureJsonDataOption(props, 'secretKey')}
@@ -219,7 +225,7 @@ export const ConnectionConfig: FC<ConnectionConfigProps> = (props: ConnectionCon
           {awsAssumeRoleEnabled && (
             <>
               <Field
-                id="assumeRoleArn"
+                htmlFor="assumeRoleArn"
                 label="Assume Role ARN"
                 description="Optionally, specify the ARN of a role to assume. Specifying a role here will ensure that the
                   selected authentication provider is used to assume the role rather than using the
@@ -235,10 +241,12 @@ export const ConnectionConfig: FC<ConnectionConfigProps> = (props: ConnectionCon
               </Field>
               {options.jsonData.authType !== AwsAuthType.GrafanaAssumeRole && (
                 <Field
+                  htmlFor="externalId"
                   label="External ID"
                   description="If you are assuming a role in another account, that has been created with an external ID, specify the external ID here."
                 >
                   <Input
+                    id="externalId"
                     aria-label="External ID"
                     placeholder="External ID"
                     value={options.jsonData.externalId || ''}
@@ -251,8 +259,13 @@ export const ConnectionConfig: FC<ConnectionConfigProps> = (props: ConnectionCon
         </ConfigSubSection>
         <ConfigSubSection title="Additional Settings">
           {!skipEndpoint && options.jsonData.authType !== AwsAuthType.GrafanaAssumeRole && (
-            <Field label="Endpoint" description="Optionally, specify a custom endpoint for the service">
+            <Field
+              label="Endpoint"
+              description="Optionally, specify a custom endpoint for the service"
+              htmlFor="endpoint"
+            >
               <Input
+                id="endpoint"
                 aria-label="Endpoint"
                 placeholder={props.defaultEndpoint ?? 'https://{service}.{region}.amazonaws.com'}
                 value={options.jsonData.endpoint || ''}
@@ -264,8 +277,10 @@ export const ConnectionConfig: FC<ConnectionConfigProps> = (props: ConnectionCon
           <Field
             label="Default Region"
             description="Specify the region, such as for US West (Oregon) use ` us-west-2 ` as the region."
+            htmlFor="defaultRegion"
           >
             <Select
+              id="defaultRegion"
               aria-label="Default Region"
               value={regions.find((region) => region.value === options.jsonData.defaultRegion)}
               options={regions}

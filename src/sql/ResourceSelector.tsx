@@ -9,7 +9,7 @@ export interface ResourceSelectorProps extends SelectCommonProps<string> {
   value: string | null;
   dependencies?: DependencyList;
   id: string;
-  label?: string;
+  ['aria-label']: string;
   'data-testid'?: string;
   // Options only needed for QueryEditor
   default?: string;
@@ -114,7 +114,7 @@ export function ResourceSelector(props: ResourceSelectorProps) {
     <Select
       {...props}
       id={props.id}
-      aria-label={props.label}
+      aria-label={props['aria-label']}
       options={options}
       onChange={onChange}
       isLoading={isLoading}

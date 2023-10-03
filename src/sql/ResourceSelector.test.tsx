@@ -8,7 +8,7 @@ import { defaultKey } from './types';
 const props: ResourceSelectorProps = {
   id: 'foo-id',
   value: null,
-  label: 'resource',
+  ['aria-label']: 'resource',
   fetch: jest.fn(),
   onChange: jest.fn(),
 };
@@ -25,10 +25,10 @@ describe('ResourceSelector', () => {
     render(<ResourceSelector {...props} default="foo" value={defaultKey} fetch={fetch} onChange={onChange} />);
     expect(screen.queryByText('default (foo)')).toBeInTheDocument();
 
-    if (!props.label) {
-      throw new Error('label is required');
+    if (!props['aria-label']) {
+      throw new Error('aria label is required');
     }
-    const selectEl = screen.getByLabelText(props.label);
+    const selectEl = screen.getByLabelText(props['aria-label']);
     expect(selectEl).toBeInTheDocument();
 
     await select(selectEl, 'bar', { container: document.body });
@@ -41,10 +41,10 @@ describe('ResourceSelector', () => {
     const resources = ['foo', 'bar'];
     render(<ResourceSelector {...props} fetch={undefined} onChange={onChange} resources={resources} />);
 
-    if (!props.label) {
+    if (!props['aria-label']) {
       throw new Error('label is required');
     }
-    const selectEl = screen.getByLabelText(props.label);
+    const selectEl = screen.getByLabelText(props['aria-label']);
     expect(selectEl).toBeInTheDocument();
 
     await select(selectEl, 'bar', { container: document.body });

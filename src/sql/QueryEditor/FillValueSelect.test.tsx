@@ -17,7 +17,7 @@ describe('FillValueSelect', () => {
     render(<FillValueSelect {...props} />);
     expect(screen.getByText('Previous Value')).toBeInTheDocument();
 
-    const selectEl = screen.getByLabelText('Fill value');
+    const selectEl = screen.getByLabelText('Fill with');
     expect(selectEl).toBeInTheDocument();
     await select(selectEl, 'NULL', { container: document.body });
 

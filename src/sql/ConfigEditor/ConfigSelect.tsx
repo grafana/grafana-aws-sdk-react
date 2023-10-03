@@ -7,12 +7,12 @@ import { ResourceSelector } from '../ResourceSelector';
 export interface ConfigSelectProps
   extends DataSourcePluginOptionsEditorProps<AwsAuthDataSourceJsonData, AwsAuthDataSourceSecureJsonData> {
   value: string;
-  // input id necessary for <Field/> component to apply accessibility attributes
+  // input id and aria-label necessary for accessibility attributes
   id: string;
+  ['aria-label']: string;
   fetch: () => Promise<Array<string | SelectableValue<string>>>;
   onChange: (e: SelectableValue<string> | null) => void;
   dependencies?: string[];
-  label?: string;
   'data-testid'?: string;
   disabled?: boolean;
   allowCustomValue?: boolean;
@@ -59,8 +59,9 @@ export function ConfigSelect(props: ConfigSelectProps) {
   return (
     <ResourceSelector
       id={props.id}
-      label={props.label}
-      data-testid={props['data-testid']}      onChange={props.onChange}
+      aria-label={props['aria-label']}
+      data-testid={props['data-testid']}
+      onChange={props.onChange}
       fetch={props.fetch}
       value={props.value}
       saveOptions={props.saveOptions}

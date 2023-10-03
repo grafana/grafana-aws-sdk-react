@@ -33,10 +33,11 @@ export type FillValueSelectProps<TQuery extends DataQuery> = {
 export function FillValueSelect<TQuery extends DataQuery & Record<string, any>>(props: FillValueSelectProps<TQuery>) {
   return (
     <>
-      <EditorField label="Fill value" tooltip="value to fill missing points">
+      <EditorField label="Fill with" tooltip="value to fill missing points" htmlFor="fillWith">
         <Select
-          aria-label="Fill value"
-          data-testid="table-fill-value-select"
+          id="fillWith"
+          aria-label="Fill with"
+          data-testid="table-fill-with-select"
           options={SelectableFillValueOptions}
           value={props.query.fillMode?.mode ?? FillValueOptions.Previous}
           onChange={({ value }) => {
@@ -54,6 +55,7 @@ export function FillValueSelect<TQuery extends DataQuery & Record<string, any>>(
         <EditorField label="Value" htmlFor="valueToFill" width={6}>
           <Input
             id="valueToFill"
+            aria-label="Value"
             type="number"
             value={props.query.fillMode.value}
             onChange={({ currentTarget }: React.FormEvent<HTMLInputElement>) =>
