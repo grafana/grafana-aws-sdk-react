@@ -1,6 +1,6 @@
-export { ConnectionConfig, type ConnectionConfigProps } from './ConnectionConfig';
-export { Divider } from './Divider';
-export { SIGV4ConnectionConfig } from './SIGV4ConnectionConfig';
+export { ConnectionConfig, type ConnectionConfigProps } from './components/ConnectionConfig';
+export { Divider } from './components/Divider';
+export { SIGV4ConnectionConfig } from './components/SIGV4ConnectionConfig';
 export { ConfigSelect } from './sql/ConfigEditor';
 export { ResourceSelector, type ResourceSelectorProps } from './sql/ResourceSelector';
 export { type SQLQuery } from './sql/types';
