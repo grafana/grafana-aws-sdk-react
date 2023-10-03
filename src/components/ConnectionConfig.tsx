@@ -8,9 +8,9 @@ import {
   onUpdateDatasourceSecureJsonDataOption,
 } from '@grafana/data';
 import { config } from '@grafana/runtime';
-import { standardRegions } from './regions';
-import { AwsAuthDataSourceJsonData, AwsAuthDataSourceSecureJsonData, AwsAuthType } from './types';
-import { awsAuthProviderOptions } from './providers';
+import { standardRegions } from '../regions';
+import { AwsAuthDataSourceJsonData, AwsAuthDataSourceSecureJsonData, AwsAuthType } from '../types';
+import { awsAuthProviderOptions } from '../providers';
 import { css } from '@emotion/css';
 import { ConfigSection, ConfigSubSection } from '@grafana/experimental';
 

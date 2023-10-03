@@ -2,7 +2,7 @@ import React from 'react';
 import { DataSourcePluginOptionsEditorProps, DataSourceSettings } from '@grafana/data';
 import { ConnectionConfig, ConnectionConfigProps } from './ConnectionConfig';
 
-import { AwsAuthDataSourceSecureJsonData, AwsAuthDataSourceJsonData } from './types';
+import { AwsAuthDataSourceSecureJsonData, AwsAuthDataSourceJsonData } from '../types';
 
 export interface SIGV4ConnectionConfigProps extends DataSourcePluginOptionsEditorProps<any, any> {
   inExperimentalAuthComponent?: boolean;
