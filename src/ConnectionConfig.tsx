@@ -14,7 +14,7 @@ import { awsAuthProviderOptions } from './providers';
 import { css } from '@emotion/css';
 
 export const DEFAULT_LABEL_WIDTH = 28;
-const DS_TYPES_THAT_SUPPORT_TEMP_CREDS = ['cloudwatch'];
+const DS_TYPES_THAT_SUPPORT_TEMP_CREDS = ['cloudwatch', 'grafana-athena-datasource'];
 const toOption = (value: string) => ({ value, label: value });
 const isAwsAuthType = (value: any): value is AwsAuthType => {
   return typeof value === 'string' && awsAuthProviderOptions.some((opt) => opt.value === value);
@@ -55,7 +55,6 @@ export const ConnectionConfig: FC<ConnectionConfigProps> = (props: ConnectionCon
   );
 
   const currentProvider = awsAuthProviderOptions.find((p) => p.value === options.jsonData.authType);
-
   useEffect(() => {
     // Make sure a authType exists in the current model
     if (!currentProvider && awsAllowedAuthProviders.length) {
