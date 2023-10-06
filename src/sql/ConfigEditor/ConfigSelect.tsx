@@ -3,7 +3,7 @@ import { DataSourcePluginOptionsEditorProps, SelectableValue } from '@grafana/da
 import { InputActionMeta } from '@grafana/ui';
 import { AwsAuthDataSourceJsonData, AwsAuthDataSourceSecureJsonData } from '../../types';
 import { ResourceSelector } from '../ResourceSelector';
-import { DEFAULT_LABEL_WIDTH } from '../../ConnectionConfig';
+import { DEFAULT_LABEL_WIDTH } from '../../components/ConnectionConfig';
 
 export interface ConfigSelectProps
   extends DataSourcePluginOptionsEditorProps<AwsAuthDataSourceJsonData, AwsAuthDataSourceSecureJsonData> {
