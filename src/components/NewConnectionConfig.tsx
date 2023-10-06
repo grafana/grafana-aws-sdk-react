@@ -106,7 +106,6 @@ export const NewConnectionConfig = ({
                 ) : (
                   <Input
                     id="secretKey"
-                    aria-label="Secret Access Key"
                     value={options.secureJsonData?.secretKey ?? ''}
                     onChange={onUpdateDatasourceSecureJsonDataOption(props, 'secretKey')}
                   />
