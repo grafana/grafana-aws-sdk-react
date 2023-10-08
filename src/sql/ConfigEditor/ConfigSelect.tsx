@@ -3,7 +3,7 @@ import { DataSourcePluginOptionsEditorProps, SelectableValue } from '@grafana/da
 import { InputActionMeta } from '@grafana/ui';
 import { AwsAuthDataSourceJsonData, AwsAuthDataSourceSecureJsonData } from '../../types';
 import { ResourceSelector } from '../ResourceSelector';
-import { DEFAULT_LABEL_WIDTH } from 'components/ConnectionConfig';
+import { DEFAULT_LABEL_WIDTH } from '../../components/ConnectionConfig';
 
 export interface ConfigSelectProps
   extends DataSourcePluginOptionsEditorProps<AwsAuthDataSourceJsonData, AwsAuthDataSourceSecureJsonData> {
@@ -15,6 +15,7 @@ export interface ConfigSelectProps
   id: string;
   label: string;
   'data-testid'?: string;
+  hidden?: boolean;
   disabled?: boolean;
   allowCustomValue?: boolean;
   saveOptions: () => Promise<void>;
@@ -71,6 +72,7 @@ export function ConfigSelect(props: ConfigSelectProps) {
       value={props.value}
       saveOptions={props.saveOptions}
       dependencies={dependencies}
+      hidden={props.hidden}
       disabled={props.disabled || !jsonData.defaultRegion}
       allowCustomValue={props.allowCustomValue}
       autoFocus={props.autoFocus}
