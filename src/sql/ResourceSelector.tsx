@@ -1,16 +1,20 @@
 import { SelectableValue } from '@grafana/data';
-import { Select, SelectCommonProps } from '@grafana/ui';
+import { InlineField, Select, SelectCommonProps } from '@grafana/ui';
 import { isEqual } from 'lodash';
 import React, { useEffect, useMemo, useState, DependencyList, useRef } from 'react';
 
 import { defaultKey } from './types';
 
 export interface ResourceSelectorProps extends SelectCommonProps<string> {
-  newFormStylingEnabled?: boolean;  // awsDatasourcesNewForStyling feature toggle
+  // props for old form styling
+  tooltip?: string;
+  hidden?: boolean;
+
+  newFormStylingEnabled?: boolean; // awsDatasourcesNewForStyling feature toggle
   value: string | null;
   dependencies?: DependencyList;
   id: string;
-  ['aria-label']: string;
+  label: string;
   'data-testid'?: string;
   // Options only needed for QueryEditor
   default?: string;

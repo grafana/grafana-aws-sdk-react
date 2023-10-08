@@ -6,9 +6,10 @@ import { ResourceSelector, ResourceSelectorProps } from './ResourceSelector';
 import { defaultKey } from './types';
 
 const defaultProps: ResourceSelectorProps = {
+  id: 'resource',
+  label: 'resource',
   newFormStylingEnabled: false,
   value: null,
-  ['aria-label']: 'resource',
   fetch: jest.fn(),
   onChange: jest.fn(),
 };
