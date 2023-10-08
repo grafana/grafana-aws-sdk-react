@@ -2,9 +2,8 @@ import React, { DependencyList } from 'react';
 import { DataSourcePluginOptionsEditorProps, SelectableValue } from '@grafana/data';
 import { InputActionMeta } from '@grafana/ui';
 import { AwsAuthDataSourceJsonData, AwsAuthDataSourceSecureJsonData } from '../../types';
-import { ResourceSelector, NewResourceSelector } from '../ResourceSelector';
+import { ResourceSelector } from '../ResourceSelector';
 import { DEFAULT_LABEL_WIDTH } from '../../components/ConnectionConfig';
-import { config } from '@grafana/runtime';
 
 export interface ConfigSelectProps
   extends DataSourcePluginOptionsEditorProps<AwsAuthDataSourceJsonData, AwsAuthDataSourceSecureJsonData> {
@@ -41,11 +40,10 @@ export interface ConfigSelectProps
   width?: number;
   isOptionDisabled?: () => boolean;
   labelWidth?: number;
+  newFormStylingEnabled?: boolean;
 }
 
 export function ConfigSelect(props: ConfigSelectProps) {
-  const awsDatasourcesNewFormStyling = config.featureToggles.awsDatasourcesNewFormStyling;
-
   const { jsonData } = props.options;
   const commonProps = {
     title: jsonData.defaultRegion ? '' : 'select a default region',
@@ -64,74 +62,38 @@ export function ConfigSelect(props: ConfigSelectProps) {
     props.options.secureJsonData?.secretKey,
   ].concat(props.dependencies);
   return (
-    <>
-      {awsDatasourcesNewFormStyling ? (
-        <NewResourceSelector
-          id={props.id}
-          ariaLabel={props.label}
-          data-testid={props['data-testid']}
-          onChange={props.onChange}
-          fetch={props.fetch}
-          value={props.value}
-          saveOptions={props.saveOptions}
-          dependencies={dependencies}
-          disabled={props.disabled || !jsonData.defaultRegion}
-          allowCustomValue={props.allowCustomValue}
-          autoFocus={props.autoFocus}
-          backspaceRemovesValue={props.backspaceRemovesValue}
-          invalid={props.invalid}
-          isClearable={props.isClearable}
-          isMulti={props.isMulti}
-          inputId={props.inputId}
-          showAllSelectedWhenOpen={props.showAllSelectedWhenOpen}
-          maxMenuHeight={props.maxMenuHeight}
-          minMenuHeight={props.minMenuHeight}
-          maxVisibleValues={props.maxVisibleValues}
-          menuPlacement={props.menuPlacement}
-          menuPosition={props.menuPosition}
-          noOptionsMessage={props.noOptionsMessage}
-          onBlur={props.onBlur}
-          onCreateOption={props.onCreateOption}
-          onInputChange={props.onInputChange}
-          placeholder={props.placeholder}
-          width={props.width}
-          isOptionDisabled={props.isOptionDisabled}
-          {...commonProps}
-        />
-      ) : (
-        <ResourceSelector
-          label={props.label}
-          data-testid={props['data-testid']}
-          onChange={props.onChange}
-          fetch={props.fetch}
-          value={props.value}
-          saveOptions={props.saveOptions}
-          dependencies={dependencies}
-          hidden={props.hidden}
-          disabled={props.disabled || !jsonData.defaultRegion}
-          allowCustomValue={props.allowCustomValue}
-          autoFocus={props.autoFocus}
-          backspaceRemovesValue={props.backspaceRemovesValue}
-          invalid={props.invalid}
-          isClearable={props.isClearable}
-          isMulti={props.isMulti}
-          inputId={props.inputId}
-          showAllSelectedWhenOpen={props.showAllSelectedWhenOpen}
-          maxMenuHeight={props.maxMenuHeight}
-          minMenuHeight={props.minMenuHeight}
-          maxVisibleValues={props.maxVisibleValues}
-          menuPlacement={props.menuPlacement}
-          menuPosition={props.menuPosition}
-          noOptionsMessage={props.noOptionsMessage}
-          onBlur={props.onBlur}
-          onCreateOption={props.onCreateOption}
-          onInputChange={props.onInputChange}
-          placeholder={props.placeholder}
-          width={props.width}
-          isOptionDisabled={props.isOptionDisabled}
-          {...commonProps}
-        />
-      )}
-    </>
+    <ResourceSelector
+      newFormStylingEnabled={props.newFormStylingEnabled}
+      label={props.label}
+      data-testid={props['data-testid']}
+      onChange={props.onChange}
+      fetch={props.fetch}
+      value={props.value}
+      saveOptions={props.saveOptions}
+      dependencies={dependencies}
+      hidden={props.hidden}
+      disabled={props.disabled || !jsonData.defaultRegion}
+      allowCustomValue={props.allowCustomValue}
+      autoFocus={props.autoFocus}
+      backspaceRemovesValue={props.backspaceRemovesValue}
+      invalid={props.invalid}
+      isClearable={props.isClearable}
+      isMulti={props.isMulti}
+      inputId={props.inputId}
+      showAllSelectedWhenOpen={props.showAllSelectedWhenOpen}
+      maxMenuHeight={props.maxMenuHeight}
+      minMenuHeight={props.minMenuHeight}
+      maxVisibleValues={props.maxVisibleValues}
+      menuPlacement={props.menuPlacement}
+      menuPosition={props.menuPosition}
+      noOptionsMessage={props.noOptionsMessage}
+      onBlur={props.onBlur}
+      onCreateOption={props.onCreateOption}
+      onInputChange={props.onInputChange}
+      placeholder={props.placeholder}
+      width={props.width}
+      isOptionDisabled={props.isOptionDisabled}
+      {...commonProps}
+    />
   );
 }

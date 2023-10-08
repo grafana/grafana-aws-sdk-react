@@ -33,6 +33,7 @@ export interface ConnectionConfigProps<
   labelWidth?: number;
   inExperimentalAuthComponent?: boolean;
   externalId?: string;
+  newFormStylingEnabled?: boolean;
 }
 
 export const ConnectionConfig: FC<ConnectionConfigProps> = (props: ConnectionConfigProps) => {
@@ -54,8 +55,6 @@ export const ConnectionConfig: FC<ConnectionConfigProps> = (props: ConnectionCon
         .filter(isAwsAuthType),
     [tempCredsFeatureEnabled]
   );
-  const awsDatasourcesNewFormStyling = config.featureToggles.awsDatasourcesNewFormStyling;
-
   const currentProvider = awsAuthProviderOptions.find((p) => p.value === options.jsonData.authType);
 
   useEffect(() => {
@@ -84,7 +83,7 @@ export const ConnectionConfig: FC<ConnectionConfigProps> = (props: ConnectionCon
 
   return (
     <>
-      {awsDatasourcesNewFormStyling ? (
+      {props.newFormStylingEnabled ? (
         <NewConnectionConfig
           currentProvider={currentProvider}
           awsAllowedAuthProviders={awsAllowedAuthProviders}

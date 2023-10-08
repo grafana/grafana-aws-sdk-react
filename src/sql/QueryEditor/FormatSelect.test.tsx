@@ -3,10 +3,11 @@ import React from 'react';
 import { render, screen } from '@testing-library/react';
 import { mockQuery, SQLOptions } from './__mocks__/query';
 import { select } from 'react-select-event';
-import { FormatSelect, FormatSelectProps, NewFormatSelect } from './FormatSelect';
+import { FormatSelect, FormatSelectProps } from './FormatSelect';
 import { SQLQuery } from '../types';
 
-const props: FormatSelectProps<SQLQuery, SQLOptions> = {
+const defaultProps: FormatSelectProps<SQLQuery, SQLOptions> = {
+  newFormStylingEnabled: false,
   query: mockQuery,
   options: [
     {
@@ -23,29 +24,21 @@ const props: FormatSelectProps<SQLQuery, SQLOptions> = {
 };
 
 describe('FormatSelect', () => {
-  it('should change the format mode', async () => {
-    render(<FormatSelect {...props} />);
-    expect(screen.getByText('Table')).toBeInTheDocument();
+  function run(testName: string, props: FormatSelectProps<SQLQuery, SQLOptions>) {
+    describe(testName, () => {
+      it('should change the format mode', async () => {
+        render(<FormatSelect {...props} />);
+        expect(screen.getByText('Table')).toBeInTheDocument();
 
-    const selectEl = screen.getByLabelText('Format as');
-    expect(selectEl).toBeInTheDocument();
-    await select(selectEl, 'Time Series', { container: document.body });
+        const selectEl = screen.getByLabelText(props.newFormStylingEnabled ? 'Format dataframes as' : 'Format as');
+        expect(selectEl).toBeInTheDocument();
+        await select(selectEl, 'Time Series', { container: document.body });
 
-    expect(props.onChange).toHaveBeenCalledWith({ ...props.query, format: SQLOptions.TimeSeries });
-    expect(props.onRunQuery).toHaveBeenCalled();
-  });
-});
-
-describe('NewFormatSelect', () => {
-  it('should change the format mode', async () => {
-    render(<NewFormatSelect {...props} id="format"/>);
-    expect(screen.getByText('Table')).toBeInTheDocument();
-
-    const selectEl = screen.getByLabelText('Format dataframes as');
-    expect(selectEl).toBeInTheDocument();
-    await select(selectEl, 'Time Series', { container: document.body });
-
-    expect(props.onChange).toHaveBeenCalledWith({ ...props.query, format: SQLOptions.TimeSeries });
-    expect(props.onRunQuery).toHaveBeenCalled();
-  });
+        expect(props.onChange).toHaveBeenCalledWith({ ...props.query, format: SQLOptions.TimeSeries });
+        expect(props.onRunQuery).toHaveBeenCalled();
+      });
+    });
+  }
+  run('FormatSelect with newFormStylingEnabled=false', defaultProps);
+  run('FormatSelect with newFormStylingEnabled=true', { ...defaultProps, newFormStylingEnabled: true });
 });

@@ -58,7 +58,6 @@ jest.mock('@grafana/runtime', () => ({
   config: {
     awsAllowedAuthProviders: [AwsAuthType.EC2IAMRole, AwsAuthType.Keys, AwsAuthType.Credentials],
     featureToggles: {
-      awsDatasourcesNewFormStyling: true,
       awsDatasourcesTempCredentials: false,
     },
   },
