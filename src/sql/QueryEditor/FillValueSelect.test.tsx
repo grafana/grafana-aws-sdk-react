@@ -6,35 +6,42 @@ import { FillValueSelect, FillValueSelectProps, FillValueOptions } from './FillV
 import { select } from 'react-select-event';
 import { SQLQuery } from '../types';
 
-const props: FillValueSelectProps<SQLQuery> = {
+const defaultProps: FillValueSelectProps<SQLQuery> = {
   query: mockQuery,
+  newFormStylingEnabled: false,
   onChange: jest.fn(),
   onRunQuery: jest.fn(),
 };
 
 describe('FillValueSelect', () => {
-  it('should change the fill value mode', async () => {
-    render(<FillValueSelect {...props} />);
-    expect(screen.getByText('Previous Value')).toBeInTheDocument();
+  function run(testName: string, props: FillValueSelectProps<SQLQuery>) {
+    describe(testName, () => {
+      it('should change the fill value mode', async () => {
+        render(<FillValueSelect {...props} />);
+        expect(screen.getByText('Previous Value')).toBeInTheDocument();
 
-    const selectEl = screen.getByLabelText('Fill with');
-    expect(selectEl).toBeInTheDocument();
-    await select(selectEl, 'NULL', { container: document.body });
+        const selectEl = screen.getByLabelText(props.newFormStylingEnabled ? 'Fill with' : 'Fill value');
+        expect(selectEl).toBeInTheDocument();
+        await select(selectEl, 'NULL', { container: document.body });
 
-    expect(props.onChange).toHaveBeenCalledWith({ ...props.query, fillMode: { mode: FillValueOptions.Null } });
-    expect(props.onRunQuery).toHaveBeenCalled();
-  });
+        expect(props.onChange).toHaveBeenCalledWith({ ...props.query, fillMode: { mode: FillValueOptions.Null } });
+        expect(props.onRunQuery).toHaveBeenCalled();
+      });
 
-  it('should change the fill value for a custom value', async () => {
-    render(<FillValueSelect {...props} query={{ ...mockQuery, fillMode: { mode: FillValueOptions.Value } }} />);
+      it('should change the fill value for a custom value', async () => {
+        render(<FillValueSelect {...props} query={{ ...mockQuery, fillMode: { mode: FillValueOptions.Value } }} />);
 
-    const input = screen.getByLabelText('Value');
-    fireEvent.change(input, { target: { value: '2', valueAsNumber: 2 } });
+        const input = screen.getByLabelText('Value');
+        fireEvent.change(input, { target: { value: '2', valueAsNumber: 2 } });
 
-    expect(props.onChange).toHaveBeenCalledWith({
-      ...props.query,
-      fillMode: { mode: FillValueOptions.Value, value: 2 },
+        expect(props.onChange).toHaveBeenCalledWith({
+          ...props.query,
+          fillMode: { mode: FillValueOptions.Value, value: 2 },
+        });
+        expect(props.onRunQuery).toHaveBeenCalled();
+      });
     });
-    expect(props.onRunQuery).toHaveBeenCalled();
-  });
+  }
+  run('FillValueSelect with newFormStylingEnabled=false', defaultProps);
+  run('FillValueSelect with newFormStylingEnabled=true', { ...defaultProps, newFormStylingEnabled: true });
 });

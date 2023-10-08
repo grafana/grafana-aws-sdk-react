@@ -3,6 +3,7 @@ import { DataSourcePluginOptionsEditorProps, SelectableValue } from '@grafana/da
 import { InputActionMeta } from '@grafana/ui';
 import { AwsAuthDataSourceJsonData, AwsAuthDataSourceSecureJsonData } from '../../types';
 import { ResourceSelector } from '../ResourceSelector';
+import { DEFAULT_LABEL_WIDTH } from '../../components/ConnectionConfig';
 
 export interface ConfigSelectProps
   extends DataSourcePluginOptionsEditorProps<AwsAuthDataSourceJsonData, AwsAuthDataSourceSecureJsonData> {
@@ -13,6 +14,9 @@ export interface ConfigSelectProps
   fetch: () => Promise<Array<string | SelectableValue<string>>>;
   onChange: (e: SelectableValue<string> | null) => void;
   dependencies?: string[];
+  // input id and label necessary for accessibility attributes
+  id: string;
+  label: string;
   'data-testid'?: string;
   disabled?: boolean;
   allowCustomValue?: boolean;
@@ -38,6 +42,7 @@ export interface ConfigSelectProps
   width?: number;
   isOptionDisabled?: () => boolean;
   labelWidth?: number;
+  newFormStylingEnabled?: boolean;
 }
 
 export function ConfigSelect(props: ConfigSelectProps) {
@@ -58,8 +63,8 @@ export function ConfigSelect(props: ConfigSelectProps) {
   ].concat(props.dependencies);
   return (
     <ResourceSelector
-      id={props.id}
-      aria-label={props['aria-label']}
+      newFormStylingEnabled={props.newFormStylingEnabled}
+      label={props.label}
       data-testid={props['data-testid']}
       onChange={props.onChange}
       fetch={props.fetch}

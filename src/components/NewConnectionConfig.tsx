@@ -1,109 +1,51 @@
-import React, { FC, useEffect, useMemo, useState } from 'react';
-import { Input, Select, InlineField, ButtonGroup, ToolbarButton, FieldSet, Collapse, useStyles2 } from '@grafana/ui';
+import React from 'react';
+import { Input, Select, ButtonGroup, ToolbarButton, Collapse, Field } from '@grafana/ui';
 import {
-  DataSourcePluginOptionsEditorProps,
   onUpdateDatasourceJsonDataOptionSelect,
   onUpdateDatasourceResetOption,
   onUpdateDatasourceJsonDataOption,
   onUpdateDatasourceSecureJsonDataOption,
+  SelectableValue,
 } from '@grafana/data';
-import { config } from '@grafana/runtime';
-import { standardRegions } from '../regions';
-import { AwsAuthDataSourceJsonData, AwsAuthDataSourceSecureJsonData, AwsAuthType } from '../types';
+import { AwsAuthType } from '../types';
 import { awsAuthProviderOptions } from '../providers';
-import { css } from '@emotion/css';
-import { NewConnectionConfig } from './NewConnectionConfig';
+import { ConfigSection, ConfigSubSection } from '@grafana/experimental';
+import { ConnectionConfigProps } from './ConnectionConfig';
 
-export const DEFAULT_LABEL_WIDTH = 28;
-const DS_TYPES_THAT_SUPPORT_TEMP_CREDS = ['cloudwatch'];
-const toOption = (value: string) => ({ value, label: value });
-const isAwsAuthType = (value: any): value is AwsAuthType => {
-  return typeof value === 'string' && awsAuthProviderOptions.some((opt) => opt.value === value);
-};
-export interface ConnectionConfigProps<
-  J extends AwsAuthDataSourceJsonData = AwsAuthDataSourceJsonData,
-  S = AwsAuthDataSourceSecureJsonData
-> extends DataSourcePluginOptionsEditorProps<J, S> {
-  standardRegions?: string[];
-  loadRegions?: () => Promise<string[]>;
-  defaultEndpoint?: string;
-  skipHeader?: boolean;
-  skipEndpoint?: boolean;
-  children?: React.ReactNode;
-  labelWidth?: number;
-  inExperimentalAuthComponent?: boolean;
-  externalId?: string;
-  newFormStylingEnabled?: boolean;
+interface NewConnectionConfigProps extends ConnectionConfigProps {
+  currentProvider?: SelectableValue<AwsAuthType> | undefined;
+  awsAllowedAuthProviders: string[];
+  isARNInstructionsOpen: boolean;
+  setIsARNInstructionsOpen: (isOpen: boolean) => void;
+  awsAssumeRoleEnabled: boolean;
+  regions: SelectableValue[];
+  assumeRoleInstructionsStyle: string;
 }
 
-export const ConnectionConfig: FC<ConnectionConfigProps> = (props: ConnectionConfigProps) => {
-  const [isARNInstructionsOpen, setIsARNInstructionsOpen] = useState(false);
-  const [regions, setRegions] = useState((props.standardRegions || standardRegions).map(toOption));
-  const { loadRegions, onOptionsChange, skipHeader = false, skipEndpoint = false } = props;
-  const { labelWidth = DEFAULT_LABEL_WIDTH, options, inExperimentalAuthComponent } = props;
-  let profile = options.jsonData.profile;
-  if (profile === undefined) {
-    profile = options.database;
-  }
-  const tempCredsFeatureEnabled =
-    config.featureToggles.awsDatasourcesTempCredentials && DS_TYPES_THAT_SUPPORT_TEMP_CREDS.includes(options.type);
-  const awsAssumeRoleEnabled = config.awsAssumeRoleEnabled ?? true;
-  const awsAllowedAuthProviders = useMemo(
-    () =>
-      config.awsAllowedAuthProviders
-        .filter((provider) => (provider === AwsAuthType.GrafanaAssumeRole ? tempCredsFeatureEnabled : true))
-        .filter(isAwsAuthType),
-    [tempCredsFeatureEnabled]
-  );
-  const currentProvider = awsAuthProviderOptions.find((p) => p.value === options.jsonData.authType);
-
-  useEffect(() => {
-    // Make sure a authType exists in the current model
-    if (!currentProvider && awsAllowedAuthProviders.length) {
-      onOptionsChange({
-        ...options,
-        jsonData: {
-          ...options.jsonData,
-          authType: awsAllowedAuthProviders[0],
-        },
-      });
-    }
-  }, [currentProvider, options, onOptionsChange, awsAllowedAuthProviders]);
-
-  useEffect(() => {
-    if (!loadRegions) {
-      return;
-    }
-
-    loadRegions().then((regions) => setRegions(regions.map(toOption)));
-  }, [loadRegions]);
-
-  const inputWidth = inExperimentalAuthComponent ? 'width-20' : 'width-30';
-  const styles = useStyles2(getStyles);
-
+export const NewConnectionConfig = ({
+  isARNInstructionsOpen,
+  setIsARNInstructionsOpen,
+  awsAssumeRoleEnabled,
+  currentProvider,
+  awsAllowedAuthProviders,
+  skipHeader,
+  regions,
+  assumeRoleInstructionsStyle,
+  ...props
+}: NewConnectionConfigProps) => {
+  const options = props.options;
   return (
-    <>
-      {props.newFormStylingEnabled ? (
-        <NewConnectionConfig
-          currentProvider={currentProvider}
-          awsAllowedAuthProviders={awsAllowedAuthProviders}
-          isARNInstructionsOpen={isARNInstructionsOpen}
-          setIsARNInstructionsOpen={setIsARNInstructionsOpen}
-          awsAssumeRoleEnabled={awsAssumeRoleEnabled}
-          regions={regions}
-          assumeRoleInstructionsStyle={styles.assumeRoleInstructions}
-          {...props}
-        />
-      ) : (
-        <FieldSet label={skipHeader ? '' : 'Connection Details'} data-testid="connection-config">
-          <InlineField
+    <div data-testid="connection-config">
+      <ConfigSection title={skipHeader ? '' : 'Connection Details'} data-testid="connection-config">
+        <ConfigSubSection title="Authentication">
+          <Field
             label="Authentication Provider"
-            labelWidth={labelWidth}
-            tooltip="Specify which AWS credentials chain to use."
+            description="Specify which AWS credentials chain to use."
+            htmlFor="authProvider"
           >
             <Select
+              id="authProvider"
               aria-label="Authentication Provider"
-              className={inputWidth}
               value={currentProvider}
               options={awsAuthProviderOptions.filter((opt) => awsAllowedAuthProviders.includes(opt.value!))}
               defaultValue={options.jsonData.authType}
@@ -112,29 +54,27 @@ export const ConnectionConfig: FC<ConnectionConfigProps> = (props: ConnectionCon
               }}
               menuShouldPortal={true}
             />
-          </InlineField>
+          </Field>
           {options.jsonData.authType === 'credentials' && (
-            <InlineField
+            <Field
               label="Credentials Profile Name"
-              labelWidth={labelWidth}
-              tooltip="Credentials profile name, as specified in ~/.aws/credentials, leave blank for default."
+              description="Credentials profile name, as specified in ~/.aws/credentials, leave blank for default."
+              htmlFor="credentialsProfileName"
             >
               <Input
-                aria-label="Credentials Profile Name"
-                className={inputWidth}
+                id="credentialsProfileName"
                 placeholder="default"
-                value={profile}
+                value={options.jsonData.profile}
                 onChange={onUpdateDatasourceJsonDataOption(props, 'profile')}
               />
-            </InlineField>
+            </Field>
           )}
-
           {options.jsonData.authType === 'keys' && (
             <>
-              <InlineField label="Access Key ID" labelWidth={labelWidth}>
+              <Field label="Access Key ID" htmlFor="accessKeyId">
                 {props.options.secureJsonFields?.accessKey ? (
-                  <ButtonGroup className={inputWidth}>
-                    <Input disabled placeholder="Configured" />
+                  <ButtonGroup>
+                    <Input disabled placeholder="Configured" id="accessKeyId" />
                     <ToolbarButton
                       icon="edit"
                       tooltip="Edit Access Key ID"
@@ -144,19 +84,19 @@ export const ConnectionConfig: FC<ConnectionConfigProps> = (props: ConnectionCon
                   </ButtonGroup>
                 ) : (
                   <Input
-                    aria-label="Access Key ID"
-                    className={inputWidth}
+                    id="accessKeyId"
                     value={options.secureJsonData?.accessKey ?? ''}
                     onChange={onUpdateDatasourceSecureJsonDataOption(props, 'accessKey')}
                   />
                 )}
-              </InlineField>
+              </Field>
 
-              <InlineField label="Secret Access Key" labelWidth={labelWidth}>
+              <Field label="Secret Access Key" htmlFor="secretKey">
                 {props.options.secureJsonFields?.secretKey ? (
-                  <ButtonGroup className={inputWidth}>
+                  <ButtonGroup>
                     <Input disabled placeholder="Configured" />
                     <ToolbarButton
+                      id="secretKey"
                       icon="edit"
                       type="button"
                       tooltip="Edit Secret Access Key"
@@ -165,18 +105,19 @@ export const ConnectionConfig: FC<ConnectionConfigProps> = (props: ConnectionCon
                   </ButtonGroup>
                 ) : (
                   <Input
-                    aria-label="Secret Access Key"
-                    className={inputWidth}
+                    id="secretKey"
                     value={options.secureJsonData?.secretKey ?? ''}
                     onChange={onUpdateDatasourceSecureJsonDataOption(props, 'secretKey')}
                   />
                 )}
-              </InlineField>
+              </Field>
             </>
           )}
+        </ConfigSubSection>
 
+        <ConfigSubSection title="Assume Role">
           {options.jsonData.authType === AwsAuthType.GrafanaAssumeRole && (
-            <div className={styles.assumeRoleInstructions}>
+            <div className={assumeRoleInstructionsStyle}>
               <Collapse
                 label={'How to create an IAM role for grafana to assume:'}
                 collapsible={true}
@@ -232,62 +173,63 @@ export const ConnectionConfig: FC<ConnectionConfigProps> = (props: ConnectionCon
               </Collapse>
             </div>
           )}
-
           {awsAssumeRoleEnabled && (
             <>
-              <InlineField
+              <Field
+                htmlFor="assumeRoleArn"
                 label="Assume Role ARN"
-                labelWidth={labelWidth}
-                tooltip="Optionally, specify the ARN of a role to assume. Specifying a role here will ensure that the selected authentication provider is used to assume the specified role rather than using the credentials directly. Leave blank if you don't need to assume a role at all"
+                description="Optional. Specifying the ARN of a role will ensure that the
+                  selected authentication provider is used to assume the role rather than the
+                  credentials directly."
               >
                 <Input
-                  aria-label="Assume Role ARN"
-                  className={inputWidth}
+                  id="assumeRoleArn"
                   placeholder="arn:aws:iam:*"
                   value={options.jsonData.assumeRoleArn || ''}
                   onChange={onUpdateDatasourceJsonDataOption(props, 'assumeRoleArn')}
                 />
-              </InlineField>
+              </Field>
               {options.jsonData.authType !== AwsAuthType.GrafanaAssumeRole && (
-                <InlineField
+                <Field
+                  htmlFor="externalId"
                   label="External ID"
-                  labelWidth={labelWidth}
-                  tooltip="If you are assuming a role in another account, that has been created with an external ID, specify the external ID here."
+                  description="If you are assuming a role in another account, that has been created with an external ID, specify the external ID here."
                 >
                   <Input
-                    aria-label="External ID"
-                    className={inputWidth}
+                    id="externalId"
                     placeholder="External ID"
                     value={options.jsonData.externalId || ''}
                     onChange={onUpdateDatasourceJsonDataOption(props, 'externalId')}
                   />
-                </InlineField>
+                </Field>
               )}
             </>
           )}
-          {!skipEndpoint && options.jsonData.authType !== AwsAuthType.GrafanaAssumeRole && (
-            <InlineField
+        </ConfigSubSection>
+        <ConfigSubSection title="Additional Settings">
+          {!props.skipEndpoint && options.jsonData.authType !== AwsAuthType.GrafanaAssumeRole && (
+            <Field
               label="Endpoint"
-              labelWidth={labelWidth}
-              tooltip="Optionally, specify a custom endpoint for the service"
+              description="Optionally, specify a custom endpoint for the service"
+              htmlFor="endpoint"
             >
               <Input
-                aria-label="Endpoint"
-                className={inputWidth}
+                id="endpoint"
                 placeholder={props.defaultEndpoint ?? 'https://{service}.{region}.amazonaws.com'}
                 value={options.jsonData.endpoint || ''}
                 onChange={onUpdateDatasourceJsonDataOption(props, 'endpoint')}
               />
-            </InlineField>
+            </Field>
           )}
-          <InlineField
+
+          <Field
             label="Default Region"
-            labelWidth={labelWidth}
-            tooltip="Specify the region, such as for US West (Oregon) use ` us-west-2 ` as the region."
+            description="Specify the region, such as for US West (Oregon) use ` us-west-2 ` as the region."
+            htmlFor="defaultRegion"
           >
             <Select
+              id="defaultRegion"
               aria-label="Default Region"
-              className={inputWidth}
               value={regions.find((region) => region.value === options.jsonData.defaultRegion)}
               options={regions}
               defaultValue={options.jsonData.defaultRegion}
@@ -296,18 +238,10 @@ export const ConnectionConfig: FC<ConnectionConfigProps> = (props: ConnectionCon
               formatCreateLabel={(r) => `Use region: ${r}`}
               menuShouldPortal={true}
             />
-          </InlineField>
-          {props.children}
-        </FieldSet>
-      )}
-    </>
+          </Field>
+        </ConfigSubSection>
+        {props.children}
+      </ConfigSection>
+    </div>
   );
 };
-
-function getStyles() {
-  return {
-    assumeRoleInstructions: css({
-      maxWidth: '715px',
-    }),
-  };
-}

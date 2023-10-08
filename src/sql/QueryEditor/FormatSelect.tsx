@@ -3,6 +3,7 @@ import { DataQuery, SelectableValue } from '@grafana/data';
 import { Select } from '@grafana/ui';
 
 export type FormatSelectProps<TQuery extends DataQuery, FormatOptions> = {
+  newFormStylingEnabled?: boolean;
   id?: string;
   query: TQuery;
   options: Array<SelectableValue<FormatOptions>>;
@@ -21,13 +22,28 @@ export function FormatSelect<TQuery extends DataQuery & Record<string, any>, For
     props.onRunQuery?.();
   };
   return (
-    <Select
-      aria-label="Format dataframes as"
-      id={props.id ?? "formatAs"}
-      options={props.options}
-      value={props.query.format}
-      onChange={onChangeFormat}
-      menuShouldPortal={true}
-    />
+    <>
+      {props.newFormStylingEnabled ? (
+        <Select
+          aria-label="Format dataframes as"
+          id={props.id ?? 'formatAs'}
+          options={props.options}
+          value={props.query.format}
+          onChange={onChangeFormat}
+          menuShouldPortal={true}
+        />
+      ) : (
+        <InlineField label="Format as" labelWidth={11}>
+          <Select
+            aria-label="Format as"
+            options={props.options}
+            value={props.query.format}
+            onChange={onChangeFormat}
+            className="width-12"
+            menuShouldPortal={true}
+          />
+        </InlineField>
+      )}
+    </>
   );
 }

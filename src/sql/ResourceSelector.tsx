@@ -6,6 +6,7 @@ import React, { useEffect, useMemo, useState, DependencyList, useRef } from 'rea
 import { defaultKey } from './types';
 
 export interface ResourceSelectorProps extends SelectCommonProps<string> {
+  newFormStylingEnabled?: boolean;  // awsDatasourcesNewForStyling feature toggle
   value: string | null;
   dependencies?: DependencyList;
   id: string;
@@ -111,16 +112,42 @@ export function ResourceSelector(props: ResourceSelectorProps) {
   };
 
   return (
-    <Select
-      {...props}
-      id={props.id}
-      aria-label={props['aria-label']}
-      options={options}
-      onChange={onChange}
-      isLoading={isLoading}
-      className={props.className || 'min-width-6'}
-      onOpenMenu={() => props.fetch && onClick()}
-      menuShouldPortal={true}
-    />
+    <>
+      {props.newFormStylingEnabled ? (
+        <Select
+          {...props}
+          id={props.id}
+          aria-label={props.label}
+          options={options}
+          onChange={onChange}
+          isLoading={isLoading}
+          className={props.className || 'min-width-6'}
+          onOpenMenu={() => props.fetch && onClick()}
+          menuShouldPortal={true}
+        />
+      ) : (
+        <InlineField
+          label={props.label}
+          labelWidth={props.labelWidth}
+          tooltip={props.tooltip}
+          hidden={props.hidden}
+          htmlFor={props.id}
+        >
+          <div data-testid={props['data-testid']} title={props.title}>
+            <Select
+              {...props}
+              id={props.id}
+              aria-label={props.label}
+              options={options}
+              onChange={onChange}
+              isLoading={isLoading}
+              className={props.className || 'min-width-6'}
+              onOpenMenu={() => props.fetch && onClick()}
+              menuShouldPortal={true}
+            />
+          </div>
+        </InlineField>
+      )}
+    </>
   );
 }
