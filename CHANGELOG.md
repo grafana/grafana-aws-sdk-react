@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## v0.2.0
+
+- Add support for temporary credentials in athena
+
 ## v0.1.3
 
 - Fix style bug in temp credentials #59
