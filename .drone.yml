@@ -11,7 +11,7 @@ platform:
 
 steps:
   - name: initialize
-    image: grafana/grafana-plugin-ci:1.9.0
+    image: grafana/grafana-plugin-ci:1.9.5
     commands:
       - mkdir -p bin
       - curl -fL -o bin/grabpl https://grafana-downloads.storage.googleapis.com/grafana-build-pipeline/v0.5.27/grabpl
@@ -21,7 +21,7 @@ steps:
       - rm -rf node_modules/@grafana/data/node_modules
 
   - name: build-and-test-frontend
-    image: grafana/grafana-plugin-ci:1.9.0
+    image: grafana/grafana-plugin-ci:1.9.5
     commands:
       - yarn eslint ./src --ext .js,.jsx,.ts,.tsx
       - yarn build
@@ -31,6 +31,6 @@ steps:
 
 ---
 kind: signature
-hmac: 3af0c951d64c787596492c1b2725a42003cefa0aca2f483dd111159c454c720d
+hmac: dccdcff11ff29d7de4da17c11bf06aada101cf27aa8537272b2a8328fd1db8a9
 
 ...
