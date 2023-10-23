@@ -6,12 +6,16 @@ import React, { useEffect, useMemo, useState, DependencyList, useRef } from 'rea
 import { defaultKey } from './types';
 
 export interface ResourceSelectorProps extends SelectCommonProps<string> {
+  // props for old form styling
+  tooltip?: string;
+  hidden?: boolean;
+
+  newFormStylingEnabled?: boolean; // awsDatasourcesNewForStyling feature toggle
   value: string | null;
   dependencies?: DependencyList;
-  tooltip?: string;
-  label?: string;
+  id: string;
+  label: string;
   'data-testid'?: string;
-  hidden?: boolean;
   // Options only needed for QueryEditor
   default?: string;
   // Options only needed for the ConfigEditor
@@ -26,8 +30,8 @@ export interface ResourceSelectorProps extends SelectCommonProps<string> {
 
 export function ResourceSelector(props: ResourceSelectorProps) {
   const propsDependencies = props.dependencies;
-  const propsOnChange = props.onChange
-  
+  const propsOnChange = props.onChange;
+
   const dependencies = useRef(props.dependencies);
   const fetched = useRef<boolean>(false);
   const resource = useRef<string | null>(props.value || props.default || null);
@@ -37,7 +41,6 @@ export function ResourceSelector(props: ResourceSelectorProps) {
   );
   const [isLoading, setIsLoading] = useState(false);
 
-  
   const defaultOpts = useMemo(() => {
     const opts: Array<SelectableValue<string>> = [
       {
@@ -77,7 +80,7 @@ export function ResourceSelector(props: ResourceSelectorProps) {
     if (!isEqual(propsDependencies, dependencies.current)) {
       fetched.current = false;
       resource.current = null;
-      dependencies.current = propsDependencies
+      dependencies.current = propsDependencies;
       propsOnChange(null);
     }
   }, [propsDependencies, propsOnChange]);
@@ -113,10 +116,11 @@ export function ResourceSelector(props: ResourceSelectorProps) {
   };
 
   return (
-    <InlineField label={props.label} labelWidth={props.labelWidth} tooltip={props.tooltip} hidden={props.hidden}>
-      <div data-testid={props['data-testid']} title={props.title}>
+    <>
+      {props.newFormStylingEnabled ? (
         <Select
           {...props}
+          id={props.id}
           aria-label={props.label}
           options={options}
           onChange={onChange}
@@ -125,7 +129,29 @@ export function ResourceSelector(props: ResourceSelectorProps) {
           onOpenMenu={() => props.fetch && onClick()}
           menuShouldPortal={true}
         />
-      </div>
-    </InlineField>
+      ) : (
+        <InlineField
+          label={props.label}
+          labelWidth={props.labelWidth}
+          tooltip={props.tooltip}
+          hidden={props.hidden}
+          htmlFor={props.id}
+        >
+          <div data-testid={props['data-testid']} title={props.title}>
+            <Select
+              {...props}
+              id={props.id}
+              aria-label={props.label}
+              options={options}
+              onChange={onChange}
+              isLoading={isLoading}
+              className={props.className || 'min-width-6'}
+              onOpenMenu={() => props.fetch && onClick()}
+              menuShouldPortal={true}
+            />
+          </div>
+        </InlineField>
+      )}
+    </>
   );
 }
