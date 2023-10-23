@@ -17,7 +17,7 @@
     "typecheck": "tsc -p ./tsconfig.build.json",
     "test": "jest --notify --watch",
     "test:coverage": "jest --coverage",
-    "test-ci": "grafana-toolkit plugin:test"
+    "test:ci": "jest"
   },
   "files": [
     "dist"
@@ -31,10 +31,12 @@
   },
   "devDependencies": {
     "@grafana/data": "9.4.14",
+    "@grafana/eslint-config": "^6.0.1",
     "@grafana/runtime": "9.4.14",
-    "@grafana/toolkit": "9.4.14",
     "@grafana/ui": "9.4.14",
     "@rollup/plugin-node-resolve": "^15.0.1",
+    "@swc/core": "^1.3.93",
+    "@swc/jest": "^0.2.29",
     "@testing-library/jest-dom": "5.16.5",
     "@testing-library/react": "12.1.5",
     "@testing-library/react-hooks": "8.0.1",
@@ -43,7 +45,12 @@
     "@types/node": "16.18.6",
     "@types/react": "17.0.42",
     "@types/react-dom": "17.0.14",
+    "@typescript-eslint/eslint-plugin": "^5.48.0",
     "esbuild": "^0.16.2",
+    "eslint": "^8.49.0",
+    "eslint-plugin-jsdoc": "^46.7.0",
+    "eslint-plugin-react": "^7.31.11",
+    "eslint-plugin-react-hooks": "^4.6.0",
     "jest": "27.5.1",
     "node-notifier": "^10.0.1",
     "react": "17.0.2",
