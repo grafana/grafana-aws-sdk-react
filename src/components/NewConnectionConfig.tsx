@@ -31,9 +31,9 @@ export const NewConnectionConfig = ({
   skipHeader,
   regions,
   assumeRoleInstructionsStyle,
+  options,
   ...props
 }: NewConnectionConfigProps) => {
-  const options = props.options;
   return (
     <div data-testid="connection-config">
       <ConfigSection title={skipHeader ? '' : 'Connection Details'} data-testid="connection-config">
