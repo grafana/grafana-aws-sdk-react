@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## v0.3.0
+
+- Migrate aws sdk react components to the new form styling under feature flag awsDatasourcesNewFormStyling in [#62](https://github.com/grafana/grafana-aws-sdk-react/pull/62)
+
 ## v0.2.0
 
 - Add support for temporary credentials in athena
