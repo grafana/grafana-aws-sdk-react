@@ -15,7 +15,7 @@ import { css } from '@emotion/css';
 import { NewConnectionConfig } from './NewConnectionConfig';
 
 export const DEFAULT_LABEL_WIDTH = 28;
-const DS_TYPES_THAT_SUPPORT_TEMP_CREDS = ['cloudwatch', 'grafana-athena-datasource'];
+const DS_TYPES_THAT_SUPPORT_TEMP_CREDS = ['cloudwatch', 'grafana-athena-datasource', 'grafana-opensearch-datasource'];
 const toOption = (value: string) => ({ value, label: value });
 const isAwsAuthType = (value: any): value is AwsAuthType => {
   return typeof value === 'string' && awsAuthProviderOptions.some((opt) => opt.value === value);

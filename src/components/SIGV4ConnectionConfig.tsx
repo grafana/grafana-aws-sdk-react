@@ -6,11 +6,9 @@ import { AwsAuthDataSourceSecureJsonData, AwsAuthDataSourceJsonData } from '../t
 
 export interface SIGV4ConnectionConfigProps extends DataSourcePluginOptionsEditorProps<any, any> {
   inExperimentalAuthComponent?: boolean;
-};
+}
 
-export const SIGV4ConnectionConfig: React.FC<SIGV4ConnectionConfigProps> = (
-  props: SIGV4ConnectionConfigProps
-) => {
+export const SIGV4ConnectionConfig: React.FC<SIGV4ConnectionConfigProps> = (props: SIGV4ConnectionConfigProps) => {
   const { onOptionsChange, options } = props;
 
   // Map HttpSettings props to ConnectionConfigProps
@@ -66,7 +64,7 @@ export const SIGV4ConnectionConfig: React.FC<SIGV4ConnectionConfigProps> = (
       <div className="gf-form">
         <h6>SigV4 Auth Details</h6>
       </div>
-      <ConnectionConfig {...connectionConfigProps} skipHeader skipEndpoint></ConnectionConfig>
+      <ConnectionConfig {...connectionConfigProps} skipHeader skipEndpoint />
     </>
   );
 };
