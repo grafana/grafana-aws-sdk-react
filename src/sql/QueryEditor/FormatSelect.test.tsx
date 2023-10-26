@@ -30,7 +30,7 @@ describe('FormatSelect', () => {
         render(<FormatSelect {...props} />);
         expect(screen.getByText('Table')).toBeInTheDocument();
 
-        const selectEl = screen.getByLabelText(props.newFormStylingEnabled ? 'Format dataframes as' : 'Format as');
+        const selectEl = screen.getByLabelText(props.newFormStylingEnabled ? 'Format data frames as' : 'Format as');
         expect(selectEl).toBeInTheDocument();
         await select(selectEl, 'Time Series', { container: document.body });
 
