@@ -20,7 +20,13 @@ steps:
       - mkdir ci
       - yarn install --frozen-lockfile --no-progress
       - rm -rf node_modules/@grafana/data/node_modules
-
+  - name: spellcheck
+    image: grafana/grafana-plugin-ci:1.9.5
+    commands:
+      - . ~/.init-nvm.sh
+      - yarn run spellcheck
+    depends_on:
+      - initialize
   - name: build-and-test-frontend
     image: grafana/grafana-plugin-ci:1.9.5
     commands:
@@ -30,9 +36,10 @@ steps:
       - yarn test:ci
     depends_on:
       - initialize
+      - spellcheck
 
 ---
 kind: signature
-hmac: 16f1768e2d0075f7fb84f8766c2995371afe84ffbc15d06e90dfa7f8ed8ff97d
+hmac: e3f399d799348ebebae40890fd1bf5845b884579354ca2e5d37e2851440dbf06
 
 ...
