@@ -186,8 +186,9 @@ export const ConnectionConfig: FC<ConnectionConfigProps> = (props: ConnectionCon
                 <ol>
                   <li>
                     <p>
-                      1. Create a new IAM role in the AWS console, and select <code>Another AWS account</code> as the{' '}
-                      <code>Trusted entity</code>.
+                      1. Create a new IAM role in the AWS console,
+                      and select <code>AWS account</code> as the Trusted entity,
+                      and select <code>Another AWS account</code> as the account.
                     </p>
                   </li>
                   <li>
