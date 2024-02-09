@@ -304,6 +304,6 @@ export const ConnectionConfig: FC<ConnectionConfigProps> = (props: ConnectionCon
 };
 
 export const assumeRoleInstructionsStyle = css({
-      maxWidth: '715px',
-    })
+  maxWidth: '715px',
+})
 
