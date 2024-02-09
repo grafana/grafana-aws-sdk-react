@@ -10,7 +10,7 @@ import {
 import { AwsAuthType } from '../types';
 import { awsAuthProviderOptions } from '../providers';
 import { ConfigSection, ConfigSubSection } from '@grafana/experimental';
-import { ConnectionConfigProps } from './ConnectionConfig';
+import { ConnectionConfigProps, assumeRoleInstructionsStyle } from './ConnectionConfig';
 
 interface NewConnectionConfigProps extends ConnectionConfigProps {
   currentProvider?: SelectableValue<AwsAuthType> | undefined;
@@ -19,7 +19,6 @@ interface NewConnectionConfigProps extends ConnectionConfigProps {
   setIsARNInstructionsOpen: (isOpen: boolean) => void;
   awsAssumeRoleEnabled: boolean;
   regions: SelectableValue[];
-  assumeRoleInstructionsStyle: string;
 }
 
 export const NewConnectionConfig = ({
@@ -30,7 +29,6 @@ export const NewConnectionConfig = ({
   awsAllowedAuthProviders,
   skipHeader,
   regions,
-  assumeRoleInstructionsStyle,
   ...props
 }: NewConnectionConfigProps) => {
   const options = props.options;
