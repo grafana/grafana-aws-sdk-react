@@ -1,5 +1,5 @@
 import React, { FC, useEffect, useMemo, useState } from 'react';
-import { Input, Select, InlineField, ButtonGroup, ToolbarButton, FieldSet, Collapse, useStyles2 } from '@grafana/ui';
+import { Input, Select, InlineField, ButtonGroup, ToolbarButton, FieldSet, Collapse } from '@grafana/ui';
 import {
   DataSourcePluginOptionsEditorProps,
   onUpdateDatasourceJsonDataOptionSelect,
@@ -79,7 +79,6 @@ export const ConnectionConfig: FC<ConnectionConfigProps> = (props: ConnectionCon
   }, [loadRegions]);
 
   const inputWidth = inExperimentalAuthComponent ? 'width-20' : 'width-30';
-  const styles = useStyles2(getStyles);
 
   return (
     <>
@@ -91,7 +90,6 @@ export const ConnectionConfig: FC<ConnectionConfigProps> = (props: ConnectionCon
           setIsARNInstructionsOpen={setIsARNInstructionsOpen}
           awsAssumeRoleEnabled={awsAssumeRoleEnabled}
           regions={regions}
-          assumeRoleInstructionsStyle={styles.assumeRoleInstructions}
           {...props}
         />
       ) : (
@@ -176,7 +174,7 @@ export const ConnectionConfig: FC<ConnectionConfigProps> = (props: ConnectionCon
           )}
 
           {options.jsonData.authType === AwsAuthType.GrafanaAssumeRole && (
-            <div className={styles.assumeRoleInstructions}>
+            <div className={assumeRoleInstructionsStyle}>
               <Collapse
                 label={'How to create an IAM role for grafana to assume:'}
                 collapsible={true}
@@ -305,10 +303,7 @@ export const ConnectionConfig: FC<ConnectionConfigProps> = (props: ConnectionCon
   );
 };
 
-function getStyles() {
-  return {
-    assumeRoleInstructions: css({
-      maxWidth: '715px',
-    }),
-  };
-}
+export const assumeRoleInstructionsStyle = css({
+  maxWidth: '715px',
+})
+
