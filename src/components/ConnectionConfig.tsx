@@ -1,5 +1,5 @@
 import React, { FC, useEffect, useMemo, useState } from 'react';
-import { Input, Select, InlineField, ButtonGroup, ToolbarButton, FieldSet, Collapse, useStyles2 } from '@grafana/ui';
+import { Input, Select, InlineField, ButtonGroup, ToolbarButton, FieldSet, Collapse } from '@grafana/ui';
 import {
   DataSourcePluginOptionsEditorProps,
   onUpdateDatasourceJsonDataOptionSelect,
