@@ -52,7 +52,7 @@ export function QueryEditorHeader<
           icon={data?.state === LoadingState.Loading ? 'fa fa-spinner' : undefined}
           disabled={data?.state === LoadingState.Loading || !enableRunButton}
         >
-          Run query
+          Run queries
         </Button>
       )}
       {extraHeaderElementRight}
