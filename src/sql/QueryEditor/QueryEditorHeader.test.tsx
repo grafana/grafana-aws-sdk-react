@@ -22,7 +22,7 @@ describe('QueryEditorHeader', () => {
   });
   it('should display just the run button if showAsyncQueryButtons prop is false', async () => {
     render(<QueryEditorHeader {...props} showAsyncQueryButtons={false} />);
-    const runButton = screen.getByRole('button', { name: 'Run query' });
+    const runButton = screen.getByRole('button', { name: 'Run queries' });
     const stopButton = screen.queryByRole('button', { name: 'Stop query' });
     expect(runButton).toBeInTheDocument();
     expect(stopButton).not.toBeInTheDocument();
@@ -30,7 +30,7 @@ describe('QueryEditorHeader', () => {
 
   it('run button should be disabled if enableButton prop is false', () => {
     render(<QueryEditorHeader {...props} enableRunButton={false} showAsyncQueryButtons={false} />);
-    const runButton = screen.getByRole('button', { name: 'Run query' });
+    const runButton = screen.getByRole('button', { name: 'Run queries' });
     expect(runButton).toBeDisabled();
   });
 
@@ -43,7 +43,7 @@ describe('QueryEditorHeader', () => {
         showAsyncQueryButtons={false}
       />
     );
-    const runButton = screen.getByRole('button', { name: 'Run query' });
+    const runButton = screen.getByRole('button', { name: 'Run queries' });
     expect(runButton).toBeDisabled();
   });
 
@@ -52,7 +52,7 @@ describe('QueryEditorHeader', () => {
     render(
       <QueryEditorHeader {...props} onRunQuery={onRunQuery} showAsyncQueryButtons={false} enableRunButton={true} />
     );
-    const runButton = screen.getByRole('button', { name: 'Run query' });
+    const runButton = screen.getByRole('button', { name: 'Run queries' });
     expect(runButton).toBeInTheDocument();
     fireEvent.click(runButton);
     expect(onRunQuery).toBeCalledTimes(1);

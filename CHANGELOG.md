@@ -3,6 +3,10 @@
 All notable changes to this project will be documented in this file.
 
 
+## v0.3.2
+
+- Change "Run query" button to "Run queries" im [#77](https://github.com/grafana/grafana-aws-sdk-react/pull/77)
+
 ## v0.3.1
 
 - Add spellcheck script and drone step in [#67](https://github.com/grafana/grafana-aws-sdk-react/pull/67)
