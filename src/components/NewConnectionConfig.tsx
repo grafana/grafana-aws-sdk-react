@@ -7,10 +7,10 @@ import {
   onUpdateDatasourceSecureJsonDataOption,
   SelectableValue,
 } from '@grafana/data';
-import { AwsAuthType } from '../types';
+import { AwsAuthType, ConnectionConfigProps } from '../types';
 import { awsAuthProviderOptions } from '../providers';
 import { ConfigSection, ConfigSubSection } from '@grafana/experimental';
-import { ConnectionConfigProps, assumeRoleInstructionsStyle } from './ConnectionConfig';
+import { assumeRoleInstructionsStyle } from './ConnectionConfig.styles';
 
 interface NewConnectionConfigProps extends ConnectionConfigProps {
   currentProvider?: SelectableValue<AwsAuthType> | undefined;

@@ -1,7 +1,6 @@
 import React, { FC, useEffect, useMemo, useState } from 'react';
 import { Input, Select, InlineField, ButtonGroup, ToolbarButton, FieldSet, Collapse } from '@grafana/ui';
 import {
-  DataSourcePluginOptionsEditorProps,
   onUpdateDatasourceJsonDataOptionSelect,
   onUpdateDatasourceResetOption,
   onUpdateDatasourceJsonDataOption,
@@ -9,10 +8,10 @@ import {
 } from '@grafana/data';
 import { config } from '@grafana/runtime';
 import { standardRegions } from '../regions';
-import { AwsAuthDataSourceJsonData, AwsAuthDataSourceSecureJsonData, AwsAuthType } from '../types';
+import { AwsAuthType, ConnectionConfigProps } from '../types';
 import { awsAuthProviderOptions } from '../providers';
-import { css } from '@emotion/css';
 import { NewConnectionConfig } from './NewConnectionConfig';
+import { assumeRoleInstructionsStyle } from './ConnectionConfig.styles';
 
 export const DEFAULT_LABEL_WIDTH = 28;
 const DS_TYPES_THAT_SUPPORT_TEMP_CREDS = ['cloudwatch', 'grafana-athena-datasource'];
@@ -20,21 +19,6 @@ const toOption = (value: string) => ({ value, label: value });
 const isAwsAuthType = (value: any): value is AwsAuthType => {
   return typeof value === 'string' && awsAuthProviderOptions.some((opt) => opt.value === value);
 };
-export interface ConnectionConfigProps<
-  J extends AwsAuthDataSourceJsonData = AwsAuthDataSourceJsonData,
-  S = AwsAuthDataSourceSecureJsonData
-> extends DataSourcePluginOptionsEditorProps<J, S> {
-  standardRegions?: string[];
-  loadRegions?: () => Promise<string[]>;
-  defaultEndpoint?: string;
-  skipHeader?: boolean;
-  skipEndpoint?: boolean;
-  children?: React.ReactNode;
-  labelWidth?: number;
-  inExperimentalAuthComponent?: boolean;
-  externalId?: string;
-  newFormStylingEnabled?: boolean;
-}
 
 export const ConnectionConfig: FC<ConnectionConfigProps> = (props: ConnectionConfigProps) => {
   const [isARNInstructionsOpen, setIsARNInstructionsOpen] = useState(false);
@@ -184,9 +168,8 @@ export const ConnectionConfig: FC<ConnectionConfigProps> = (props: ConnectionCon
                 <ol>
                   <li>
                     <p>
-                      1. Create a new IAM role in the AWS console,
-                      and select <code>AWS account</code> as the Trusted entity,
-                      and select <code>Another AWS account</code> as the account.
+                      1. Create a new IAM role in the AWS console, and select <code>AWS account</code> as the Trusted
+                      entity, and select <code>Another AWS account</code> as the account.
                     </p>
                   </li>
                   <li>
@@ -302,8 +285,3 @@ export const ConnectionConfig: FC<ConnectionConfigProps> = (props: ConnectionCon
     </>
   );
 };
-
-export const assumeRoleInstructionsStyle = css({
-  maxWidth: '715px',
-})
-
