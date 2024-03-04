@@ -13,7 +13,7 @@ export default [
     plugins: [
       externals({
         deps: true,
-        include: ['react', '@grafana/data', '@grafana/ui', '@grafana/runtime', 'lodash'],
+        include: ['react', '@emotion/css', '@grafana/data', '@grafana/ui', '@grafana/runtime', 'lodash'],
         packagePath,
       }),
       resolve(),
@@ -30,6 +30,7 @@ export default [
         sourcemap: true,
         dir: path.dirname(pkg.module),
         preserveModules: true,
+        preserveModulesRoot: './src',
       },
     ],
   },
