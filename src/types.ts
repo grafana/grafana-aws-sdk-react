@@ -1,4 +1,4 @@
-import { DataSourceJsonData, DataSourceSettings } from '@grafana/data';
+import type { DataSourceJsonData, DataSourcePluginOptionsEditorProps, DataSourceSettings } from '@grafana/data';
 
 export enum AwsAuthType {
   Keys = 'keys',
@@ -28,3 +28,19 @@ export interface AwsAuthDataSourceSecureJsonData {
 }
 
 export type AwsAuthDataSourceSettings = DataSourceSettings<AwsAuthDataSourceJsonData, AwsAuthDataSourceSecureJsonData>;
+
+export interface ConnectionConfigProps<
+  J extends AwsAuthDataSourceJsonData = AwsAuthDataSourceJsonData,
+  S = AwsAuthDataSourceSecureJsonData
+> extends DataSourcePluginOptionsEditorProps<J, S> {
+  standardRegions?: string[];
+  loadRegions?: () => Promise<string[]>;
+  defaultEndpoint?: string;
+  skipHeader?: boolean;
+  skipEndpoint?: boolean;
+  children?: React.ReactNode;
+  labelWidth?: number;
+  inExperimentalAuthComponent?: boolean;
+  externalId?: string;
+  newFormStylingEnabled?: boolean;
+}

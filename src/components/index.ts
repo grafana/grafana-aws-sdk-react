@@ -1,3 +1,2 @@
-export { ConnectionConfig, type ConnectionConfigProps, DEFAULT_LABEL_WIDTH } from './ConnectionConfig';
-export { NewConnectionConfig } from './NewConnectionConfig';
+export { ConnectionConfig, DEFAULT_LABEL_WIDTH } from './ConnectionConfig';
 export { Divider } from './Divider';

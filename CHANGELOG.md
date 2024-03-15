@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## v0.3.3
+
+- Fix: broken ESM imports due to `src` in ESM build output path
+- Fix: circular dependencies in components
+- Fix: ESM builds importing entire react, grafana/ui, grafana/data, and grafana/experimental
+- Refactor: prefer named exports over asterisk in barrel files
 
 ## v0.3.2
 
