@@ -82,9 +82,10 @@ export const ConnectionConfig: FC<ConnectionConfigProps> = (props: ConnectionCon
             label="Authentication Provider"
             labelWidth={labelWidth}
             tooltip="Specify which AWS credentials chain to use."
+            htmlFor="authenticationProvider"
           >
             <Select
-              aria-label="Authentication Provider"
+              inputId="authenticationProvider"
               className={inputWidth}
               value={currentProvider}
               options={awsAuthProviderOptions.filter((opt) => awsAllowedAuthProviders.includes(opt.value!))}
@@ -100,9 +101,10 @@ export const ConnectionConfig: FC<ConnectionConfigProps> = (props: ConnectionCon
               label="Credentials Profile Name"
               labelWidth={labelWidth}
               tooltip="Credentials profile name, as specified in ~/.aws/credentials, leave blank for default."
+              htmlFor="credentialsProfileName"
             >
               <Input
-                aria-label="Credentials Profile Name"
+                id="credentialsProfileName"
                 className={inputWidth}
                 placeholder="default"
                 value={profile}
@@ -113,7 +115,7 @@ export const ConnectionConfig: FC<ConnectionConfigProps> = (props: ConnectionCon
 
           {options.jsonData.authType === 'keys' && (
             <>
-              <InlineField label="Access Key ID" labelWidth={labelWidth}>
+              <InlineField label="Access Key ID" htmlFor="accessKeyId" labelWidth={labelWidth}>
                 {props.options.secureJsonFields?.accessKey ? (
                   <ButtonGroup className={inputWidth}>
                     <Input disabled placeholder="Configured" />
@@ -126,7 +128,7 @@ export const ConnectionConfig: FC<ConnectionConfigProps> = (props: ConnectionCon
                   </ButtonGroup>
                 ) : (
                   <Input
-                    aria-label="Access Key ID"
+                    id="accessKeyId"
                     className={inputWidth}
                     value={options.secureJsonData?.accessKey ?? ''}
                     onChange={onUpdateDatasourceSecureJsonDataOption(props, 'accessKey')}
@@ -134,7 +136,7 @@ export const ConnectionConfig: FC<ConnectionConfigProps> = (props: ConnectionCon
                 )}
               </InlineField>
 
-              <InlineField label="Secret Access Key" labelWidth={labelWidth}>
+              <InlineField label="Secret Access Key" htmlFor="secretAccessKey" labelWidth={labelWidth}>
                 {props.options.secureJsonFields?.secretKey ? (
                   <ButtonGroup className={inputWidth}>
                     <Input disabled placeholder="Configured" />
@@ -147,7 +149,7 @@ export const ConnectionConfig: FC<ConnectionConfigProps> = (props: ConnectionCon
                   </ButtonGroup>
                 ) : (
                   <Input
-                    aria-label="Secret Access Key"
+                    id="secretAccessKey"
                     className={inputWidth}
                     value={options.secureJsonData?.secretKey ?? ''}
                     onChange={onUpdateDatasourceSecureJsonDataOption(props, 'secretKey')}
@@ -221,9 +223,10 @@ export const ConnectionConfig: FC<ConnectionConfigProps> = (props: ConnectionCon
                 label="Assume Role ARN"
                 labelWidth={labelWidth}
                 tooltip="Optionally, specify the ARN of a role to assume. Specifying a role here will ensure that the selected authentication provider is used to assume the specified role rather than using the credentials directly. Leave blank if you don't need to assume a role at all"
+                htmlFor="assumeRoleArn"
               >
                 <Input
-                  aria-label="Assume Role ARN"
+                  id="assumeRoleArn"
                   className={inputWidth}
                   placeholder="arn:aws:iam:*"
                   value={options.jsonData.assumeRoleArn || ''}
@@ -235,9 +238,10 @@ export const ConnectionConfig: FC<ConnectionConfigProps> = (props: ConnectionCon
                   label="External ID"
                   labelWidth={labelWidth}
                   tooltip="If you are assuming a role in another account, that has been created with an external ID, specify the external ID here."
+                  htmlFor="externalId"
                 >
                   <Input
-                    aria-label="External ID"
+                    id="externalId"
                     className={inputWidth}
                     placeholder="External ID"
                     value={options.jsonData.externalId || ''}
@@ -252,9 +256,10 @@ export const ConnectionConfig: FC<ConnectionConfigProps> = (props: ConnectionCon
               label="Endpoint"
               labelWidth={labelWidth}
               tooltip="Optionally, specify a custom endpoint for the service"
+              htmlFor="endpoint"
             >
               <Input
-                aria-label="Endpoint"
+                id="endpoint"
                 className={inputWidth}
                 placeholder={props.defaultEndpoint ?? 'https://{service}.{region}.amazonaws.com'}
                 value={options.jsonData.endpoint || ''}
@@ -266,9 +271,10 @@ export const ConnectionConfig: FC<ConnectionConfigProps> = (props: ConnectionCon
             label="Default Region"
             labelWidth={labelWidth}
             tooltip="Specify the region, such as for US West (Oregon) use ` us-west-2 ` as the region."
+            htmlFor="defaultRegion"
           >
             <Select
-              aria-label="Default Region"
+              inputId="defaultRegion"
               className={inputWidth}
               value={regions.find((region) => region.value === options.jsonData.defaultRegion)}
               options={regions}

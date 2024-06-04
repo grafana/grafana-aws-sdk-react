@@ -42,8 +42,7 @@ export const NewConnectionConfig = ({
             htmlFor="authProvider"
           >
             <Select
-              id="authProvider"
-              aria-label="Authentication Provider"
+              inputId="authProvider"
               value={currentProvider}
               options={awsAuthProviderOptions.filter((opt) => awsAllowedAuthProviders.includes(opt.value!))}
               defaultValue={options.jsonData.authType}
@@ -226,8 +225,7 @@ export const NewConnectionConfig = ({
             htmlFor="defaultRegion"
           >
             <Select
-              id="defaultRegion"
-              aria-label="Default Region"
+              inputId="defaultRegion"
               value={regions.find((region) => region.value === options.jsonData.defaultRegion)}
               options={regions}
               defaultValue={options.jsonData.defaultRegion}
