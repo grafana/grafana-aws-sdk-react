@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## v0.3.4
+
+- Associate label with input element in [#85](https://github.com/grafana/grafana-aws-sdk-react/pull/85)
+
 ## v0.3.3
 
 - Fix: broken ESM imports due to `src` in ESM build output path
@@ -11,7 +15,7 @@ All notable changes to this project will be documented in this file.
 
 ## v0.3.2
 
-- Change "Run query" button to "Run queries" im [#77](https://github.com/grafana/grafana-aws-sdk-react/pull/77)
+- Change "Run query" button to "Run queries" in [#77](https://github.com/grafana/grafana-aws-sdk-react/pull/77)
 
 ## v0.3.1
 
