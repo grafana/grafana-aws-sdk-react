@@ -120,6 +120,7 @@ export function ResourceSelector(props: ResourceSelectorProps) {
       {props.newFormStylingEnabled ? (
         <Select
           {...props}
+          id={props.id}
           inputId={props.id}
           aria-label={props.label}
           options={options}
@@ -140,6 +141,7 @@ export function ResourceSelector(props: ResourceSelectorProps) {
           <div data-testid={props['data-testid']} title={props.title}>
             <Select
               {...props}
+              id={props.id}
               inputId={props.id}
               aria-label={props.label}
               options={options}
