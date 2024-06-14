@@ -9,11 +9,11 @@ export function filterSQLQuery(query: SQLQuery): boolean {
   return !!query.rawSQL;
 }
 
-export function applySQLTemplateVariables(
-  query: SQLQuery,
+export function applySQLTemplateVariables<T extends SQLQuery>(
+  query: T,
   scopedVars: ScopedVars,
   getTemplateSrv: () => any
-): SQLQuery {
+): T {
   const templateSrv = getTemplateSrv();
   return {
     ...query,
