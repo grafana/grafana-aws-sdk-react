@@ -121,6 +121,7 @@ export function ResourceSelector(props: ResourceSelectorProps) {
         <Select
           {...props}
           id={props.id}
+          inputId={props.id}
           aria-label={props.label}
           options={options}
           onChange={onChange}
@@ -141,6 +142,7 @@ export function ResourceSelector(props: ResourceSelectorProps) {
             <Select
               {...props}
               id={props.id}
+              inputId={props.id}
               aria-label={props.label}
               options={options}
               onChange={onChange}
