@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## v0.3.5
+
+- Chore: associate label with input element of the `ResourceSelector` component and update applySQLTemplateVariables type in [#88](https://github.com/grafana/grafana-aws-sdk-react/pull/88)
+
 ## v0.3.4
 
 - Associate label with input element in [#85](https://github.com/grafana/grafana-aws-sdk-react/pull/85)
