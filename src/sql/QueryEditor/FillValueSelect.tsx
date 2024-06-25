@@ -1,6 +1,6 @@
 import React from 'react';
 import { DataQuery, SelectableValue } from '@grafana/data';
-import { InlineField, Input, Select } from '@grafana/ui';
+import { Input, Select } from '@grafana/ui';
 import { EditorField } from '@grafana/experimental';
 
 export enum FillValueOptions {

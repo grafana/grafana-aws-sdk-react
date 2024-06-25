@@ -1,6 +1,6 @@
 import React from 'react';
 import { DataQuery, SelectableValue } from '@grafana/data';
-import { InlineField, Select } from '@grafana/ui';
+import { Select } from '@grafana/ui';
 
 export type FormatSelectProps<TQuery extends DataQuery, FormatOptions> = {
   id?: string;
