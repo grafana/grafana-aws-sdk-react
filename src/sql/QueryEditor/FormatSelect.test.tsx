@@ -6,8 +6,7 @@ import { select } from 'react-select-event';
 import { FormatSelect, FormatSelectProps } from './FormatSelect';
 import { SQLQuery } from '../types';
 
-const defaultProps: FormatSelectProps<SQLQuery, SQLOptions> = {
-  newFormStylingEnabled: false,
+const props: FormatSelectProps<SQLQuery, SQLOptions> = {
   query: mockQuery,
   options: [
     {
@@ -24,13 +23,11 @@ const defaultProps: FormatSelectProps<SQLQuery, SQLOptions> = {
 };
 
 describe('FormatSelect', () => {
-  function run(testName: string, props: FormatSelectProps<SQLQuery, SQLOptions>) {
-    describe(testName, () => {
       it('should change the format mode', async () => {
         render(<FormatSelect {...props} />);
         expect(screen.getByText('Table')).toBeInTheDocument();
 
-        const selectEl = screen.getByLabelText(props.newFormStylingEnabled ? 'Format data frames as' : 'Format as');
+        const selectEl = screen.getByLabelText('Format data frames as');
         expect(selectEl).toBeInTheDocument();
         await select(selectEl, 'Time Series', { container: document.body });
 
@@ -38,7 +35,3 @@ describe('FormatSelect', () => {
         expect(props.onRunQuery).toHaveBeenCalled();
       });
     });
-  }
-  run('FormatSelect with newFormStylingEnabled=false', defaultProps);
-  run('FormatSelect with newFormStylingEnabled=true', { ...defaultProps, newFormStylingEnabled: true });
-});

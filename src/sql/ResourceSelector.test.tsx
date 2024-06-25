@@ -5,18 +5,15 @@ import { select } from 'react-select-event';
 import { ResourceSelector, ResourceSelectorProps } from './ResourceSelector';
 import { defaultKey } from './types';
 
-const defaultProps: ResourceSelectorProps = {
+const props: ResourceSelectorProps = {
   id: 'resource',
   label: 'resource',
-  newFormStylingEnabled: false,
   value: null,
   fetch: jest.fn(),
   onChange: jest.fn(),
 };
 
 describe('ResourceSelector', () => {
-  function run(testName: string, props: ResourceSelectorProps) {
-    describe(testName, () => {
       it('should include a default option', () => {
         render(<ResourceSelector {...props} default="foo" value={defaultKey} />);
         expect(screen.queryByText('default (foo)')).toBeInTheDocument();
@@ -53,8 +50,4 @@ describe('ResourceSelector', () => {
         await select(selectEl, 'bar', { container: document.body });
         expect(onChange).toHaveBeenCalledWith({ label: 'bar', value: 'bar' });
       });
-    });
-  }
-  run('ResourceSelector with newFormStylingEnabled=false', defaultProps);
-  run('ResourceSelector with newFormStylingEnabled=true', { ...defaultProps, newFormStylingEnabled: true });
 });

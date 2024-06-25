@@ -10,7 +10,6 @@ export interface ResourceSelectorProps extends SelectCommonProps<string> {
   tooltip?: string;
   hidden?: boolean;
 
-  newFormStylingEnabled?: boolean; // awsDatasourcesNewForStyling feature toggle
   value: string | null;
   dependencies?: DependencyList;
   id: string;
@@ -115,10 +114,7 @@ export function ResourceSelector(props: ResourceSelectorProps) {
     }
   };
 
-  return (
-    <>
-      {props.newFormStylingEnabled ? (
-        <Select
+  return <Select
           {...props}
           id={props.id}
           inputId={props.id}
@@ -130,30 +126,5 @@ export function ResourceSelector(props: ResourceSelectorProps) {
           onOpenMenu={() => props.fetch && onClick()}
           menuShouldPortal={true}
         />
-      ) : (
-        <InlineField
-          label={props.label}
-          labelWidth={props.labelWidth}
-          tooltip={props.tooltip}
-          hidden={props.hidden}
-          htmlFor={props.id}
-        >
-          <div data-testid={props['data-testid']} title={props.title}>
-            <Select
-              {...props}
-              id={props.id}
-              inputId={props.id}
-              aria-label={props.label}
-              options={options}
-              onChange={onChange}
-              isLoading={isLoading}
-              className={props.className || 'min-width-6'}
-              onOpenMenu={() => props.fetch && onClick()}
-              menuShouldPortal={true}
-            />
-          </div>
-        </InlineField>
-      )}
-    </>
-  );
+
 }

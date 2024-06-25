@@ -1,8 +1,8 @@
 import '@testing-library/jest-dom/extend-expect';
 import React from 'react';
 import { render, screen, waitFor } from '@testing-library/react';
-import { AwsAuthDataSourceJsonData, AwsAuthDataSourceSecureJsonData, AwsAuthType } from '../types';
-import { ConnectionConfig, ConnectionConfigProps } from './ConnectionConfig';
+import { AwsAuthDataSourceJsonData, AwsAuthDataSourceSecureJsonData, AwsAuthType, ConnectionConfigProps } from '../types';
+import { ConnectionConfig } from './ConnectionConfig';
 import selectEvent from 'react-select-event';
 import { config } from '@grafana/runtime';
 
@@ -196,7 +196,7 @@ describe('ConnectionConfig', () => {
     config.featureToggles.awsDatasourcesTempCredentials = true;
     config.awsAllowedAuthProviders = [AwsAuthType.GrafanaAssumeRole, AwsAuthType.Credentials];
     const props = getProps();
-    const overwriteOptions = { ...props.options, type: 'grafana-redshift-datasource' };
+    const overwriteOptions = { ...props.options, type: 'some-unsupported-datasource' };
     render(<ConnectionConfig {...props} options={overwriteOptions} />);
     await selectEvent.openMenu(screen.getByLabelText('Authentication Provider'));
     expect(screen.queryByText('Grafana Assume Role')).not.toBeInTheDocument();

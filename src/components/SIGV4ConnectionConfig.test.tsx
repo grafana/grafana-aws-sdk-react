@@ -67,19 +67,19 @@ describe('SIGV4ConnectionConfig', () => {
   it('should map incoming props correctly', () => {
     setup();
     expect(screen.getByText('Credentials file')).toBeInTheDocument();
-    expect(screen.getByLabelText('Assume Role ARN')).toHaveValue('arn:test');
-    expect(screen.getByLabelText('External ID')).toHaveValue('test-id');
+    expect(screen.getByLabelText(/Assume Role ARN/)).toHaveValue('arn:test');
+    expect(screen.getByLabelText(/External ID/)).toHaveValue('test-id');
   });
 
   it('should map changed fields correctly', async () => {
     const onOptionsChange = jest.fn();
     setup(onOptionsChange);
 
-    const labelElement = screen.getByLabelText('Assume Role ARN');
+    const labelElement = screen.getByLabelText(/Assume Role ARN/);
     expect(labelElement).toBeInTheDocument();
     fireEvent.change(labelElement, { target: { value: 'changed-arn' } });
 
-    const externalIdElement = screen.getByLabelText('External ID');
+    const externalIdElement = screen.getByLabelText(/External ID/);
     expect(externalIdElement).toBeInTheDocument();
     fireEvent.change(externalIdElement, { target: { value: 'changed-test-id' } });
 

@@ -5,9 +5,8 @@ import { mockDatasourceOptions } from './__mocks__/datasource';
 import { select } from 'react-select-event';
 import { config } from '@grafana/runtime';
 
-const defaultProps: ConfigSelectProps = {
+const props: ConfigSelectProps = {
   ...mockDatasourceOptions,
-  newFormStylingEnabled: false,
   id: 'select',
   label: 'select-label',
   value: 'foo',
@@ -16,9 +15,7 @@ const defaultProps: ConfigSelectProps = {
   saveOptions: jest.fn(),
 };
 
-describe('SQLTextInput', () => {
-  function run(testName: string, props: ConfigSelectProps) {
-    describe(testName, () => {
+describe('ConfigSelect', () => {
       it('should call onChange with the new value', async () => {
         const fetch = jest.fn().mockResolvedValue(['bar']);
         const onChange = jest.fn();
@@ -53,8 +50,4 @@ describe('SQLTextInput', () => {
   
         expect(selectEl).toBeDisabled();
       });
-    });
-  }
-  run('ConfigSelect with newFormStylingEnabled=false', defaultProps);
-  run('ConfigSelect with newFormStylingEnabled=true', { ...defaultProps, newFormStylingEnabled: true })
 });
