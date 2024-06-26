@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## v0.4.0
+
+- Remove awsDatasourcesNewFormStyling feature toggle in [#90](https://github.com/grafana/grafana-aws-sdk-react/pull/90)
+
 ## v0.3.5
 
 - Chore: associate label with input element of the `ResourceSelector` component and update applySQLTemplateVariables type in [#88](https://github.com/grafana/grafana-aws-sdk-react/pull/88)
