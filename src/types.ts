@@ -42,5 +42,4 @@ export interface ConnectionConfigProps<
   labelWidth?: number;
   inExperimentalAuthComponent?: boolean;
   externalId?: string;
-  newFormStylingEnabled?: boolean;
 }

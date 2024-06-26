@@ -40,7 +40,6 @@ export interface ConfigSelectProps
   width?: number;
   isOptionDisabled?: () => boolean;
   labelWidth?: number;
-  newFormStylingEnabled?: boolean;
 }
 
 export function ConfigSelect(props: ConfigSelectProps) {
@@ -64,7 +63,6 @@ export function ConfigSelect(props: ConfigSelectProps) {
   return (
     <ResourceSelector
       id={props.id}
-      newFormStylingEnabled={props.newFormStylingEnabled}
       label={props.label}
       data-testid={props['data-testid']}
       onChange={props.onChange}

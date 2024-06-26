@@ -6,21 +6,18 @@ import { FillValueSelect, FillValueSelectProps, FillValueOptions } from './FillV
 import { select } from 'react-select-event';
 import { SQLQuery } from '../types';
 
-const defaultProps: FillValueSelectProps<SQLQuery> = {
+const props: FillValueSelectProps<SQLQuery> = {
   query: mockQuery,
-  newFormStylingEnabled: false,
   onChange: jest.fn(),
   onRunQuery: jest.fn(),
 };
 
 describe('FillValueSelect', () => {
-  function run(testName: string, props: FillValueSelectProps<SQLQuery>) {
-    describe(testName, () => {
       it('should change the fill value mode', async () => {
         render(<FillValueSelect {...props} />);
         expect(screen.getByText('Previous Value')).toBeInTheDocument();
 
-        const selectEl = screen.getByLabelText(props.newFormStylingEnabled ? 'Fill with' : 'Fill value');
+        const selectEl = screen.getByLabelText('Fill with');
         expect(selectEl).toBeInTheDocument();
         await select(selectEl, 'NULL', { container: document.body });
 
@@ -40,8 +37,4 @@ describe('FillValueSelect', () => {
         });
         expect(props.onRunQuery).toHaveBeenCalled();
       });
-    });
-  }
-  run('FillValueSelect with newFormStylingEnabled=false', defaultProps);
-  run('FillValueSelect with newFormStylingEnabled=true', { ...defaultProps, newFormStylingEnabled: true });
 });
