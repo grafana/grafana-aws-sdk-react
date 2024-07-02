@@ -14,7 +14,7 @@ export interface Props<
   extraHeaderElementLeft?: JSX.Element;
   extraHeaderElementRight?: JSX.Element;
   enableRunButton: boolean;
-  cancel: (target: TQuery) => void;
+  cancel?: (target: TQuery) => void;
   onRunQuery: () => void;
 }
 
