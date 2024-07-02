@@ -1,8 +1,7 @@
-import React from 'react';
+import React, { FormEvent } from 'react';
 import { DataSourcePluginOptionsEditorProps } from '@grafana/data';
 import { AwsAuthDataSourceSecureJsonData } from '../../types';
 import { InlineField, Input } from '@grafana/ui';
-import { FormEvent } from 'react-dom/node_modules/@types/react';
 import { DEFAULT_LABEL_WIDTH } from '../../components/ConnectionConfig';
 
 export interface InlineInputProps extends DataSourcePluginOptionsEditorProps<{}, AwsAuthDataSourceSecureJsonData> {
