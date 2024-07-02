@@ -41,7 +41,9 @@ export function QueryEditorHeader<
           onRunQuery={onRunQuery}
           enableRun={enableRunButton}
           query={query}
-          onCancelQuery={cancel}
+          onCancelQuery={(target: TQuery) => {
+            cancel?.(target);
+          }}
           state={data?.state}
         />
       ) : (
