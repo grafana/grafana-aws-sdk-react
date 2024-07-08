@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## v0.4.1
+
+- Update grafana and react dependencies in [#91](https://github.com/grafana/grafana-aws-sdk-react/pull/92)
+- Update regions and display custom region in config in [#92](https://github.com/grafana/grafana-aws-sdk-react/pull/92)
+
 ## v0.4.0
 
 - Remove awsDatasourcesNewFormStyling feature toggle in [#90](https://github.com/grafana/grafana-aws-sdk-react/pull/90)
