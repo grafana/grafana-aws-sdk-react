@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## v0.4.2
+
+- Bump fast-loops from 1.1.3 to 1.1.4 in [#94](https://github.com/grafana/grafana-aws-sdk-react/pull/94)
+
 ## v0.4.1
 
 - Update grafana and react dependencies in [#91](https://github.com/grafana/grafana-aws-sdk-react/pull/92)
