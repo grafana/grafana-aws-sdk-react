@@ -1,6 +1,5 @@
-import '@testing-library/jest-dom/extend-expect';
 import React from 'react';
-import { render, screen, waitFor } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import { mockQuery } from './__mocks__/query';
 import { QueryCodeEditor } from './QueryCodeEditor';
 
@@ -18,8 +17,6 @@ describe('QueryCodeEditor', () => {
   // so we cannot test a lot here
   it('should render', async () => {
     render(<QueryCodeEditor {...props} />);
-    await waitFor(() => {
-      expect(screen.getByText('Loading...')).toBeInTheDocument();
-    });
+    expect(await screen.findByTestId('Spinner')).toBeDefined();
   });
 });

@@ -1,4 +1,4 @@
-import { ScopedVars, VariableModel } from '@grafana/data';
+import { ScopedVars, TypedVariableModel } from '@grafana/data';
 import { SQLQuery } from '../types';
 import { CodeEditorSuggestionItem, CodeEditorSuggestionItemKind } from '@grafana/ui';
 
@@ -39,7 +39,7 @@ function quoteLiteral(value: any) {
 export const appendTemplateVariablesAsSuggestions = (getTemplateSrv: () => any, sugs: CodeEditorSuggestionItem[]) => {
   const templateSrv = getTemplateSrv();
   const templateSugs: CodeEditorSuggestionItem[] = [];
-  templateSrv.getVariables().forEach((variable: VariableModel) => {
+  templateSrv.getVariables().forEach((variable: TypedVariableModel) => {
     const label = '$' + variable.name;
     let val = templateSrv.replace(label);
     if (val === label) {

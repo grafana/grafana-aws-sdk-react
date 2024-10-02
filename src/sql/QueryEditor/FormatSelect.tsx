@@ -1,5 +1,6 @@
 import React from 'react';
-import { DataQuery, SelectableValue } from '@grafana/data';
+import { SelectableValue } from '@grafana/data';
+import { DataQuery } from '@grafana/schema';
 import { Select } from '@grafana/ui';
 
 export type FormatSelectProps<TQuery extends DataQuery, FormatOptions> = {
@@ -20,12 +21,14 @@ export function FormatSelect<TQuery extends DataQuery & Record<string, any>, For
     });
     props.onRunQuery?.();
   };
-  return <Select
-          aria-label="Format data frames as"
-          id={props.id ?? 'formatAs'}
-          options={props.options}
-          value={props.query.format}
-          onChange={onChangeFormat}
-          menuShouldPortal={true}
-        />
+  return (
+    <Select
+      aria-label="Format data frames as"
+      id={props.id ?? 'formatAs'}
+      options={props.options}
+      value={props.query.format}
+      onChange={onChangeFormat}
+      menuShouldPortal={true}
+    />
+  );
 }

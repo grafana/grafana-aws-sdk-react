@@ -1,7 +1,11 @@
-import '@testing-library/jest-dom/extend-expect';
 import React from 'react';
 import { render, screen, waitFor } from '@testing-library/react';
-import { AwsAuthDataSourceJsonData, AwsAuthDataSourceSecureJsonData, AwsAuthType, ConnectionConfigProps } from '../types';
+import {
+  AwsAuthDataSourceJsonData,
+  AwsAuthDataSourceSecureJsonData,
+  AwsAuthType,
+  ConnectionConfigProps,
+} from '../types';
 import { ConnectionConfig } from './ConnectionConfig';
 import selectEvent from 'react-select-event';
 import { config } from '@grafana/runtime';

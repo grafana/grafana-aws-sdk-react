@@ -2,7 +2,7 @@ import { defaults } from 'lodash';
 
 import React, { useRef, useEffect } from 'react';
 import { CodeEditor, CodeEditorSuggestionItem, CodeEditorMonacoOptions } from '@grafana/ui';
-import { DataQuery } from '@grafana/data';
+import { DataQuery } from '@grafana/schema';
 
 type EditorProps = {
   width?: number | string;
