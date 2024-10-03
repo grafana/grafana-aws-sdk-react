@@ -1,6 +1,7 @@
 import React from 'react';
 
-import { DataQuery, DataSourceApi, DataSourceJsonData, LoadingState, QueryEditorProps } from '@grafana/data';
+import { DataSourceApi, DataSourceJsonData, LoadingState, QueryEditorProps } from '@grafana/data';
+import { DataQuery } from '@grafana/schema';
 import { EditorHeader, FlexItem } from '@grafana/experimental';
 import { Button } from '@grafana/ui';
 import { RunQueryButtons } from '@grafana/async-query-data';
@@ -11,8 +12,8 @@ export interface Props<
   JsonData extends DataSourceJsonData
 > extends QueryEditorProps<Datasource, TQuery, JsonData> {
   showAsyncQueryButtons?: boolean;
-  extraHeaderElementLeft?: JSX.Element;
-  extraHeaderElementRight?: JSX.Element;
+  extraHeaderElementLeft?: React.JSX.Element;
+  extraHeaderElementRight?: React.JSX.Element;
   enableRunButton: boolean;
   cancel?: (target: TQuery) => void;
   onRunQuery: () => void;
@@ -31,7 +32,7 @@ export function QueryEditorHeader<
   onRunQuery,
   data,
   cancel,
-}: Props<Datasource, TQuery, JsonData>): JSX.Element {
+}: Props<Datasource, TQuery, JsonData>): React.JSX.Element {
   return (
     <EditorHeader>
       {extraHeaderElementLeft}

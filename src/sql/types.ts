@@ -1,4 +1,4 @@
-import { DataQuery } from '@grafana/data';
+import { DataQuery } from '@grafana/schema';
 import { FillValueOptions } from './QueryEditor/FillValueSelect';
 
 export const defaultKey = '__default';

@@ -1,5 +1,8 @@
 // enables assertions such as toBeInTheDocument to be used in our tests
 import '@testing-library/jest-dom';
+import { TextEncoder, TextDecoder } from 'util';
+
+Object.assign(global, { TextDecoder, TextEncoder });
 
 // https://jestjs.io/docs/manual-mocks#mocking-methods-which-are-not-implemented-in-jsdom
 Object.defineProperty(global, 'matchMedia', {

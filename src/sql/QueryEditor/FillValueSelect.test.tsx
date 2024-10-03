@@ -1,4 +1,4 @@
-import '@testing-library/jest-dom/extend-expect';
+import '@testing-library/jest-dom';
 import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { mockQuery } from './__mocks__/query';
@@ -13,28 +13,28 @@ const props: FillValueSelectProps<SQLQuery> = {
 };
 
 describe('FillValueSelect', () => {
-      it('should change the fill value mode', async () => {
-        render(<FillValueSelect {...props} />);
-        expect(screen.getByText('Previous Value')).toBeInTheDocument();
+  it('should change the fill value mode', async () => {
+    render(<FillValueSelect {...props} />);
+    expect(screen.getByText('Previous Value')).toBeInTheDocument();
 
-        const selectEl = screen.getByLabelText('Fill with');
-        expect(selectEl).toBeInTheDocument();
-        await select(selectEl, 'NULL', { container: document.body });
+    const selectEl = screen.getByLabelText('Fill with');
+    expect(selectEl).toBeInTheDocument();
+    await select(selectEl, 'NULL', { container: document.body });
 
-        expect(props.onChange).toHaveBeenCalledWith({ ...props.query, fillMode: { mode: FillValueOptions.Null } });
-        expect(props.onRunQuery).toHaveBeenCalled();
-      });
+    expect(props.onChange).toHaveBeenCalledWith({ ...props.query, fillMode: { mode: FillValueOptions.Null } });
+    expect(props.onRunQuery).toHaveBeenCalled();
+  });
 
-      it('should change the fill value for a custom value', async () => {
-        render(<FillValueSelect {...props} query={{ ...mockQuery, fillMode: { mode: FillValueOptions.Value } }} />);
+  it('should change the fill value for a custom value', async () => {
+    render(<FillValueSelect {...props} query={{ ...mockQuery, fillMode: { mode: FillValueOptions.Value } }} />);
 
-        const input = screen.getByLabelText('Value');
-        fireEvent.change(input, { target: { value: '2', valueAsNumber: 2 } });
+    const input = screen.getByLabelText('Value');
+    fireEvent.change(input, { target: { value: '2', valueAsNumber: 2 } });
 
-        expect(props.onChange).toHaveBeenCalledWith({
-          ...props.query,
-          fillMode: { mode: FillValueOptions.Value, value: 2 },
-        });
-        expect(props.onRunQuery).toHaveBeenCalled();
-      });
+    expect(props.onChange).toHaveBeenCalledWith({
+      ...props.query,
+      fillMode: { mode: FillValueOptions.Value, value: 2 },
+    });
+    expect(props.onRunQuery).toHaveBeenCalled();
+  });
 });

@@ -2,7 +2,8 @@ import { fireEvent, render, screen } from '@testing-library/react';
 import React from 'react';
 import { mockQuery } from './__mocks__/query';
 import { Props as QueryEditorHeaderProps, QueryEditorHeader } from './QueryEditorHeader';
-import { DataQuery, DataSourceApi, DataSourceJsonData, LoadingState, PanelData } from '@grafana/data';
+import { DataSourceApi, DataSourceJsonData, LoadingState, PanelData } from '@grafana/data';
+import { DataQuery } from '@grafana/schema';
 
 const props: QueryEditorHeaderProps<DataSourceApi, DataQuery, DataSourceJsonData> = {
   query: mockQuery,
@@ -55,6 +56,6 @@ describe('QueryEditorHeader', () => {
     const runButton = screen.getByRole('button', { name: 'Run queries' });
     expect(runButton).toBeInTheDocument();
     fireEvent.click(runButton);
-    expect(onRunQuery).toBeCalledTimes(1);
+    expect(onRunQuery).toHaveBeenCalledTimes(1);
   });
 });
