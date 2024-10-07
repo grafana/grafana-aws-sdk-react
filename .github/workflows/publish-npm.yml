@@ -13,12 +13,12 @@ jobs:
       version_changed: ${{ steps.version_check.outputs.changed }}
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
         with:
           ref: main
       # limit releases to version changes - https://github.com/EndBug/version-check
       - name: Check version changes
-        uses: EndBug/version-check@v1
+        uses: EndBug/version-check@v2
         id: version_check
         with:
           file-url: https://unpkg.com/@grafana/aws-sdk@latest/package.json
@@ -30,7 +30,7 @@ jobs:
 
       - name: Setup .npmrc file for NPM registry
         if: steps.version_check.outputs.changed == 'true'
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version-file: '.nvmrc'
           registry-url: 'https://registry.npmjs.org'
@@ -51,7 +51,7 @@ jobs:
 
       - name: Setup .npmrc file for GitHub Packages
         if: steps.version_check.outputs.changed == 'true'
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version-file: '.nvmrc'
           registry-url: 'https://npm.pkg.github.com'
@@ -69,10 +69,10 @@ jobs:
     if: needs.npm-publish.outputs.version_changed == 'true'
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
       - name: Create Release Notes
-        uses: actions/github-script@v6.2.0
+        uses: actions/github-script@v7.0.1
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
