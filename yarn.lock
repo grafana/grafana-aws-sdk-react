@@ -1104,7 +1104,7 @@
     eslint-plugin-react-hooks "4.6.0"
     typescript "5.2.2"
 
-"@grafana/experimental@2.1.2":
+"@grafana/experimental@^2.1.2":
   version "2.1.2"
   resolved "https://registry.yarnpkg.com/@grafana/experimental/-/experimental-2.1.2.tgz#bf4d66495bbd0d15e178fcd48e551722aa155355"
   integrity sha512-P25G9nOuY4wdksksbBUtFxZlO5Mjchlbn2YXhExITszsVq+Cdgqdo3qezUi+kdiSDwFiJ/RzR4VMJqgZ0j9TPQ==

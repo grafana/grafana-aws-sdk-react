@@ -28,7 +28,7 @@
   "license": "Apache-2.0",
   "dependencies": {
     "@grafana/async-query-data": "0.2.0",
-    "@grafana/experimental": "2.1.2"
+    "@grafana/experimental": "^2.1.2"
   },
   "devDependencies": {
     "@grafana/data": "11.2.2",
