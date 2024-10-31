@@ -31,7 +31,7 @@ steps:
     image: grafana/grafana-plugin-ci:1.9.5
     commands:
       - . ~/.init-nvm.sh
-      - yarn eslint ./src --ext .js,.jsx,.ts,.tsx
+      - yarn lint
       - yarn build
       - yarn test:ci
     depends_on:
@@ -40,6 +40,6 @@ steps:
 
 ---
 kind: signature
-hmac: e3f399d799348ebebae40890fd1bf5845b884579354ca2e5d37e2851440dbf06
+hmac: a2e180c09fe108e09838e4c44aa5648124fff138cb0372080677dcdd14e49f9f
 
 ...
