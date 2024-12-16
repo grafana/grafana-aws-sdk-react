@@ -15,6 +15,7 @@
     "testid",
     "Datasources",
     "Datasource",
-    "typecheck"
+    "typecheck",
+    "tibdex"
   ]
 }
