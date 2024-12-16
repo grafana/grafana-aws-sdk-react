@@ -16,6 +16,9 @@
     "Datasources",
     "Datasource",
     "typecheck",
-    "tibdex"
+    "tibdex",
+    "eslintcache",
+    "lefthook",
+    "gofmt"
   ]
 }
