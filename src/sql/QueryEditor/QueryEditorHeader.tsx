@@ -1,8 +1,7 @@
 import React from 'react';
 
-import { DataSourceApi, DataSourceJsonData, LoadingState, QueryEditorProps } from '@grafana/data';
-import { DataQuery } from '@grafana/schema';
-import { EditorHeader, FlexItem } from '@grafana/experimental';
+import { DataQuery, DataSourceApi, DataSourceJsonData, LoadingState, QueryEditorProps } from '@grafana/data';
+import { EditorHeader, FlexItem } from '@grafana/plugin-ui';
 import { Button } from '@grafana/ui';
 import { RunQueryButtons } from '@grafana/async-query-data';
 

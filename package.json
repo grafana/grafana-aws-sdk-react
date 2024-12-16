@@ -28,7 +28,7 @@
   "license": "Apache-2.0",
   "dependencies": {
     "@grafana/async-query-data": "0.3.0",
-    "@grafana/experimental": "^2.1.2"
+    "@grafana/plugin-ui": "^0.9.3"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3.1.0",

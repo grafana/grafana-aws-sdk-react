@@ -11,7 +11,7 @@ import { standardRegions } from '../regions';
 import { AwsAuthType, ConnectionConfigProps } from '../types';
 import { awsAuthProviderOptions } from '../providers';
 import { assumeRoleInstructionsStyle } from './ConnectionConfig.styles';
-import { ConfigSection, ConfigSubSection } from '@grafana/experimental';
+import { ConfigSection, ConfigSubSection } from '@grafana/plugin-ui';
 
 export const DEFAULT_LABEL_WIDTH = 28;
 const DS_TYPES_THAT_SUPPORT_TEMP_CREDS = ['cloudwatch', 'grafana-athena-datasource'];
