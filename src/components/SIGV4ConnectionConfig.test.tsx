@@ -3,7 +3,7 @@ import React from 'react';
 import { fireEvent, render, screen } from '@testing-library/react';
 import { AwsAuthType } from '../types';
 import { SIGV4ConnectionConfig } from './SIGV4ConnectionConfig';
-import {config} from '@grafana/runtime'
+import { config } from '@grafana/runtime';
 
 jest.mock('@grafana/runtime', () => ({
   ...jest.requireActual('@grafana/runtime'),
@@ -11,8 +11,8 @@ jest.mock('@grafana/runtime', () => ({
     awsAllowedAuthProviders: [AwsAuthType.Credentials, AwsAuthType.Keys],
     awsAssumeRoleEnabled: true,
     featureToggles: {
-      awsDatasourcesTempCredentials: false
-    }
+      awsDatasourcesTempCredentials: false,
+    },
   },
 }));
 
@@ -20,7 +20,7 @@ describe('SIGV4ConnectionConfig', () => {
   beforeEach(() => {
     config.awsAllowedAuthProviders = [AwsAuthType.Credentials, AwsAuthType.Keys];
     config.awsAssumeRoleEnabled = true;
-    config.featureToggles.awsDatasourcesTempCredentials = false
+    config.featureToggles.awsDatasourcesTempCredentials = false;
   });
   const setup = (onOptionsChange?: () => {}) => {
     const props: DataSourcePluginOptionsEditorProps<any, any> = {

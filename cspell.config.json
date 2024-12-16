@@ -1,16 +1,11 @@
 {
-  "ignorePaths": [
-    ".github/**",
-    "node_modules/**",
-    "dist/**",
-    "yarn.lock"
-  ],
+  "ignorePaths": [".github/**", "node_modules/**", "dist/**", "yarn.lock"],
   "words": [
     "SIGV",
     "isob",
     "Creds",
     "CREDS",
-    "opensearch", 
+    "opensearch",
     "esbuild",
     "testid",
     "Datasources",
@@ -19,6 +14,8 @@
     "tibdex",
     "eslintcache",
     "lefthook",
-    "gofmt"
+    "gofmt",
+    "hmac",
+    "grabpl"
   ]
 }

@@ -22,15 +22,15 @@ const props: FormatSelectProps<SQLQuery, SQLOptions> = {
 };
 
 describe('FormatSelect', () => {
-      it('should change the format mode', async () => {
-        render(<FormatSelect {...props} />);
-        expect(screen.getByText('Table')).toBeInTheDocument();
+  it('should change the format mode', async () => {
+    render(<FormatSelect {...props} />);
+    expect(screen.getByText('Table')).toBeInTheDocument();
 
-        const selectEl = screen.getByLabelText('Format data frames as');
-        expect(selectEl).toBeInTheDocument();
-        await select(selectEl, 'Time Series', { container: document.body });
+    const selectEl = screen.getByLabelText('Format data frames as');
+    expect(selectEl).toBeInTheDocument();
+    await select(selectEl, 'Time Series', { container: document.body });
 
-        expect(props.onChange).toHaveBeenCalledWith({ ...props.query, format: SQLOptions.TimeSeries });
-        expect(props.onRunQuery).toHaveBeenCalled();
-      });
-    });
+    expect(props.onChange).toHaveBeenCalledWith({ ...props.query, format: SQLOptions.TimeSeries });
+    expect(props.onRunQuery).toHaveBeenCalled();
+  });
+});

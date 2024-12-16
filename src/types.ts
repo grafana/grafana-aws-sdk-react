@@ -9,7 +9,7 @@ export enum AwsAuthType {
    * @deprecated use default
    */
   ARN = 'arn',
-  GrafanaAssumeRole = 'grafana_assume_role'
+  GrafanaAssumeRole = 'grafana_assume_role',
 }
 
 export interface AwsAuthDataSourceJsonData extends DataSourceJsonData {
@@ -31,7 +31,7 @@ export type AwsAuthDataSourceSettings = DataSourceSettings<AwsAuthDataSourceJson
 
 export interface ConnectionConfigProps<
   J extends AwsAuthDataSourceJsonData = AwsAuthDataSourceJsonData,
-  S = AwsAuthDataSourceSecureJsonData
+  S = AwsAuthDataSourceSecureJsonData,
 > extends DataSourcePluginOptionsEditorProps<J, S> {
   standardRegions?: string[];
   loadRegions?: () => Promise<string[]>;
