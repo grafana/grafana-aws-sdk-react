@@ -7,9 +7,5 @@ pre-commit:
         yarn lint {staged_files}
         yarn prettier --write {staged_files}
       stage_fixed: true
-    backend-format:
-      glob: '*pkg/**/*.go'
-      run: gofmt -w -s {staged_files}
-      stage_fixed: true
     spellcheck:
       run: yarn spellcheck {staged_files}
