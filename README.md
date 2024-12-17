@@ -2,6 +2,10 @@
 
 This is a common package that can be used for all amazon plugins.
 
+## Compatibility
+
+@grafana/aws-sdk-react version >=0.7.0 is not compatible with Grafana versions <=10.3.x
+
 ## Frontend configuration
 
 see the ./src folder

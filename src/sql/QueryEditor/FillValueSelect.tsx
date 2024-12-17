@@ -2,7 +2,7 @@ import React from 'react';
 import { SelectableValue } from '@grafana/data';
 import { DataQuery } from '@grafana/schema';
 import { Input, Select } from '@grafana/ui';
-import { EditorField } from '@grafana/experimental';
+import { EditorField } from '@grafana/plugin-ui';
 
 export enum FillValueOptions {
   Previous,

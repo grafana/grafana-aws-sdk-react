@@ -86,11 +86,11 @@ export function ConfigSelect(props: ConfigSelectProps) {
       menuPlacement={props.menuPlacement}
       menuPosition={props.menuPosition}
       noOptionsMessage={props.noOptionsMessage}
+      placeholder={props.placeholder}
+      width={props.width}
       onBlur={props.onBlur}
       onCreateOption={props.onCreateOption}
       onInputChange={props.onInputChange}
-      placeholder={props.placeholder}
-      width={props.width}
       isOptionDisabled={props.isOptionDisabled}
       {...commonProps}
     />

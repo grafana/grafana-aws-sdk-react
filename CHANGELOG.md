@@ -2,6 +2,38 @@
 
 All notable changes to this project will be documented in this file.
 
+## v.0.6.0
+
+- Replace @grafana/experimental with @grafana/plugin-ui
+- Chore: add dependabot in [#97](https://github.com/grafana/grafana-aws-sdk-react/pull/97)
+- Dependency updates in [#98](https://github.com/grafana/grafana-aws-sdk-react/pull/9899), [#99](https://github.com/grafana/grafana-aws-sdk-react/pull/), [#102](https://github.com/grafana/grafana-aws-sdk-react/pull/102)
+  - actions/checkout from 2 to 4
+  - tibdex/github-app-token from 1.8.0 to 2.1.0
+  - EndBug/version-check from 1 to 2
+  - actions/setup-node from 3 to 4
+  - actions/github-script from 6.2.0 to 7.0.1
+  - @grafana/experimental from 2.1.1 to 2.1.2
+  - @types/node from 22.7.4 to 22.7.5
+  - @types/react-dom from 18.3.0 to 18.3.1
+  - cspell from 8.14.4 to 8.15.2
+  - @grafana/data from 11.2.2 to 11.3.0
+  - @grafana/eslint-config from 7.0.0 to 8.0.0
+  - @grafana/runtime from 11.2.2 to 11.3.0
+  - @grafana/ui from 11.2.2 to 11.3.0
+  - @swc/core from 1.7.28 to 1.8.0
+  - @testing-library/jest-dom from 6.5.0 to 6.6.3
+  - @types/jest from 29.5.13 to 29.5.14
+  - @types/lodash from 4.17.10 to 4.17.13
+  - @types/node from 22.7.5 to 22.8.7
+  - @types/react from 18.3.11 to 18.3.12
+  - cspell from 8.15.2 to 8.15.7
+  - rollup from 4.24.0 to 4.24.4
+  - @grafana/async-query-data 0.2.0 0.3.0
+  - @eslint/js 9.13.0 9.14.0
+  - @stylistic/eslint-plugin-ts 2.10.0 2.10.1
+  - @swc/jest 0.2.36 0.2.37
+  - eslint 9.13.0 9.14.0
+
 ## v0.5.0
 
 - Chore: update dependencies in [#96](https://github.com/grafana/grafana-aws-sdk-react/pull/96)
