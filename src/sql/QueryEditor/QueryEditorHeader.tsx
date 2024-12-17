@@ -8,7 +8,7 @@ import { RunQueryButtons } from '@grafana/async-query-data';
 export interface Props<
   Datasource extends DataSourceApi<TQuery, JsonData>,
   TQuery extends DataQuery,
-  JsonData extends DataSourceJsonData
+  JsonData extends DataSourceJsonData,
 > extends QueryEditorProps<Datasource, TQuery, JsonData> {
   showAsyncQueryButtons?: boolean;
   extraHeaderElementLeft?: React.JSX.Element;
@@ -21,7 +21,7 @@ export interface Props<
 export function QueryEditorHeader<
   Datasource extends DataSourceApi<TQuery, JsonData>,
   TQuery extends DataQuery,
-  JsonData extends DataSourceJsonData
+  JsonData extends DataSourceJsonData,
 >({
   query,
   showAsyncQueryButtons,

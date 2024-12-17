@@ -6,6 +6,9 @@ cypress/screenshots/actual
 cypress/videos/
 dist/
 compiled/
+
 yarn-error.log
 .idea/
 .DS_Store
+
+.eslintcache

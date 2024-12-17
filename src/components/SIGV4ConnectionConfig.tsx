@@ -6,11 +6,9 @@ import { AwsAuthDataSourceSecureJsonData, AwsAuthDataSourceJsonData, ConnectionC
 
 export interface SIGV4ConnectionConfigProps extends DataSourcePluginOptionsEditorProps<any, any> {
   inExperimentalAuthComponent?: boolean;
-};
+}
 
-export const SIGV4ConnectionConfig: React.FC<SIGV4ConnectionConfigProps> = (
-  props: SIGV4ConnectionConfigProps
-) => {
+export const SIGV4ConnectionConfig: React.FC<SIGV4ConnectionConfigProps> = (props: SIGV4ConnectionConfigProps) => {
   const { onOptionsChange, options } = props;
 
   // Map HttpSettings props to ConnectionConfigProps

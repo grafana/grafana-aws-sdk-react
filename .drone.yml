@@ -41,5 +41,3 @@ steps:
 ---
 kind: signature
 hmac: a2e180c09fe108e09838e4c44aa5648124fff138cb0372080677dcdd14e49f9f
-
-...

@@ -5894,6 +5894,72 @@ kleur@^3.0.3:
   resolved "https://registry.yarnpkg.com/kleur/-/kleur-3.0.3.tgz#a79c9ecc86ee1ce3fa6206d1216c501f147fc07e"
   integrity sha512-eTIzlVOSUR+JxdDFepEYcBMtZ9Qqdef+rnzWdRZuMbOywu5tO2w2N7rqjoANZ5k9vywhL6Br1VRjUIgTQx4E8w==
 
+lefthook-darwin-arm64@1.9.2:
+  version "1.9.2"
+  resolved "https://registry.yarnpkg.com/lefthook-darwin-arm64/-/lefthook-darwin-arm64-1.9.2.tgz#7d280fe30b184e1cf209052df4497723ea34a412"
+  integrity sha512-kWcSqAdGu5MAtxdLBpxg8H+p4d/pO7tA7+3Q1Cj9NM+c0L3R2ZefGNStGF6Ftbu8grkpz9/jCD588O9PHjsVfw==
+
+lefthook-darwin-x64@1.9.2:
+  version "1.9.2"
+  resolved "https://registry.yarnpkg.com/lefthook-darwin-x64/-/lefthook-darwin-x64-1.9.2.tgz#837ee47ecb53eed1b3906d1e58194f7ec9c0354c"
+  integrity sha512-M4zspEhp0uXaIEVkcPFYayxElFzFhhSfEk29FMhxZOfbmZYPUSYaSsTHgb7oeR0O0/zcMTVDk4nNWsBp2Jpx5A==
+
+lefthook-freebsd-arm64@1.9.2:
+  version "1.9.2"
+  resolved "https://registry.yarnpkg.com/lefthook-freebsd-arm64/-/lefthook-freebsd-arm64-1.9.2.tgz#a80f4409e6ce9a9e05ccd19519d8f9569a817758"
+  integrity sha512-7Grb+wdY99Iuorw9aUu+zYKdkEaQs6OVGn4jgav+AyBSxJA0WZmXgdmZqd6+LuRVYn8JRO8bER8Tu4QUa1fSxg==
+
+lefthook-freebsd-x64@1.9.2:
+  version "1.9.2"
+  resolved "https://registry.yarnpkg.com/lefthook-freebsd-x64/-/lefthook-freebsd-x64-1.9.2.tgz#f28ab005b95e6bbe3b065e0644d107eef1df9b6b"
+  integrity sha512-tMBN//hqHMUJ9v7k9W3l9aMEBw//enEX+2eQLcvDJSuEE+J3AUbNg9YA5kTpVsDuafg10ziJXAuGD0kYh2ubww==
+
+lefthook-linux-arm64@1.9.2:
+  version "1.9.2"
+  resolved "https://registry.yarnpkg.com/lefthook-linux-arm64/-/lefthook-linux-arm64-1.9.2.tgz#847d28b7498cd8720488b292e0eb6c104987c56f"
+  integrity sha512-U16CUCaQSRQTbjqvrsJrwppCK4d/IQjMimfC/SwAEreXr7WkBiekV+Gv+fytEnVHJTCSb5MajJTV+WpBsg6jGg==
+
+lefthook-linux-x64@1.9.2:
+  version "1.9.2"
+  resolved "https://registry.yarnpkg.com/lefthook-linux-x64/-/lefthook-linux-x64-1.9.2.tgz#2707cfd6e4cac4fa1fbec3f8bbd81632355d4fb6"
+  integrity sha512-lkEes30MquDhiIrNQ61CfNvGLCN39d8PZ2S/dwLMJBtTH7qfVqXu8UR3KhKEDD1h43cEb4pnIeO2BJUZyn/FNw==
+
+lefthook-openbsd-arm64@1.9.2:
+  version "1.9.2"
+  resolved "https://registry.yarnpkg.com/lefthook-openbsd-arm64/-/lefthook-openbsd-arm64-1.9.2.tgz#998f579495d2dd5ab04b8583db2e4cd2d278a93f"
+  integrity sha512-UJKcL8Iiga8GetYqXqGXy6OeIhtNGim8PHQZH4nfR70s6TPvTvBEGvf48mvfwRyXt8t6aUvz1oyVvRQSdXETug==
+
+lefthook-openbsd-x64@1.9.2:
+  version "1.9.2"
+  resolved "https://registry.yarnpkg.com/lefthook-openbsd-x64/-/lefthook-openbsd-x64-1.9.2.tgz#c538554d6fed779395501cbd21a2b732c5500cfc"
+  integrity sha512-CLS119Fn91mZ2U7ug3fjYMfM7rvwB7gwpDUbuQlEPnVsHJOtaIpu+cmhnKKtU6b4B6r5ETMwhc5dDt/tS5curQ==
+
+lefthook-windows-arm64@1.9.2:
+  version "1.9.2"
+  resolved "https://registry.yarnpkg.com/lefthook-windows-arm64/-/lefthook-windows-arm64-1.9.2.tgz#b7e6d552295167edbcbc2ce6b04b56a86acc7e4d"
+  integrity sha512-MlN2EnYNF6RUMTGX4csJnHq/J+werlerQsUcYfZrs+TruXCm4MLjwO9Q7vShTws3bsCoeDZnacNTVESQpZG6Lg==
+
+lefthook-windows-x64@1.9.2:
+  version "1.9.2"
+  resolved "https://registry.yarnpkg.com/lefthook-windows-x64/-/lefthook-windows-x64-1.9.2.tgz#459904fe083a78402fe5f50c387fd0e95c1c4ed8"
+  integrity sha512-7gl1L3qj6xWsqsYJ/ACRDUJruMWLqIRGcI66RiAEnQ3aSnnk0FLCVxIyMwecgW3IWY1O2C69EXV4Og7/0l9JVQ==
+
+lefthook@^1.9.2:
+  version "1.9.2"
+  resolved "https://registry.yarnpkg.com/lefthook/-/lefthook-1.9.2.tgz#0cac904e048f5e48a5157ae59df048e8cf72729e"
+  integrity sha512-boUWdXdT6MUPghZuuX64xXbG7u69fcgkD6vNEjoxh3Gll6o6MfY/ITpj/HrRAUVym1jWXB0Z298qL789OD+dZw==
+  optionalDependencies:
+    lefthook-darwin-arm64 "1.9.2"
+    lefthook-darwin-x64 "1.9.2"
+    lefthook-freebsd-arm64 "1.9.2"
+    lefthook-freebsd-x64 "1.9.2"
+    lefthook-linux-arm64 "1.9.2"
+    lefthook-linux-x64 "1.9.2"
+    lefthook-openbsd-arm64 "1.9.2"
+    lefthook-openbsd-x64 "1.9.2"
+    lefthook-windows-arm64 "1.9.2"
+    lefthook-windows-x64 "1.9.2"
+
 lerc@^3.0.0:
   version "3.0.0"
   resolved "https://registry.yarnpkg.com/lerc/-/lerc-3.0.0.tgz#36f36fbd4ba46f0abf4833799fff2e7d6865f5cb"
@@ -6496,6 +6562,11 @@ prelude-ls@^1.2.1:
   version "1.2.1"
   resolved "https://registry.yarnpkg.com/prelude-ls/-/prelude-ls-1.2.1.tgz#debc6489d7a6e6b0e7611888cec880337d316396"
   integrity sha512-vkcDPrRZo1QZLbn5RLGPpg/WmIQ65qoWWhcGKf/b5eplkkarX0m9z8ppCat4mlOqUsWpyNuYgO3VRyrYHSzX5g==
+
+prettier@^3.4.2:
+  version "3.4.2"
+  resolved "https://registry.yarnpkg.com/prettier/-/prettier-3.4.2.tgz#a5ce1fb522a588bf2b78ca44c6e6fe5aa5a2b13f"
+  integrity sha512-e9MewbtFo+Fevyuxn/4rrcDAaq0IYxPGLvObpQjiZBMAzB9IGmzlnG9RZy3FFas+eBMu2vA0CszMeduow5dIuQ==
 
 pretty-format@^27.0.2:
   version "27.5.1"

@@ -114,17 +114,18 @@ export function ResourceSelector(props: ResourceSelectorProps) {
     }
   };
 
-  return <Select
-          {...props}
-          id={props.id}
-          inputId={props.id}
-          aria-label={props.label}
-          options={options}
-          onChange={onChange}
-          isLoading={isLoading}
-          className={props.className || 'min-width-6'}
-          onOpenMenu={() => props.fetch && onClick()}
-          menuShouldPortal={true}
-        />
-
+  return (
+    <Select
+      {...props}
+      id={props.id}
+      inputId={props.id}
+      aria-label={props.label}
+      options={options}
+      onChange={onChange}
+      isLoading={isLoading}
+      className={props.className || 'min-width-6'}
+      onOpenMenu={() => props.fetch && onClick()}
+      menuShouldPortal={true}
+    />
+  );
 }
