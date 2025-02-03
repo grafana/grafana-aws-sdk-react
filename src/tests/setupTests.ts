@@ -18,3 +18,13 @@ Object.defineProperty(global, 'matchMedia', {
     dispatchEvent: jest.fn(),
   })),
 });
+
+// mock the intersection observer and just say everything is in view
+const mockIntersectionObserver = jest
+  .fn()
+  .mockImplementation((callback: (arg: IntersectionObserverEntry[]) => void) => ({
+    observe: jest.fn(),
+    unobserve: jest.fn(),
+    disconnect: jest.fn(),
+  }));
+global.IntersectionObserver = mockIntersectionObserver;
