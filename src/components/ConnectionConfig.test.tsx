@@ -158,6 +158,12 @@ describe('ConnectionConfig', () => {
     expect(screen.queryByText('Assume Role ARN')).not.toBeInTheDocument();
   });
 
+  it('should not render assume role input if hideAssumeRoleArn set to true', () => {
+    const props = getProps();
+    render(<ConnectionConfig {...props} hideAssumeRoleArn />);
+    expect(screen.queryByText('Assume Role ARN')).not.toBeInTheDocument();
+  });
+
   it('should render assume role input by default if awsAssumeRoleEnabled is not defined in the config', () => {
     const props = getProps();
     render(<ConnectionConfig {...props} />);
