@@ -2,16 +2,22 @@
 
 All notable changes to this project will be documented in this file.
 
-## v.0.6.1
+## v0.6.2
+
+- Bump the all-dependencies group with 3 updates in https://github.com/grafana/grafana-aws-sdk-react/pull/129
+- Bump the all-dependencies group with 12 updates in https://github.com/grafana/grafana-aws-sdk-react/pull/128
+- Chore: add label to external contributions in https://github.com/grafana/grafana-aws-sdk-react/pull/127
+
+## v0.6.1
 
 - Chore: Add precommit hook in [#112](https://github.com/grafana/grafana-aws-sdk-react/pull/112)
-- Dependabot: 
+- Dependabot:
   - Bump @eslint/plugin-kit from 0.2.2 to 0.2.3 in the npm_and_yarn group in [#105](https://github.com/grafana/grafana-aws-sdk-react/pull/105)
   - Bump the node group with 28 updates, ignore react major updates in dependabot in [#118](https://github.com/grafana/grafana-aws-sdk-react/pull/118)
   - Bump the all-dependencies group across 1 directory with 18 updates in [#121](https://github.com/grafana/grafana-aws-sdk-react/pull/121)
   - Bump the all-dependencies group across 1 directory with 18 updates in [#123](https://github.com/grafana/grafana-aws-sdk-react/pull/123)
 
-## v.0.6.0
+## v0.6.0
 
 - Replace @grafana/experimental with @grafana/plugin-ui
 - Chore: add dependabot in [#97](https://github.com/grafana/grafana-aws-sdk-react/pull/97)
