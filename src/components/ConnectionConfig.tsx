@@ -23,7 +23,14 @@ const isAwsAuthType = (value: any): value is AwsAuthType => {
 export const ConnectionConfig: FC<ConnectionConfigProps> = (props: ConnectionConfigProps) => {
   const [isARNInstructionsOpen, setIsARNInstructionsOpen] = useState(false);
   const [regions, setRegions] = useState((props.standardRegions || standardRegions).map(toOption));
-  const { loadRegions, onOptionsChange, skipHeader = false, skipEndpoint = false, options } = props;
+  const {
+    loadRegions,
+    onOptionsChange,
+    skipHeader = false,
+    skipEndpoint = false,
+    options,
+    hideAssumeRoleArn = false,
+  } = props;
   let profile = options.jsonData.profile;
   if (profile === undefined) {
     profile = options.database;
@@ -142,97 +149,99 @@ export const ConnectionConfig: FC<ConnectionConfigProps> = (props: ConnectionCon
           )}
         </ConfigSubSection>
 
-        <ConfigSubSection title="Assume Role">
-          {options.jsonData.authType === AwsAuthType.GrafanaAssumeRole && (
-            <div className={assumeRoleInstructionsStyle}>
-              <Collapse
-                label={'How to create an IAM role for grafana to assume:'}
-                collapsible={true}
-                isOpen={isARNInstructionsOpen}
-                onToggle={() => setIsARNInstructionsOpen(!isARNInstructionsOpen)}
-              >
-                <ol>
-                  <li>
-                    <p>
-                      1. Create a new IAM role in the AWS console, and select <code>Another AWS account</code> as the{' '}
-                      <code>Trusted entity</code>.
-                    </p>
-                  </li>
-                  <li>
-                    <p>
-                      2. Enter the account ID of the Grafana account that has permission to assume this role:
-                      <code> 008923505280 </code> and check the <code>Require external ID</code> box.
-                    </p>
-                  </li>
-                  <li>
-                    <p>
-                      3. Enter the following external ID:{' '}
-                      <code>{props.externalId || 'External Id is currently unavailable'}</code> and click{' '}
-                      <code>Next</code>.
-                    </p>
-                  </li>
-                  <li>
-                    <p>
-                      4. Add any required permissions you would like Grafana to be able to access on your behalf. For
-                      more details on our permissions please{' '}
-                      <a
-                        href="https://grafana.com/docs/grafana/latest/datasources/aws-cloudwatch/"
-                        target="_blank"
-                        rel="noreferrer"
-                      >
-                        read through our documentation
-                      </a>
-                      .
-                    </p>
-                  </li>
-                  <li>
-                    <p>
-                      5. Give the role a name and description, and click <code>Create role</code>.
-                    </p>
-                  </li>
-                  <li>
-                    <p>
-                      6. Copy the ARN of the role you just created and paste it into the <code>Assume Role ARN</code>{' '}
-                      field below.
-                    </p>
-                  </li>
-                </ol>
-              </Collapse>
-            </div>
-          )}
-          {awsAssumeRoleEnabled && (
-            <>
-              <Field
-                htmlFor="assumeRoleArn"
-                label="Assume Role ARN"
-                description="Optional. Specifying the ARN of a role will ensure that the
+        {!hideAssumeRoleArn && (
+          <ConfigSubSection title="Assume Role">
+            {options.jsonData.authType === AwsAuthType.GrafanaAssumeRole && (
+              <div className={assumeRoleInstructionsStyle}>
+                <Collapse
+                  label={'How to create an IAM role for grafana to assume:'}
+                  collapsible={true}
+                  isOpen={isARNInstructionsOpen}
+                  onToggle={() => setIsARNInstructionsOpen(!isARNInstructionsOpen)}
+                >
+                  <ol>
+                    <li>
+                      <p>
+                        1. Create a new IAM role in the AWS console, and select <code>Another AWS account</code> as the{' '}
+                        <code>Trusted entity</code>.
+                      </p>
+                    </li>
+                    <li>
+                      <p>
+                        2. Enter the account ID of the Grafana account that has permission to assume this role:
+                        <code> 008923505280 </code> and check the <code>Require external ID</code> box.
+                      </p>
+                    </li>
+                    <li>
+                      <p>
+                        3. Enter the following external ID:{' '}
+                        <code>{props.externalId || 'External Id is currently unavailable'}</code> and click{' '}
+                        <code>Next</code>.
+                      </p>
+                    </li>
+                    <li>
+                      <p>
+                        4. Add any required permissions you would like Grafana to be able to access on your behalf. For
+                        more details on our permissions please{' '}
+                        <a
+                          href="https://grafana.com/docs/grafana/latest/datasources/aws-cloudwatch/"
+                          target="_blank"
+                          rel="noreferrer"
+                        >
+                          read through our documentation
+                        </a>
+                        .
+                      </p>
+                    </li>
+                    <li>
+                      <p>
+                        5. Give the role a name and description, and click <code>Create role</code>.
+                      </p>
+                    </li>
+                    <li>
+                      <p>
+                        6. Copy the ARN of the role you just created and paste it into the <code>Assume Role ARN</code>{' '}
+                        field below.
+                      </p>
+                    </li>
+                  </ol>
+                </Collapse>
+              </div>
+            )}
+            {awsAssumeRoleEnabled && (
+              <>
+                <Field
+                  htmlFor="assumeRoleArn"
+                  label="Assume Role ARN"
+                  description="Optional. Specifying the ARN of a role will ensure that the
                      selected authentication provider is used to assume the role rather than the
                      credentials directly."
-              >
-                <Input
-                  id="assumeRoleArn"
-                  placeholder="arn:aws:iam:*"
-                  value={options.jsonData.assumeRoleArn || ''}
-                  onChange={onUpdateDatasourceJsonDataOption(props, 'assumeRoleArn')}
-                />
-              </Field>
-              {options.jsonData.authType !== AwsAuthType.GrafanaAssumeRole && (
-                <Field
-                  htmlFor="externalId"
-                  label="External ID"
-                  description="If you are assuming a role in another account, that has been created with an external ID, specify the external ID here."
                 >
                   <Input
-                    id="externalId"
-                    placeholder="External ID"
-                    value={options.jsonData.externalId || ''}
-                    onChange={onUpdateDatasourceJsonDataOption(props, 'externalId')}
+                    id="assumeRoleArn"
+                    placeholder="arn:aws:iam:*"
+                    value={options.jsonData.assumeRoleArn || ''}
+                    onChange={onUpdateDatasourceJsonDataOption(props, 'assumeRoleArn')}
                   />
                 </Field>
-              )}
-            </>
-          )}
-        </ConfigSubSection>
+                {options.jsonData.authType !== AwsAuthType.GrafanaAssumeRole && (
+                  <Field
+                    htmlFor="externalId"
+                    label="External ID"
+                    description="If you are assuming a role in another account, that has been created with an external ID, specify the external ID here."
+                  >
+                    <Input
+                      id="externalId"
+                      placeholder="External ID"
+                      value={options.jsonData.externalId || ''}
+                      onChange={onUpdateDatasourceJsonDataOption(props, 'externalId')}
+                    />
+                  </Field>
+                )}
+              </>
+            )}
+          </ConfigSubSection>
+        )}
         <ConfigSubSection title="Additional Settings">
           {!skipEndpoint && options.jsonData.authType !== AwsAuthType.GrafanaAssumeRole && (
             <Field
