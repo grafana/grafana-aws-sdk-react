@@ -1,11 +1,12 @@
 name: PR automation
 on:
-  pull_request_target:
+  pull_request_target: # zizmor: ignore[dangerous-triggers]
     types:
       - labeled
       - opened
 concurrency:
   group: pr-commands-${{ github.event.number }}
+permissions: {}
 jobs:
   main:
     permissions:
