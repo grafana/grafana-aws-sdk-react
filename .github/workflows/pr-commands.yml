@@ -1,12 +1,17 @@
-name: Run commands when issues are labeled
+name: PR automation
 on:
-  issues:
-    types: [labeled, unlabeled]
+  pull_request_target: # zizmor: ignore[dangerous-triggers]
+    types:
+      - labeled
+      - opened
+concurrency:
+  group: pr-commands-${{ github.event.number }}
+permissions: {}
 jobs:
   main:
     permissions:
       contents: read
-      issues: write
+      pull-requests: write
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Actions
@@ -35,4 +40,4 @@ jobs:
         uses: ./actions/commands
         with:
           token: ${{ steps.generate_token.outputs.token }}
-          configPath: issue_commands
+          configPath: pr-commands

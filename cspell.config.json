@@ -16,6 +16,7 @@
     "lefthook",
     "gofmt",
     "hmac",
-    "grabpl"
+    "grabpl",
+    "spellcheck"
   ]
 }
