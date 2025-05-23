@@ -59,7 +59,7 @@ jobs:
         uses: grafana/shared-workflows/actions/get-vault-secrets@main
         with:
           repo_secrets: |
-            NPM_TOKEN=npm-release.npm_token
+            NPM_TOKEN=npm-release:npm_token
 
       - name: Publish package to NPM
         if: steps.version_check.outputs.changed == 'true'

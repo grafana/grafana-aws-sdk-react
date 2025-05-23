@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file.
 
+## v0.7.1
+
+- Chore: Use vault to get npm token in [#145](https://github.com/grafana/grafana-aws-sdk-react/pull/145)
+- add zizmor ignore rule in #[144](https://github.com/grafana/grafana-aws-sdk-react/pull/144)
+- Use vault to generate token in [#143](https://github.com/grafana/grafana-aws-sdk-react/pull/143)
+- Cleanup github actions files in [#141](https://github.com/grafana/grafana-aws-sdk-react/pull/141)
+- Bump the all-dependencies group across 1 directory with 29 updates in [#140](https://github.com/grafana/grafana-aws-sdk-react/pull/140)
+
 ## v0.7.0
 
 - Allow hiding assume role inputs in https://github.com/grafana/grafana-aws-sdk-react/pull/126
