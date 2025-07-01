@@ -6,6 +6,8 @@ updates:
       interval: 'daily'
     cooldown:
       default-days: 7
+      exclude:
+        - 'grafana/*'
   - package-ecosystem: 'npm'
     directory: '/'
     schedule:
@@ -14,6 +16,8 @@ updates:
       semver-major-days: 30
       semver-minor-days: 14
       semver-patch-days: 7
+      exclude:
+        - '@grafana/*'
     groups:
       grafana-dependencies:
         patterns:
