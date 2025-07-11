@@ -27,7 +27,7 @@
   "author": "Grafana Labs <team@grafana.com> (https://grafana.com)",
   "license": "Apache-2.0",
   "dependencies": {
-    "@grafana/async-query-data": "0.4.1",
+    "@grafana/async-query-data": "0.4.2",
     "@grafana/plugin-ui": "^0.10.1"
   },
   "devDependencies": {
