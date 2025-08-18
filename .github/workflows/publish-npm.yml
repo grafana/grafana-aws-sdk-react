@@ -20,7 +20,7 @@ jobs:
       version_changed: ${{ steps.version_check.outputs.changed }}
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           ref: main
           persist-credentials: false
@@ -89,7 +89,7 @@ jobs:
       contents: write
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           persist-credentials: false
 
