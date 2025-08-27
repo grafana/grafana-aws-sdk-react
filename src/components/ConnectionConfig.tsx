@@ -12,6 +12,7 @@ import { AwsAuthType, ConnectionConfigProps } from '../types';
 import { awsAuthProviderOptions } from '../providers';
 import { assumeRoleInstructionsStyle } from './ConnectionConfig.styles';
 import { ConfigSection, ConfigSubSection } from '@grafana/plugin-ui';
+import { trackAwsSdkConfigAuthSelected } from './tracking';
 
 export const DEFAULT_LABEL_WIDTH = 28;
 const DS_TYPES_THAT_SUPPORT_TEMP_CREDS = ['cloudwatch', 'grafana-athena-datasource'];
@@ -85,6 +86,7 @@ export const ConnectionConfig: FC<ConnectionConfigProps> = (props: ConnectionCon
               defaultValue={options.jsonData.authType}
               onChange={(option) => {
                 onUpdateDatasourceJsonDataOptionSelect(props, 'authType')(option);
+                trackAwsSdkConfigAuthSelected({ authType: option.value, datasourceType: options.type });
               }}
               menuShouldPortal={true}
             />
