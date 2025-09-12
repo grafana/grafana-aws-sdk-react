@@ -8340,9 +8340,9 @@ rollup-plugin-esbuild@^6.1.1:
     unplugin-utils "^0.2.4"
 
 rollup-plugin-node-externals@^8.0.0:
-  version "8.1.0"
-  resolved "https://registry.yarnpkg.com/rollup-plugin-node-externals/-/rollup-plugin-node-externals-8.1.0.tgz#3a844085d39f5f55be43d4e282a5c58dab41f0c9"
-  integrity sha512-0D3S0E0Dl1V3Q6Cywnc7wt88VAfOB9AC5QHwVdgvP1vByRHW2wnEXoK0x3VYZzJ/EmGsR5Uix5HUmMJNG+hz2Q==
+  version "8.1.1"
+  resolved "https://registry.yarnpkg.com/rollup-plugin-node-externals/-/rollup-plugin-node-externals-8.1.1.tgz#41320eaf051fac0b40d6b34f4bb2bfd9f5ff0650"
+  integrity sha512-MEWJmXMGjo5E7o9hgAmma6XLCdU9gTVRcaaCubugTJdoJD3A91qxtxiukT9k2PeUdogtCaNehV3pvJUWrRNtwg==
 
 rollup@4.49.0:
   version "4.49.0"
