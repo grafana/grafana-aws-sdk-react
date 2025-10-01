@@ -74,6 +74,8 @@
     "rollup": "4.50.2",
     "rollup-plugin-dts": "^6.1.1",
     "rollup-plugin-esbuild": "^6.1.1",
-    "rollup-plugin-node-externals": "^8.0.0"
-  }
+    "rollup-plugin-node-externals": "^8.0.0",
+    "typescript": "^5.9.2"
+  },
+  "packageManager": "yarn@4.10.3"
 }
