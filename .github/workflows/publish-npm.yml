@@ -62,7 +62,7 @@ jobs:
 
       - name: Publish package to NPM
         if: steps.version_check.outputs.changed == 'true'
-        run: npm publish --access public --scope grafana
+        run: npm publish --access public
 
       - name: Setup .npmrc file for GitHub Packages
         if: steps.version_check.outputs.changed == 'true'
