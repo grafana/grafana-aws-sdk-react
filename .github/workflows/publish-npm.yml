@@ -10,6 +10,8 @@ jobs:
   npm-publish:
     name: Publish to NPM & GitHub Package Registry
     runs-on: ubuntu-latest
+    # Required for this workflow to have permission to publish NPM packages
+    environment: release
     permissions:
       contents: read
       packages: write
