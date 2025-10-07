@@ -10,10 +10,12 @@ jobs:
   npm-publish:
     name: Publish to NPM & GitHub Package Registry
     runs-on: ubuntu-latest
+    # Required for this workflow to have permission to publish NPM packages
+    environment: release
     permissions:
       contents: read
       packages: write
-      # id-token: write required for get-vault-secrets and trusted publishing
+      # id-token: write required for npm trusted publishing
       id-token: write
     outputs:
       new_version: ${{ steps.version_check.outputs.version }}
@@ -47,6 +49,7 @@ jobs:
           registry-url: 'https://registry.npmjs.org'
 
       - name: Install npm version ^11.5.1 # npm trusted publishing requires version ^11.5.1
+        if: steps.version_check.outputs.changed == 'true'
         run: npm install -g npm@^11.5.1
 
       - name: Install dependencies
@@ -59,7 +62,7 @@ jobs:
 
       - name: Publish package to NPM
         if: steps.version_check.outputs.changed == 'true'
-        run: npm publish --access public --scope grafana
+        run: npm publish --access public
 
       - name: Setup .npmrc file for GitHub Packages
         if: steps.version_check.outputs.changed == 'true'
