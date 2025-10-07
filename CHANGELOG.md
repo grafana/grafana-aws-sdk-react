@@ -2,7 +2,17 @@
 
 All notable changes to this project will be documented in this file.
 
+## v0.8.0
+
+- Upgrade yarn to v4.10.3 in [#297](https://github.com/grafana/grafana-aws-sdk-react/pull/297)
+- Dependency updates:
+  - Bump eslint from 9.35.0 to 9.36.0 in [#308](https://github.com/grafana/grafana-aws-sdk-react/pull/308)
+  - Bump the npm-patch-dev-dependencies group with 3 updates in [#307](https://github.com/grafana/grafana-aws-sdk-react/pull/307)
+  - Bump rollup from 4.51.0 to 4.52.0 in [#306](https://github.com/grafana/grafana-aws-sdk-react/pull/306)
+  - Bump @eslint/js from 9.35.0 to 9.36.0 in [#305](https://github.com/grafana/grafana-aws-sdk-react/pull/305)
+
 ## v0.7.2
+
 - Feat: add amazonprometheus to grafana assume role support list [#299](https://github.com/grafana/grafana-aws-sdk-react/pull/299)
 - Add support for auto-merging dependabot updates [#151](https://github.com/grafana/grafana-aws-sdk-react/pull/151)
 - Remove pr_commands [#154](https://github.com/grafana/grafana-aws-sdk-react/pull/154)
