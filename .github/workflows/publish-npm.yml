@@ -47,6 +47,7 @@ jobs:
           registry-url: 'https://registry.npmjs.org'
 
       - name: Install npm version ^11.5.1 # npm trusted publishing requires version ^11.5.1
+        if: steps.version_check.outputs.changed == 'true'
         run: npm install -g npm@^11.5.1
 
       - name: Install dependencies
