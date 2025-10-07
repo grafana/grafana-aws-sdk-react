@@ -14,7 +14,11 @@ import { assumeRoleInstructionsStyle } from './ConnectionConfig.styles';
 import { ConfigSection, ConfigSubSection } from '@grafana/plugin-ui';
 
 export const DEFAULT_LABEL_WIDTH = 28;
-const DS_TYPES_THAT_SUPPORT_TEMP_CREDS = ['cloudwatch', 'grafana-athena-datasource'];
+const DS_TYPES_THAT_SUPPORT_TEMP_CREDS = [
+  'cloudwatch',
+  'grafana-athena-datasource',
+  'grafana-amazonprometheus-datasource',
+];
 const toOption = (value: string) => ({ value, label: value });
 const isAwsAuthType = (value: any): value is AwsAuthType => {
   return typeof value === 'string' && awsAuthProviderOptions.some((opt) => opt.value === value);
