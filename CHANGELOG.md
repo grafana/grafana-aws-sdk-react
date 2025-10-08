@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## v0.8.1
+- Feat: get externalId from GrafanaConfig for Grafana Assume Role [#315](https://github.com/grafana/grafana-aws-sdk-react/pull/315)
+- Bump the npm-patch-dev-dependencies group with 3 updates [#311](https://github.com/grafana/grafana-aws-sdk-react/pull/311)
+- Bump eslint-plugin-jsdoc from 51.4.1 to 54.4.0 [#304](https://github.com/grafana/grafana-aws-sdk-react/pull/304)
+
 ## v0.8.0
 
 - Upgrade yarn to v4.10.3 in [#297](https://github.com/grafana/grafana-aws-sdk-react/pull/297)

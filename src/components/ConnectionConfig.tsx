@@ -49,6 +49,11 @@ export const ConnectionConfig: FC<ConnectionConfigProps> = (props: ConnectionCon
         .filter(isAwsAuthType),
     [tempCredsFeatureEnabled]
   );
+  if (tempCredsFeatureEnabled && options.jsonData.authType === AwsAuthType.GrafanaAssumeRole) {
+    if (config.namespace.startsWith('stacks-')) {
+      props.externalId = config.namespace.substring(config.namespace.indexOf('-') + 1);
+    }
+  }
   const currentProvider = awsAuthProviderOptions.find((p) => p.value === options.jsonData.authType);
 
   useEffect(() => {
