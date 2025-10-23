@@ -2,7 +2,23 @@
 
 All notable changes to this project will be documented in this file.
 
+## v0.8.2
+
+- Bump transitive deps brace-expansion to 1.1.12 and 2.0.2 and @babel/helpers to 7.28.4 in [#340](https://github.com/grafana/grafana-aws-sdk-react/pull/340)
+- Bump eslint-plugin-jsdoc from 54.7.0 to 60.1.1 in [#338](https://github.com/grafana/grafana-aws-sdk-react/pull/338)
+- Bump jest from 30.1.3 to 30.2.0 in [#339](https://github.com/grafana/grafana-aws-sdk-react/pull/339)
+- Bump the npm-patch-dev-dependencies group with 2 updates in [#337](https://github.com/grafana/grafana-aws-sdk-react/pull/337)
+- Bump the npm-patch-dev-dependencies group with 4 updates in [#333](https://github.com/grafana/grafana-aws-sdk-react/pull/333)
+- Bump jest-environment-jsdom from 30.1.2 to 30.2.0 in [#331](https://github.com/grafana/grafana-aws-sdk-react/pull/331)
+- Bump eslint from 9.34.0 to 9.37.0 in [#329](https://github.com/grafana/grafana-aws-sdk-react/pull/329)
+- Bump @grafana/plugin-ui from 0.10.10 to 0.11.0 in [#320](https://github.com/grafana/grafana-aws-sdk-react/pull/320)
+- Bump @typescript-eslint/parser from 8.42.0 to 8.45.0 in [#319](https://github.com/grafana/grafana-aws-sdk-react/pull/319)
+- Bump the npm-patch-dev-dependencies group with 2 updates in [#318](https://github.com/grafana/grafana-aws-sdk-react/pull/318)
+- Bump @typescript-eslint/eslint-plugin from 8.41.0 to 8.45.0 in [#317](https://github.com/grafana/grafana-aws-sdk-react/pull/317)
+- Update gitignore for yarn files in [#316](https://github.com/grafana/grafana-aws-sdk-react/pull/316)
+
 ## v0.8.1
+
 - Feat: get externalId from GrafanaConfig for Grafana Assume Role [#315](https://github.com/grafana/grafana-aws-sdk-react/pull/315)
 - Bump the npm-patch-dev-dependencies group with 3 updates [#311](https://github.com/grafana/grafana-aws-sdk-react/pull/311)
 - Bump eslint-plugin-jsdoc from 51.4.1 to 54.4.0 [#304](https://github.com/grafana/grafana-aws-sdk-react/pull/304)
