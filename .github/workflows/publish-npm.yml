@@ -91,7 +91,7 @@ jobs:
           persist-credentials: false
 
       - name: Create Release Notes
-        uses: actions/github-script@v7.0.1
+        uses: actions/github-script@f28e40c7f34bde8b3046d885e986cb6290c5673b # v7.1.0
         env:
           TAG_NAME: 'v${{ needs.npm-publish.outputs.new_version }}'
         with:
