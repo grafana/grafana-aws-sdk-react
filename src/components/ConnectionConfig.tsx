@@ -24,6 +24,9 @@ const isAwsAuthType = (value: any): value is AwsAuthType => {
   return typeof value === 'string' && awsAuthProviderOptions.some((opt) => opt.value === value);
 };
 
+const RFC_2396_warning =
+  '"is NOT RECOMMENDED, because the passing of authentication information in clear text (such as URI) has proven to be a security risk in almost every case where it has been used."';
+
 export const ConnectionConfig: FC<ConnectionConfigProps> = (props: ConnectionConfigProps) => {
   const [isARNInstructionsOpen, setIsARNInstructionsOpen] = useState(false);
   const [regions, setRegions] = useState((props.standardRegions || standardRegions).map(toOption));
@@ -80,7 +83,7 @@ export const ConnectionConfig: FC<ConnectionConfigProps> = (props: ConnectionCon
   return (
     <div data-testid="connection-config">
       <ConfigSection title={skipHeader ? '' : 'Connection Details'} data-testid="connection-config">
-        <ConfigSubSection title="Authentication">
+        <ConfigSubSection title="Authentication boo">
           <Field
             label="Authentication Provider"
             description="Specify which AWS credentials chain to use."
@@ -251,6 +254,59 @@ export const ConnectionConfig: FC<ConnectionConfigProps> = (props: ConnectionCon
             )}
           </ConfigSubSection>
         )}
+        <ConfigSubSection title="Proxy Configuration">
+          <Field label="Proxy Type" description="Specify the type of proxy to use" htmlFor="proxyType">
+            <Select
+              inputId="proxyType"
+              value={options.jsonData.proxyType}
+              options={[
+                { label: 'None', value: 'none' },
+                { label: 'Environment', value: 'env' },
+                { label: 'URL', value: 'url' },
+              ]}
+              onChange={onUpdateDatasourceJsonDataOptionSelect(props, 'proxyType')}
+            />
+          </Field>
+          {options.jsonData.proxyType === 'url' && (
+            <>
+              <Field
+                label="Proxy URL"
+                description="Proxy URL. Don't set the username or password here"
+                htmlFor="proxyUrl"
+              >
+                <Input
+                  id="proxyUrl"
+                  placeholder="Example: https://localhost:3004"
+                  value={options.jsonData.proxyUrl || ''}
+                  onChange={onUpdateDatasourceJsonDataOption(props, 'proxyUrl')}
+                />
+              </Field>
+              <Field
+                label="Proxy Username"
+                description={`Optional: Proxy Username. This functionality should only be used with legacy web sites. RFC 2396 warns that interpreting Userinfo this way ${RFC_2396_warning}`}
+                htmlFor="proxyUsername"
+              >
+                <Input
+                  id="proxyUsername"
+                  value={options.jsonData.proxyUsername || ''}
+                  onChange={onUpdateDatasourceJsonDataOption(props, 'proxyUsername')}
+                />
+              </Field>
+              <Field
+                label="Proxy Password"
+                description={`Optional: Proxy Password. This functionality should only be used with legacy web sites. RFC 2396 warns that interpreting Userinfo this way ${RFC_2396_warning}`}
+                htmlFor="proxyPassword"
+              >
+                <Input
+                  id="proxyPassword"
+                  value={options.secureJsonData?.proxyPassword ?? ''}
+                  onChange={onUpdateDatasourceSecureJsonDataOption(props, 'proxyPassword')}
+                />
+              </Field>
+            </>
+          )}
+        </ConfigSubSection>
+
         <ConfigSubSection title="Additional Settings">
           {!skipEndpoint && options.jsonData.authType !== AwsAuthType.GrafanaAssumeRole && (
             <Field

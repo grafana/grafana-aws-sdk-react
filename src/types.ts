@@ -19,11 +19,15 @@ export interface AwsAuthDataSourceJsonData extends DataSourceJsonData {
   profile?: string; // Credentials profile name, as specified in ~/.aws/credentials
   defaultRegion?: string; // region if it is not defined by your credentials file
   endpoint?: string;
+  proxyType?: 'none' | 'env' | 'url';
+  proxyUrl?: string;
+  proxyUsername?: string;
 }
 
 export interface AwsAuthDataSourceSecureJsonData {
   accessKey?: string;
   secretKey?: string;
+  proxyPassword?: string;
   sessionToken?: string;
 }
 
