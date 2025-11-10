@@ -24,9 +24,6 @@ const isAwsAuthType = (value: any): value is AwsAuthType => {
   return typeof value === 'string' && awsAuthProviderOptions.some((opt) => opt.value === value);
 };
 
-const RFC_2396_warning =
-  '"is NOT RECOMMENDED, because the passing of authentication information in clear text (such as URI) has proven to be a security risk in almost every case where it has been used."';
-
 export const ConnectionConfig: FC<ConnectionConfigProps> = (props: ConnectionConfigProps) => {
   const [isARNInstructionsOpen, setIsARNInstructionsOpen] = useState(false);
   const [regions, setRegions] = useState((props.standardRegions || standardRegions).map(toOption));
@@ -58,6 +55,8 @@ export const ConnectionConfig: FC<ConnectionConfigProps> = (props: ConnectionCon
     }
   }
   const currentProvider = awsAuthProviderOptions.find((p) => p.value === options.jsonData.authType);
+  const RFC_2396_warning =
+    '"is NOT RECOMMENDED, because the passing of authentication information in clear text (such as URI) has proven to be a security risk in almost every case where it has been used."';
 
   useEffect(() => {
     // Make sure a authType exists in the current model
@@ -83,7 +82,7 @@ export const ConnectionConfig: FC<ConnectionConfigProps> = (props: ConnectionCon
   return (
     <div data-testid="connection-config">
       <ConfigSection title={skipHeader ? '' : 'Connection Details'} data-testid="connection-config">
-        <ConfigSubSection title="Authentication boo">
+        <ConfigSubSection title="Authentication">
           <Field
             label="Authentication Provider"
             description="Specify which AWS credentials chain to use."
