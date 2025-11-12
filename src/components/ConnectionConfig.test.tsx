@@ -213,6 +213,8 @@ describe('ConnectionConfig', () => {
   });
 
   it('should show url fields if http proxy type is url', async () => {
+    // @ts-ignore ignore feature toggle type error
+    config.featureToggles.awsDatasourcesHttpProxy = true;
     const props = getProps({ options: { jsonData: { proxyType: 'url' } } });
     render(<ConnectionConfig {...props} />);
     await waitFor(() => expect(screen.getByTestId('connection-config')).toBeInTheDocument());
@@ -223,6 +225,8 @@ describe('ConnectionConfig', () => {
   });
 
   it('should not show url fields if http proxy type is none', async () => {
+    // @ts-ignore ignore feature toggle type error
+    config.featureToggles.awsDatasourcesHttpProxy = true;
     const props = getProps({ options: { jsonData: { proxyType: 'none' } } });
     render(<ConnectionConfig {...props} />);
     await waitFor(() => expect(screen.getByTestId('connection-config')).toBeInTheDocument());
