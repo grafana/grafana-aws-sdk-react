@@ -43,7 +43,7 @@
     "@grafana/ui": "12.2.1",
     "@rollup/plugin-node-resolve": "^16.0.0",
     "@stylistic/eslint-plugin-ts": "^4.2.0",
-    "@swc/core": "^1.7.28",
+    "@swc/core": "^1.14.0",
     "@swc/jest": "^0.2.36",
     "@testing-library/jest-dom": "6.9.1",
     "@testing-library/react": "16.3.0",

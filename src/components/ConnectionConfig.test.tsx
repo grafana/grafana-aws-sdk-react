@@ -64,6 +64,7 @@ jest.mock('@grafana/runtime', () => ({
     featureToggles: {
       awsDatasourcesTempCredentials: false,
     },
+    namespace: '',
   },
 }));
 
@@ -183,6 +184,17 @@ describe('ConnectionConfig', () => {
     render(<ConnectionConfig {...props} />);
 
     await waitFor(() => expect(screen.queryByLabelText('External ID')).not.toBeInTheDocument());
+  });
+  it('should render "Learn more about Grafana Assume Role" link when GrafanaAssumeRole is selected', async () => {
+    config.featureToggles.awsDatasourcesTempCredentials = true;
+    config.awsAllowedAuthProviders = [AwsAuthType.GrafanaAssumeRole, AwsAuthType.Credentials];
+    const props = getProps({ options: { jsonData: { authType: AwsAuthType.GrafanaAssumeRole } } });
+    const overwriteOptions = { ...props.options, type: 'cloudwatch' };
+    render(<ConnectionConfig {...props} options={overwriteOptions} />);
+    await waitFor(() => expect(screen.getByTestId('connection-config')).toBeInTheDocument());
+    expect(screen.getByText(/Learn more about/i)).toBeInTheDocument();
+    const link = screen.getByRole('link', { name: 'Grafana Assume Role' });
+    expect(link).toBeInTheDocument();
   });
   it('should render GrafanaAssumeRole as auth type if the feature flag is enabled and auth providers has GrafanaAssumeRole and the datasource supports temp credentials', async () => {
     config.featureToggles.awsDatasourcesTempCredentials = true;

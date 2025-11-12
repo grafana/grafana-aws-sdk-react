@@ -1,5 +1,5 @@
 import React, { FC, useEffect, useMemo, useState } from 'react';
-import { Input, Select, ButtonGroup, ToolbarButton, Collapse, Field } from '@grafana/ui';
+import { Input, Select, ButtonGroup, ToolbarButton, Text, TextLink, Collapse, Field } from '@grafana/ui';
 import {
   onUpdateDatasourceJsonDataOptionSelect,
   onUpdateDatasourceResetOption,
@@ -159,7 +159,25 @@ export const ConnectionConfig: FC<ConnectionConfigProps> = (props: ConnectionCon
         </ConfigSubSection>
 
         {!hideAssumeRoleArn && (
-          <ConfigSubSection title="Assume Role">
+          <ConfigSubSection
+            title="Assume Role"
+            description={
+              options.jsonData.authType === AwsAuthType.GrafanaAssumeRole ? (
+                <Text>
+                  Learn more about{' '}
+                  <TextLink
+                    inline
+                    external
+                    variant="bodySmall"
+                    href="https://grafana.com/docs/plugins/cloudwatch/latest/aws-authentication/#use-grafana-assume-role"
+                  >
+                    Grafana Assume Role
+                  </TextLink>
+                  .
+                </Text>
+              ) : null
+            }
+          >
             {options.jsonData.authType === AwsAuthType.GrafanaAssumeRole && (
               <div className={assumeRoleInstructionsStyle}>
                 <Collapse
