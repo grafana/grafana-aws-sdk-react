@@ -2,6 +2,22 @@
 
 All notable changes to this project will be documented in this file.
 
+## v0.8.3
+
+- ConfigEditor: add a link to Grafana Assume Role in [#364](https://github.com/grafana/grafana-aws-sdk-react/pull/364)
+- Bump @types/node from 22.18.12 to 22.18.13 in the npm-patch-dev-dependencies group in [#362](https://github.com/grafana/grafana-aws-sdk-react/pull/362)
+- Bump eslint from 9.37.0 to 9.38.0 in [#361](https://github.com/grafana/grafana-aws-sdk-react/pull/361)
+- Bump @eslint/js from 9.34.0 to 9.38.0 in [#360](https://github.com/grafana/grafana-aws-sdk-react/pull/360)
+- Bump @swc/core from 1.13.20 to 1.13.21 in the npm-patch-dev-dependencies group in [#358](https://github.com/grafana/grafana-aws-sdk-react/pull/358)
+- Bump actions/github-script from 7.0.1 to 8.0.0 in [#282](https://github.com/grafana/grafana-aws-sdk-react/pull/282)
+- Bump actions/setup-node from 5 to 6 in [#335](https://github.com/grafana/grafana-aws-sdk-react/pull/335)
+- Cloudwatch: add missing AWS regions in [#347](https://github.com/grafana/grafana-aws-sdk-react/pull/347)
+- Bump cspell from 9.2.1 to 9.2.2 in the npm-patch-dev-dependencies group in [#355](https://github.com/grafana/grafana-aws-sdk-react/pull/355)
+- Bump the npm-patch-dev-dependencies group with 3 updates in [#352](https://github.com/grafana/grafana-aws-sdk-react/pull/352)
+- Bump rollup from 4.52.4 to 4.52.5 in the npm-patch-dev-dependencies group in [#349](https://github.com/grafana/grafana-aws-sdk-react/pull/349)
+- Bump @grafana/plugin-ui from 0.11.0 to 0.11.1 in [#345](https://github.com/grafana/grafana-aws-sdk-react/pull/345)
+- Bump the npm-patch-dev-dependencies group with 2 updates in [#344](https://github.com/grafana/grafana-aws-sdk-react/pull/344)
+
 ## v0.8.2
 
 - Bump transitive deps brace-expansion to 1.1.12 and 2.0.2 and @babel/helpers to 7.28.4 in [#340](https://github.com/grafana/grafana-aws-sdk-react/pull/340)
