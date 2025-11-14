@@ -19,6 +19,8 @@ const DS_TYPES_THAT_SUPPORT_TEMP_CREDS = [
   'grafana-athena-datasource',
   'grafana-amazonprometheus-datasource',
 ];
+const RFC_2396_WARNING =
+  'This functionality should only be used with legacy web sites. RFC 2396 warns that interpreting Userinfo this way "is NOT RECOMMENDED, because the passing of authentication information in clear text (such as URI) has proven to be a security risk in almost every case where it has been used."';
 const toOption = (value: string) => ({ value, label: value });
 const isAwsAuthType = (value: any): value is AwsAuthType => {
   return typeof value === 'string' && awsAuthProviderOptions.some((opt) => opt.value === value);
@@ -41,6 +43,8 @@ export const ConnectionConfig: FC<ConnectionConfigProps> = (props: ConnectionCon
   }
   const tempCredsFeatureEnabled =
     config.featureToggles.awsDatasourcesTempCredentials && DS_TYPES_THAT_SUPPORT_TEMP_CREDS.includes(options.type);
+  // @ts-ignore ignore feature toggle type error
+  const httpProxyFeatureEnabled = config.featureToggles.awsDatasourcesHttpProxy ?? false;
   const awsAssumeRoleEnabled = config.awsAssumeRoleEnabled ?? true;
   const awsAllowedAuthProviders = useMemo(
     () =>
@@ -265,6 +269,60 @@ export const ConnectionConfig: FC<ConnectionConfigProps> = (props: ConnectionCon
                     />
                   </Field>
                 )}
+              </>
+            )}
+          </ConfigSubSection>
+        )}
+        {httpProxyFeatureEnabled && (
+          <ConfigSubSection title="Proxy Configuration">
+            <Field label="Proxy Type" description="Specify the type of proxy to use" htmlFor="proxyType">
+              <Select
+                inputId="proxyType"
+                value={options.jsonData.proxyType}
+                options={[
+                  { label: 'None', value: 'none' },
+                  { label: 'Environment', value: 'env' },
+                  { label: 'URL', value: 'url' },
+                ]}
+                onChange={onUpdateDatasourceJsonDataOptionSelect(props, 'proxyType')}
+              />
+            </Field>
+            {options.jsonData.proxyType === 'url' && (
+              <>
+                <Field
+                  label="Proxy URL"
+                  description="Proxy URL. Don't set the username or password here"
+                  htmlFor="proxyUrl"
+                >
+                  <Input
+                    id="proxyUrl"
+                    placeholder="Example: https://localhost:3004"
+                    value={options.jsonData.proxyUrl || ''}
+                    onChange={onUpdateDatasourceJsonDataOption(props, 'proxyUrl')}
+                  />
+                </Field>
+                <Field
+                  label="Proxy Username"
+                  description={`Optional: Proxy Username. ${RFC_2396_WARNING}`}
+                  htmlFor="proxyUsername"
+                >
+                  <Input
+                    id="proxyUsername"
+                    value={options.jsonData.proxyUsername || ''}
+                    onChange={onUpdateDatasourceJsonDataOption(props, 'proxyUsername')}
+                  />
+                </Field>
+                <Field
+                  label="Proxy Password"
+                  description={`Optional: Proxy Password. ${RFC_2396_WARNING}`}
+                  htmlFor="proxyPassword"
+                >
+                  <Input
+                    id="proxyPassword"
+                    value={options.secureJsonData?.proxyPassword ?? ''}
+                    onChange={onUpdateDatasourceSecureJsonDataOption(props, 'proxyPassword')}
+                  />
+                </Field>
               </>
             )}
           </ConfigSubSection>

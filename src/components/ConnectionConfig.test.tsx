@@ -223,4 +223,28 @@ describe('ConnectionConfig', () => {
     await selectEvent.openMenu(screen.getByLabelText('Authentication Provider'));
     expect(screen.queryByText('Grafana Assume Role')).not.toBeInTheDocument();
   });
+
+  it('should show url fields if http proxy type is url', async () => {
+    // @ts-ignore ignore feature toggle type error
+    config.featureToggles.awsDatasourcesHttpProxy = true;
+    const props = getProps({ options: { jsonData: { proxyType: 'url' } } });
+    render(<ConnectionConfig {...props} />);
+    await waitFor(() => expect(screen.getByTestId('connection-config')).toBeInTheDocument());
+
+    expect(screen.getByText('Proxy Username')).toBeInTheDocument();
+    expect(screen.getByText('Proxy URL')).toBeInTheDocument();
+    expect(screen.getByText('Proxy Password')).toBeInTheDocument();
+  });
+
+  it('should not show url fields if http proxy type is none', async () => {
+    // @ts-ignore ignore feature toggle type error
+    config.featureToggles.awsDatasourcesHttpProxy = true;
+    const props = getProps({ options: { jsonData: { proxyType: 'none' } } });
+    render(<ConnectionConfig {...props} />);
+    await waitFor(() => expect(screen.getByTestId('connection-config')).toBeInTheDocument());
+
+    expect(screen.queryByText('Proxy URL')).not.toBeInTheDocument();
+    expect(screen.queryByText('Proxy Username')).not.toBeInTheDocument();
+    expect(screen.queryByText('Proxy Password')).not.toBeInTheDocument();
+  });
 });
