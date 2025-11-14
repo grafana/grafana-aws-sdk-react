@@ -278,15 +278,21 @@ export const ConnectionConfig: FC<ConnectionConfigProps> = (props: ConnectionCon
             <Field label="Proxy Type" description="Specify the type of proxy to use" htmlFor="proxyType">
               <Select
                 inputId="proxyType"
-                value={options.jsonData.proxyType}
+                value={options.jsonData.proxyType || 'env'}
                 options={[
+                  { label: 'Environment (default)', value: 'env' },
                   { label: 'None', value: 'none' },
-                  { label: 'Environment', value: 'env' },
                   { label: 'URL', value: 'url' },
                 ]}
                 onChange={onUpdateDatasourceJsonDataOptionSelect(props, 'proxyType')}
               />
             </Field>
+            {(options.jsonData.proxyType === 'env' || !options.jsonData.proxyType) && (
+              <Text variant="bodySmall" color="secondary">
+                Proxy settings from environment variables will be used. Use <kbd>HTTP_PROXY</kbd> &amp;{' '}
+                <kbd>HTTPS_PROXY</kbd> environment variables. This will be skipped if no environment variables found.
+              </Text>
+            )}
             {options.jsonData.proxyType === 'url' && (
               <>
                 <Field
