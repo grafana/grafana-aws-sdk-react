@@ -19,6 +19,8 @@ const DS_TYPES_THAT_SUPPORT_TEMP_CREDS = [
   'grafana-athena-datasource',
   'grafana-amazonprometheus-datasource',
 ];
+const RFC_2396_WARNING =
+  'This functionality should only be used with legacy web sites. RFC 2396 warns that interpreting Userinfo this way "is NOT RECOMMENDED, because the passing of authentication information in clear text (such as URI) has proven to be a security risk in almost every case where it has been used."';
 const toOption = (value: string) => ({ value, label: value });
 const isAwsAuthType = (value: any): value is AwsAuthType => {
   return typeof value === 'string' && awsAuthProviderOptions.some((opt) => opt.value === value);
@@ -57,8 +59,6 @@ export const ConnectionConfig: FC<ConnectionConfigProps> = (props: ConnectionCon
     }
   }
   const currentProvider = awsAuthProviderOptions.find((p) => p.value === options.jsonData.authType);
-  const RFC_2396_warning =
-    '"is NOT RECOMMENDED, because the passing of authentication information in clear text (such as URI) has proven to be a security risk in almost every case where it has been used."';
 
   useEffect(() => {
     // Make sure a authType exists in the current model
@@ -285,7 +285,7 @@ export const ConnectionConfig: FC<ConnectionConfigProps> = (props: ConnectionCon
                 </Field>
                 <Field
                   label="Proxy Username"
-                  description={`Optional: Proxy Username. This functionality should only be used with legacy web sites. RFC 2396 warns that interpreting Userinfo this way ${RFC_2396_warning}`}
+                  description={`Optional: Proxy Username. ${RFC_2396_WARNING}`}
                   htmlFor="proxyUsername"
                 >
                   <Input
@@ -296,7 +296,7 @@ export const ConnectionConfig: FC<ConnectionConfigProps> = (props: ConnectionCon
                 </Field>
                 <Field
                   label="Proxy Password"
-                  description={`Optional: Proxy Password. This functionality should only be used with legacy web sites. RFC 2396 warns that interpreting Userinfo this way ${RFC_2396_warning}`}
+                  description={`Optional: Proxy Password. ${RFC_2396_WARNING}`}
                   htmlFor="proxyPassword"
                 >
                   <Input
