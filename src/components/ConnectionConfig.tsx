@@ -288,10 +288,14 @@ export const ConnectionConfig: FC<ConnectionConfigProps> = (props: ConnectionCon
               />
             </Field>
             {(options.jsonData.proxyType === 'env' || !options.jsonData.proxyType) && (
-              <Text variant="bodySmall" color="secondary">
-                Proxy settings from environment variables will be used. Use <kbd>HTTP_PROXY</kbd> &amp;{' '}
-                <kbd>HTTPS_PROXY</kbd> environment variables. This will be skipped if no environment variables found.
-              </Text>
+              <>
+                <Text variant="bodySmall" color="secondary">
+                  Proxy settings from environment variables will be used. Use <code>HTTP_PROXY</code> &amp;{' '}
+                  <code>HTTPS_PROXY</code> environment variables. This will be skipped if no environment variables
+                  found.
+                </Text>
+                <Space v={2} />
+              </>
             )}
             {options.jsonData.proxyType === 'url' && (
               <>
