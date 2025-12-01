@@ -1,5 +1,5 @@
 import React, { FC, useEffect, useMemo, useState } from 'react';
-import { Input, Select, ButtonGroup, ToolbarButton, Text, TextLink, Collapse, Field } from '@grafana/ui';
+import { Input, Select, ButtonGroup, ToolbarButton, Text, TextLink, Collapse, Field, Space } from '@grafana/ui';
 import {
   onUpdateDatasourceJsonDataOptionSelect,
   onUpdateDatasourceResetOption,
@@ -275,18 +275,32 @@ export const ConnectionConfig: FC<ConnectionConfigProps> = (props: ConnectionCon
         )}
         {httpProxyFeatureEnabled && (
           <ConfigSubSection title="Proxy Configuration">
-            <Field label="Proxy Type" description="Specify the type of proxy to use" htmlFor="proxyType">
+            <Field
+              label="Proxy Type"
+              description="Specify the type of proxy to use. This should not be set if Secure Socks Proxy is enabled."
+              htmlFor="proxyType"
+            >
               <Select
                 inputId="proxyType"
-                value={options.jsonData.proxyType}
+                value={options.jsonData.proxyType || 'env'}
                 options={[
+                  { label: 'Environment (default)', value: 'env' },
                   { label: 'None', value: 'none' },
-                  { label: 'Environment', value: 'env' },
                   { label: 'URL', value: 'url' },
                 ]}
                 onChange={onUpdateDatasourceJsonDataOptionSelect(props, 'proxyType')}
               />
             </Field>
+            {(options.jsonData.proxyType === 'env' || !options.jsonData.proxyType) && (
+              <>
+                <Text variant="bodySmall" color="secondary">
+                  Proxy settings from environment variables will be used. Use <code>HTTP_PROXY</code> &amp;{' '}
+                  <code>HTTPS_PROXY</code> environment variables. This will be skipped if no environment variables
+                  found.
+                </Text>
+                <Space v={2} />
+              </>
+            )}
             {options.jsonData.proxyType === 'url' && (
               <>
                 <Field
