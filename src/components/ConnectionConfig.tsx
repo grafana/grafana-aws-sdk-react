@@ -275,7 +275,11 @@ export const ConnectionConfig: FC<ConnectionConfigProps> = (props: ConnectionCon
         )}
         {httpProxyFeatureEnabled && (
           <ConfigSubSection title="Proxy Configuration">
-            <Field label="Proxy Type" description="Specify the type of proxy to use" htmlFor="proxyType">
+            <Field
+              label="Proxy Type"
+              description="Specify the type of proxy to use. This should not be set if Secure Socks Proxy is enabled."
+              htmlFor="proxyType"
+            >
               <Select
                 inputId="proxyType"
                 value={options.jsonData.proxyType || 'env'}
