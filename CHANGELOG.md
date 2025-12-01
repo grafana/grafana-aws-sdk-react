@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## v0.9.0
+
+- Support proxy http setting on frontend in [#365](https://github.com/grafana/grafana-aws-sdk-react/pull/365)
+- Add more info to http proxy choices in [#368](https://github.com/grafana/grafana-aws-sdk-react/pull/368)
+
 ## v0.8.3
 
 - ConfigEditor: add a link to Grafana Assume Role in [#364](https://github.com/grafana/grafana-aws-sdk-react/pull/364)
