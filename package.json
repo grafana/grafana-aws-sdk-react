@@ -34,7 +34,7 @@
     "@grafana/plugin-ui": "^0.11.0"
   },
   "devDependencies": {
-    "@eslint/eslintrc": "^3.1.0",
+    "@eslint/eslintrc": "^3.3.1",
     "@eslint/js": "^9.13.0",
     "@grafana/data": "12.2.1",
     "@grafana/eslint-config": "^8.0.0",
