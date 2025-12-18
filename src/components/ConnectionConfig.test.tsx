@@ -102,6 +102,23 @@ describe('ConnectionConfig', () => {
     });
   });
 
+  it('should auto select GrafanaAssumeRole if it is enabled and set as an allowed auth provider', async () => {
+    config.featureToggles.awsDatasourcesTempCredentials = true;
+    config.awsAllowedAuthProviders = [AwsAuthType.Credentials, AwsAuthType.GrafanaAssumeRole];
+    const onOptionsChange = jest.fn();
+    const props = getProps({ onOptionsChange });
+    const overwriteOptions = { ...props.options, type: 'cloudwatch' };
+    render(<ConnectionConfig {...props} options={overwriteOptions} />);
+    await waitFor(() => expect(screen.getByTestId('connection-config')).toBeInTheDocument());
+    expect(onOptionsChange).toHaveBeenCalledWith({
+      ...overwriteOptions,
+      jsonData: {
+        ...overwriteOptions.jsonData,
+        authType: AwsAuthType.GrafanaAssumeRole,
+      },
+    });
+  });
+
   it('should show secret field if auth type is keys', async () => {
     const props = getProps({ options: { jsonData: { authType: AwsAuthType.Keys } } });
     render(<ConnectionConfig {...props} />);
