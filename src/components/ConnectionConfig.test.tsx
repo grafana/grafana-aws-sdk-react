@@ -74,6 +74,8 @@ describe('ConnectionConfig', () => {
     config.featureToggles.awsDatasourcesTempCredentials = false;
     //@ts-ignore
     config.awsAssumeRoleEnabled = undefined;
+    // @ts-ignore
+    config.awsPerDatasourceHTTPProxyEnabled = undefined;
   });
   it('should use auth type from props if its set', async () => {
     const onOptionsChange = jest.fn();
@@ -224,7 +226,31 @@ describe('ConnectionConfig', () => {
     expect(screen.queryByText('Grafana Assume Role')).not.toBeInTheDocument();
   });
 
+  it('should not show proxy fields if http proxy config is not enabled', async () => {
+    // @ts-ignore ignore config type error
+    config.awsPerDatasourceHTTPProxyEnabled = false;
+    // @ts-ignore ignore feature toggle type error
+    config.featureToggles.awsDatasourcesHttpProxy = true;
+    const props = getProps({ options: { jsonData: { proxyType: 'url' } } });
+    render(<ConnectionConfig {...props} />);
+    await waitFor(() => expect(screen.getByTestId('connection-config')).toBeInTheDocument());
+    expect(screen.queryByText('Proxy Type')).not.toBeInTheDocument();
+  });
+
+  it('should not show proxy fields if http proxy feature is not enabled', async () => {
+    // @ts-ignore ignore config type error
+    config.awsPerDatasourceHTTPProxyEnabled = true;
+    // @ts-ignore ignore feature toggle type error
+    config.featureToggles.awsDatasourcesHttpProxy = false;
+    const props = getProps({ options: { jsonData: { proxyType: 'url' } } });
+    render(<ConnectionConfig {...props} />);
+    await waitFor(() => expect(screen.getByTestId('connection-config')).toBeInTheDocument());
+    expect(screen.queryByText('Proxy Type')).not.toBeInTheDocument();
+  });
+
   it('should show url fields if http proxy type is url', async () => {
+    // @ts-ignore ignore config type error
+    config.awsPerDatasourceHTTPProxyEnabled = true;
     // @ts-ignore ignore feature toggle type error
     config.featureToggles.awsDatasourcesHttpProxy = true;
     const props = getProps({ options: { jsonData: { proxyType: 'url' } } });
@@ -237,6 +263,8 @@ describe('ConnectionConfig', () => {
   });
 
   it('should not show url fields if http proxy type is none', async () => {
+    // @ts-ignore ignore config type error
+    config.awsPerDatasourceHTTPProxyEnabled = true;
     // @ts-ignore ignore feature toggle type error
     config.featureToggles.awsDatasourcesHttpProxy = true;
     const props = getProps({ options: { jsonData: { proxyType: 'none' } } });
