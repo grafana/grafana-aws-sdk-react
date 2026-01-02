@@ -63,11 +63,15 @@ export const ConnectionConfig: FC<ConnectionConfigProps> = (props: ConnectionCon
   useEffect(() => {
     // Make sure a authType exists in the current model
     if (!currentProvider && awsAllowedAuthProviders.length) {
+      let defaultAuthType = awsAllowedAuthProviders[0];
+      if (awsAllowedAuthProviders.includes(AwsAuthType.GrafanaAssumeRole)) {
+        defaultAuthType = AwsAuthType.GrafanaAssumeRole;
+      }
       onOptionsChange({
         ...options,
         jsonData: {
           ...options.jsonData,
-          authType: awsAllowedAuthProviders[0],
+          authType: defaultAuthType,
         },
       });
     }
