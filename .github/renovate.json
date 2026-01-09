@@ -19,7 +19,14 @@
     {
       "description": "Ignore major updates for dependencies that need to be kept in sync with Grafana",
       "matchDatasources": ["npm"],
-      "matchPackageNames": ["react", "react-dom", "react-router-dom", "react-router-dom-v5-compat"],
+      "matchPackageNames": [
+        "@types/react",
+        "@types/react-dom",
+        "react",
+        "react-dom",
+        "react-router-dom",
+        "react-router-dom-v5-compat"
+      ],
       "matchUpdateTypes": ["major"],
       "enabled": false
     },
