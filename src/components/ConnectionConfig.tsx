@@ -53,11 +53,14 @@ export const ConnectionConfig: FC<ConnectionConfigProps> = (props: ConnectionCon
         .filter(isAwsAuthType),
     [tempCredsFeatureEnabled]
   );
-  if (tempCredsFeatureEnabled && options.jsonData.authType === AwsAuthType.GrafanaAssumeRole) {
-    if (config.namespace.startsWith('stacks-')) {
-      props.externalId = config.namespace.substring(config.namespace.indexOf('-') + 1);
+  const externalId = useMemo(() => {
+    if (tempCredsFeatureEnabled && options.jsonData.authType === AwsAuthType.GrafanaAssumeRole) {
+      if (config.namespace.startsWith('stacks-')) {
+        return config.namespace.substring(config.namespace.indexOf('-') + 1);
+      }
     }
-  }
+    return props.externalId;
+  }, [tempCredsFeatureEnabled, options.jsonData.authType, props.externalId]);
   const currentProvider = awsAuthProviderOptions.find((p) => p.value === options.jsonData.authType);
 
   useEffect(() => {
@@ -210,8 +213,7 @@ export const ConnectionConfig: FC<ConnectionConfigProps> = (props: ConnectionCon
                     <li>
                       <p>
                         3. Enter the following external ID:{' '}
-                        <code>{props.externalId || 'External Id is currently unavailable'}</code> and click{' '}
-                        <code>Next</code>.
+                        <code>{externalId || 'External Id is currently unavailable'}</code> and click <code>Next</code>.
                       </p>
                     </li>
                     <li>
