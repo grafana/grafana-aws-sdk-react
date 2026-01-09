@@ -37,7 +37,7 @@
     "@eslint/eslintrc": "^3.3.1",
     "@eslint/js": "^9.38.0",
     "@grafana/data": "12.3.1",
-    "@grafana/eslint-config": "^8.0.0",
+    "@grafana/eslint-config": "^9.0.0",
     "@grafana/runtime": "12.3.1",
     "@grafana/tsconfig": "^2.0.0",
     "@grafana/ui": "12.3.1",
