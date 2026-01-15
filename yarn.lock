@@ -1669,7 +1669,7 @@ __metadata:
     identity-obj-proxy: "npm:^3.0.0"
     jest: "npm:30.2.0"
     jest-environment-jsdom: "npm:^30.0.0"
-    lefthook: "npm:^2.0.0"
+    lefthook: "npm:^2.0.13"
     node-notifier: "npm:^10.0.1"
     prettier: "npm:^3.6.2"
     react: "npm:18.3.1"
@@ -8505,7 +8505,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"lefthook@npm:^2.0.0":
+"lefthook@npm:^2.0.13":
   version: 2.0.13
   resolution: "lefthook@npm:2.0.13"
   dependencies:
