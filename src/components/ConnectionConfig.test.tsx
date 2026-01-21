@@ -235,7 +235,7 @@ describe('ConnectionConfig', () => {
     config.featureToggles.awsDatasourcesTempCredentials = true;
     config.awsAllowedAuthProviders = [AwsAuthType.GrafanaAssumeRole, AwsAuthType.Credentials];
     const props = getProps();
-    const overwriteOptions = { ...props.options, type: 'grafana-redshift-datasource' };
+    const overwriteOptions = { ...props.options, type: 'grafana-dynamodb-datasource' };
     render(<ConnectionConfig {...props} options={overwriteOptions} />);
     await selectEvent.openMenu(screen.getByLabelText('Authentication Provider'));
     expect(screen.queryByText('Grafana Assume Role')).not.toBeInTheDocument();

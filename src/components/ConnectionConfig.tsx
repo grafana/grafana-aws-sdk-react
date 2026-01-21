@@ -16,8 +16,14 @@ import { ConfigSection, ConfigSubSection } from '@grafana/plugin-ui';
 export const DEFAULT_LABEL_WIDTH = 28;
 const DS_TYPES_THAT_SUPPORT_TEMP_CREDS = [
   'cloudwatch',
-  'grafana-athena-datasource',
   'grafana-amazonprometheus-datasource',
+  'grafana-athena-datasource',
+  'grafana-aurora-datasource',
+  'grafana-iot-sitewise-datasource',
+  'grafana-opensearch-datasource',
+  'grafana-redshift-datasource',
+  'grafana-timestream-datasource',
+  'grafana-x-ray-datasource',
 ];
 const RFC_2396_WARNING =
   'This functionality should only be used with legacy web sites. RFC 2396 warns that interpreting Userinfo this way "is NOT RECOMMENDED, because the passing of authentication information in clear text (such as URI) has proven to be a security risk in almost every case where it has been used."';
