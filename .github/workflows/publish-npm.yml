@@ -43,7 +43,7 @@ jobs:
 
       - name: Setup .npmrc file for NPM registry
         if: steps.version_check.outputs.changed == 'true'
-        uses: actions/setup-node@v6
+        uses: actions/setup-node@6044e13b5dc448c55e2357c09f80417699197238 # v6
         with:
           node-version-file: '.nvmrc'
           registry-url: 'https://registry.npmjs.org'
@@ -66,7 +66,7 @@ jobs:
 
       - name: Setup .npmrc file for GitHub Packages
         if: steps.version_check.outputs.changed == 'true'
-        uses: actions/setup-node@v6
+        uses: actions/setup-node@6044e13b5dc448c55e2357c09f80417699197238 # v6
         with:
           node-version-file: '.nvmrc'
           registry-url: 'https://npm.pkg.github.com'
@@ -91,7 +91,7 @@ jobs:
           persist-credentials: false
 
       - name: Create Release Notes
-        uses: actions/github-script@v8.0.0
+        uses: actions/github-script@ed597411d8f924073f98dfc5c65a23a2325f34cd # v8.0.0
         env:
           TAG_NAME: 'v${{ needs.npm-publish.outputs.new_version }}'
         with:
