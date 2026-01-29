@@ -2,6 +2,35 @@
 
 All notable changes to this project will be documented in this file.
 
+## v0.9.0
+
+- Support proxy http setting on frontend in [#365](https://github.com/grafana/grafana-aws-sdk-react/pull/365)
+- Add more info to http proxy choices in [#368](https://github.com/grafana/grafana-aws-sdk-react/pull/368)
+- Make Grafana Assume Role the default auth when available in [#374](https://github.com/grafana/grafana-aws-sdk-react/pull/374)
+- Update to use self-hosted renovate and remove dependabot in [#375](https://github.com/grafana/grafana-aws-sdk-react/pull/375)
+- Update http proxy feature to use config setting in [#404](https://github.com/grafana/grafana-aws-sdk-react/pull/404)
+- Bump rollup from 4.54.0 to 4.55.1 in [#373](https://github.com/grafana/grafana-aws-sdk-react/pull/373), [#386](https://github.com/grafana/grafana-aws-sdk-react/pull/386)
+- Bump @eslint/eslintrc to ^3.3.1 in [#377](https://github.com/grafana/grafana-aws-sdk-react/pull/377)
+- Bump @testing-library/react from 16.3.1 to 16.3.2 in [#371](https://github.com/grafana/grafana-aws-sdk-react/pull/371), [#401](https://github.com/grafana/grafana-aws-sdk-react/pull/401)
+- Bump @types/lodash from 4.17.21 to 4.17.23 in [#378](https://github.com/grafana/grafana-aws-sdk-react/pull/378), [#396](https://github.com/grafana/grafana-aws-sdk-react/pull/396)
+- Bump react monorepo in [#326](https://github.com/grafana/grafana-aws-sdk-react/pull/326), [#392](https://github.com/grafana/grafana-aws-sdk-react/pull/392)
+- Bump rollup-plugin-node-externals to ^8.1.1 in [#367](https://github.com/grafana/grafana-aws-sdk-react/pull/367)
+- Bump cspell from 9.4.0 to 9.6.0 in [#379](https://github.com/grafana/grafana-aws-sdk-react/pull/379), [#398](https://github.com/grafana/grafana-aws-sdk-react/pull/398)
+- Bump @types/node from 22.19.3 to 24.10.9 in [#372](https://github.com/grafana/grafana-aws-sdk-react/pull/372), [#400](https://github.com/grafana/grafana-aws-sdk-react/pull/400)
+- Bump esbuild to ^0.27.0 in [#380](https://github.com/grafana/grafana-aws-sdk-react/pull/380)
+- Bump prettier from ^3.6.2 to ^3.8.0 in [#381](https://github.com/grafana/grafana-aws-sdk-react/pull/381), [#399](https://github.com/grafana/grafana-aws-sdk-react/pull/399)
+- Bump rollup-plugin-dts to ^6.3.0 in [#382](https://github.com/grafana/grafana-aws-sdk-react/pull/382)
+- Bump eslint monorepo to ^9.38.0 in [#356](https://github.com/grafana/grafana-aws-sdk-react/pull/356)
+- Bump eslint-plugin-jsdoc from 61 to 62 in [#389](https://github.com/grafana/grafana-aws-sdk-react/pull/389), [#393](https://github.com/grafana/grafana-aws-sdk-react/pull/393), [#394](https://github.com/grafana/grafana-aws-sdk-react/pull/394)
+- Bump actions/checkout action to v6 in [#388](https://github.com/grafana/grafana-aws-sdk-react/pull/388)
+- Bump @grafana/plugin-ui to ^0.12.0 in [#387](https://github.com/grafana/grafana-aws-sdk-react/pull/387)
+- Bump yarn to v4.12.0 in [#385](https://github.com/grafana/grafana-aws-sdk-react/pull/385)
+- Bump grafana monorepo from 12.3.1 to 12.3.2 in [#383](https://github.com/grafana/grafana-aws-sdk-react/pull/383), [#403](https://github.com/grafana/grafana-aws-sdk-react/pull/403)
+- Bump @grafana/eslint-config to v9 in [#357](https://github.com/grafana/grafana-aws-sdk-react/pull/357)
+- Bump lefthook from 2 to ^2.0.13 in [#390](https://github.com/grafana/grafana-aws-sdk-react/pull/390), [#397](https://github.com/grafana/grafana-aws-sdk-react/pull/397)
+- Bump node.js to v24 in [#391](https://github.com/grafana/grafana-aws-sdk-react/pull/391)
+- Bump typescript-eslint monorepo to ^8.53.0 in [#384](https://github.com/grafana/grafana-aws-sdk-react/pull/384)
+
 ## v0.8.3
 
 - ConfigEditor: add a link to Grafana Assume Role in [#364](https://github.com/grafana/grafana-aws-sdk-react/pull/364)
