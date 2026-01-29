@@ -245,7 +245,7 @@ describe('ConnectionConfig', () => {
     // @ts-ignore ignore setting type error
     config.awsPerDatasourceHTTPProxyEnabled = true;
     const props = getProps({ options: { jsonData: { proxyType: 'url' } } });
-    render(<ConnectionConfig {...props} />);
+    render(<ConnectionConfig {...props} showHttpProxySettings />);
     await waitFor(() => expect(screen.getByTestId('connection-config')).toBeInTheDocument());
 
     expect(screen.getByText('Proxy Username')).toBeInTheDocument();
@@ -253,11 +253,23 @@ describe('ConnectionConfig', () => {
     expect(screen.getByText('Proxy Password')).toBeInTheDocument();
   });
 
+  it('should not show url fields if http proxy setting is not enabled', async () => {
+    // @ts-ignore ignore setting type error
+    config.awsPerDatasourceHTTPProxyEnabled = true;
+    const props = getProps({ options: { jsonData: { proxyType: 'url' } } });
+    render(<ConnectionConfig {...props} />);
+    await waitFor(() => expect(screen.getByTestId('connection-config')).toBeInTheDocument());
+
+    expect(screen.queryByText('Proxy Username')).not.toBeInTheDocument();
+    expect(screen.queryByText('Proxy URL')).not.toBeInTheDocument();
+    expect(screen.queryByText('Proxy Password')).not.toBeInTheDocument();
+  });
+
   it('should not show url fields if http proxy type is none', async () => {
     // @ts-ignore ignore setting type error
     config.awsPerDatasourceHTTPProxyEnabled = true;
     const props = getProps({ options: { jsonData: { proxyType: 'none' } } });
-    render(<ConnectionConfig {...props} />);
+    render(<ConnectionConfig {...props} showHttpProxySettings />);
     await waitFor(() => expect(screen.getByTestId('connection-config')).toBeInTheDocument());
 
     expect(screen.queryByText('Proxy URL')).not.toBeInTheDocument();
