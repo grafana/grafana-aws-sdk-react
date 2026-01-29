@@ -47,4 +47,5 @@ export interface ConnectionConfigProps<
   inExperimentalAuthComponent?: boolean;
   externalId?: string;
   hideAssumeRoleArn?: boolean;
+  showHttpProxySettings?: boolean;
 }
