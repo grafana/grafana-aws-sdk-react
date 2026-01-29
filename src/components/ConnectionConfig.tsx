@@ -36,6 +36,7 @@ export const ConnectionConfig: FC<ConnectionConfigProps> = (props: ConnectionCon
     skipEndpoint = false,
     options,
     hideAssumeRoleArn = false,
+    showHttpProxySettings = false,
   } = props;
   let profile = options.jsonData.profile;
   if (profile === undefined) {
@@ -44,7 +45,7 @@ export const ConnectionConfig: FC<ConnectionConfigProps> = (props: ConnectionCon
   const tempCredsFeatureEnabled =
     config.featureToggles.awsDatasourcesTempCredentials && DS_TYPES_THAT_SUPPORT_TEMP_CREDS.includes(options.type);
   // @ts-ignore ignore feature toggle type error
-  const httpProxySettingEnabled = config.awsPerDatasourceHTTPProxyEnabled ?? false;
+  const httpProxySettingEnabled = showHttpProxySettings && (config.awsPerDatasourceHTTPProxyEnabled ?? false);
   const awsAssumeRoleEnabled = config.awsAssumeRoleEnabled ?? true;
   const awsAllowedAuthProviders = useMemo(
     () =>
