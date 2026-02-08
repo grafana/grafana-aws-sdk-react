@@ -1675,7 +1675,7 @@ __metadata:
     "@typescript-eslint/eslint-plugin": "npm:^8.53.0"
     "@typescript-eslint/parser": "npm:^8.53.0"
     cspell: "npm:9.6.2"
-    esbuild: "npm:^0.27.0"
+    esbuild: "npm:^0.27.2"
     eslint: "npm:^9.38.0"
     eslint-config-prettier: "npm:^10.0.1"
     eslint-plugin-deprecation: "npm:^3.0.0"
@@ -6101,7 +6101,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"esbuild@npm:^0.27.0":
+"esbuild@npm:^0.27.2":
   version: 0.27.2
   resolution: "esbuild@npm:0.27.2"
   dependencies:
