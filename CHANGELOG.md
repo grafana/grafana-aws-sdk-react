@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file.
 
+## v0.10.0
+
+- chore(deps): update dependency rollup to v4.57.1 in [#407](https://github.com/grafana/grafana-aws-sdk-react/pull/407)
+- chore(deps): update dependency esbuild to ^0.27.2 in [#414](https://github.com/grafana/grafana-aws-sdk-react/pull/414)
+- fix(deps): update dependency @grafana/plugin-ui to ^0.13.0 in [#409](https://github.com/grafana/grafana-aws-sdk-react/pull/409)
+- chore(deps): update dependency cspell to v9.6.2 in [#405](https://github.com/grafana/grafana-aws-sdk-react/pull/405)
+- chore(deps): update actions/checkout digest to de0fac2 in [#408](https://github.com/grafana/grafana-aws-sdk-react/pull/408)
+- chore(deps): update dependency rollup to v4.56.0 in [#402](https://github.com/grafana/grafana-aws-sdk-react/pull/402)
+
 ## v0.9.0
 
 - Support proxy http setting on frontend in [#365](https://github.com/grafana/grafana-aws-sdk-react/pull/365)
