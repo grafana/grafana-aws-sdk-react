@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## v0.10.1
+
+- Expanding the list of temp-credentials-supporting datasources in [#418](https://github.com/grafana/grafana-aws-sdk-react/pull/418)
+
 ## v0.10.0
 
 - chore(deps): update dependency rollup to v4.57.1 in [#407](https://github.com/grafana/grafana-aws-sdk-react/pull/407)
