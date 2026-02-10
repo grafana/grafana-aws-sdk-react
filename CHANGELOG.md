@@ -2,6 +2,8 @@
 
 All notable changes to this project will be documented in this file.
 
+(trivial change to poke CI)
+
 ## v0.10.0
 
 - chore(deps): update dependency rollup to v4.57.1 in [#407](https://github.com/grafana/grafana-aws-sdk-react/pull/407)
