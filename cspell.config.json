@@ -9,6 +9,7 @@
     "CREDS",
     "opensearch",
     "esbuild",
+    "inlinesvg",
     "testid",
     "Datasources",
     "Datasource",
