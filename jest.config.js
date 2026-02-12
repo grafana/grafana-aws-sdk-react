@@ -4,6 +4,7 @@
 module.exports = {
   modulePaths: ['<rootDir>/src'],
   moduleNameMapper: {
+    '^react-inlinesvg$': '<rootDir>/src/tests/mocks/react-inlinesvg.tsx',
     '\\.(css|scss|sass)$': 'identity-obj-proxy',
   },
   setupFilesAfterEnv: ['<rootDir>/src/tests/setupTests.ts'],
