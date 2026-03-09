@@ -7,6 +7,7 @@ import {
   onUpdateDatasourceSecureJsonDataOption,
 } from '@grafana/data';
 import { config } from '@grafana/runtime';
+import { useConfigSaveReporter } from '../hooks/useConfigSaveReporter';
 import { standardRegions } from '../regions';
 import { AwsAuthType, ConnectionConfigProps } from '../types';
 import { awsAuthProviderOptions } from '../providers';
@@ -44,6 +45,7 @@ export const ConnectionConfig: FC<ConnectionConfigProps> = (props: ConnectionCon
     hideAssumeRoleArn = false,
     showHttpProxySettings = false,
   } = props;
+  useConfigSaveReporter(options.type, options.jsonData.authType);
   let profile = options.jsonData.profile;
   if (profile === undefined) {
     profile = options.database;

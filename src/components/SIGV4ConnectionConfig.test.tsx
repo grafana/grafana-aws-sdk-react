@@ -14,6 +14,10 @@ jest.mock('@grafana/runtime', () => ({
       awsDatasourcesTempCredentials: false,
     },
   },
+  usePluginInteractionReporter: () => jest.fn(),
+  getAppEvents: () => ({
+    subscribe: () => ({ unsubscribe: jest.fn() }),
+  }),
 }));
 
 describe('SIGV4ConnectionConfig', () => {
