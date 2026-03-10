@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file.
 
+## v0.10.2
+- Add config save event reporting to ConnectionConfig in [#435](https://github.com/grafana/grafana-aws-sdk-react/pull/435)
+- chore(deps): lock file maintenance in [#422](https://github.com/grafana/grafana-aws-sdk-react/pull/422)
+- chore(deps): pin dependencies in [#323](https://github.com/grafana/grafana-aws-sdk-react/pull/323)
+- chore(deps): update dependency rollup to v4.59.0 [security] in [#431](https://github.com/grafana/grafana-aws-sdk-react/pull/431)
+- Update renovate config to use data-sources base preset in [#430](https://github.com/grafana/grafana-aws-sdk-react/pull/430)
+- chore(deps): update dependency @types/node to v24.10.13 in [#411](https://github.com/grafana/grafana-aws-sdk-react/pull/411)
+- chore(deps): update eslint monorepo to ^9.39.2 in [#423](https://github.com/grafana/grafana-aws-sdk-react/pull/423)
+- fix test warnings in [#420](https://github.com/grafana/grafana-aws-sdk-react/pull/420)
+- chore(deps): update dependency cspell to v9.6.4 in [#410](https://github.com/grafana/grafana-aws-sdk-react/pull/410)
+- chore(deps): update dependency @types/react to v18.3.28 in [#413](https://github.com/grafana/grafana-aws-sdk-react/pull/413)
+- chore(deps): update grafana monorepo to v12.3.3 in [#421](https://github.com/grafana/grafana-aws-sdk-react/pull/421)
+
 ## v0.10.1
 
 - Expanding the list of temp-credentials-supporting datasources in [#418](https://github.com/grafana/grafana-aws-sdk-react/pull/418)
