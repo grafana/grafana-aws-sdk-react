@@ -66,6 +66,10 @@ jest.mock('@grafana/runtime', () => ({
     },
     namespace: '',
   },
+  usePluginInteractionReporter: () => jest.fn(),
+  getAppEvents: () => ({
+    subscribe: () => ({ unsubscribe: jest.fn() }),
+  }),
 }));
 
 describe('ConnectionConfig', () => {
