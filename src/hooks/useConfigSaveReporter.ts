@@ -10,16 +10,14 @@ export function useConfigSaveReporter(pluginId: string, authType: AwsAuthType | 
     const appEvents = getAppEvents();
 
     const successSubscription = appEvents.subscribe<DataSourceTestSucceeded>(DataSourceTestSucceeded, () => {
-      report('grafana_aws_plugin_save', {
-        plugin_id: pluginId,
+      report('grafana_plugin_aws_save', {
         auth_type: authType,
         result: 'succeeded',
       });
     });
 
     const failSubscription = appEvents.subscribe<DataSourceTestFailed>(DataSourceTestFailed, () => {
-      report('grafana_aws_plugin_save', {
-        plugin_id: pluginId,
+      report('grafana_plugin_aws_save', {
         auth_type: authType,
         result: 'failed',
       });

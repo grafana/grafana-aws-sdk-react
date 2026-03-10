@@ -45,8 +45,7 @@ describe('useConfigSaveReporter', () => {
 
     subscribedHandlers['data-source-test-succeeded']();
 
-    expect(mockReport).toHaveBeenCalledWith('grafana_aws_plugin_save', {
-      plugin_id: 'grafana-athena-datasource',
+    expect(mockReport).toHaveBeenCalledWith('grafana_plugin_aws_save', {
       auth_type: AwsAuthType.Default,
       result: 'succeeded',
     });
@@ -57,8 +56,7 @@ describe('useConfigSaveReporter', () => {
 
     subscribedHandlers['data-source-test-failed']();
 
-    expect(mockReport).toHaveBeenCalledWith('grafana_aws_plugin_save', {
-      plugin_id: 'cloudwatch',
+    expect(mockReport).toHaveBeenCalledWith('grafana_plugin_aws_save', {
       auth_type: AwsAuthType.Credentials,
       result: 'failed',
     });
@@ -88,8 +86,7 @@ describe('useConfigSaveReporter', () => {
 
     // New subscription should report with updated authType
     subscribedHandlers['data-source-test-succeeded']();
-    expect(mockReport).toHaveBeenCalledWith('grafana_aws_plugin_save', {
-      plugin_id: 'cloudwatch',
+    expect(mockReport).toHaveBeenCalledWith('grafana_plugin_aws_save', {
       auth_type: AwsAuthType.Default,
       result: 'succeeded',
     });
