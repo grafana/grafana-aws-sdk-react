@@ -73,6 +73,13 @@ jest.mock('@grafana/runtime', () => ({
 }));
 
 describe('ConnectionConfig', () => {
+  const renderWithDataSourceType = (type: string) => {
+    const props = getProps();
+    const options = { ...props.options, type };
+
+    render(<ConnectionConfig {...props} options={options} />);
+  };
+
   afterEach(() => {
     config.awsAllowedAuthProviders = [AwsAuthType.EC2IAMRole, AwsAuthType.Keys, AwsAuthType.Credentials];
     config.featureToggles.awsDatasourcesTempCredentials = false;
@@ -217,30 +224,54 @@ describe('ConnectionConfig', () => {
     const link = screen.getByRole('link', { name: 'Grafana Assume Role' });
     expect(link).toBeInTheDocument();
   });
-  it('should render GrafanaAssumeRole as auth type if the feature flag is enabled and auth providers has GrafanaAssumeRole and the datasource supports temp credentials', async () => {
+  it.each([
+    'cloudwatch',
+    'grafana-amazonprometheus-datasource',
+    'grafana-athena-datasource',
+    'grafana-aurora-datasource',
+    'grafana-dynamodb-datasource',
+    'grafana-iot-sitewise-datasource',
+    'grafana-opensearch-datasource',
+    'grafana-redshift-datasource',
+    'grafana-timestream-datasource',
+    'grafana-x-ray-datasource',
+  ])(
+    'should render GrafanaAssumeRole as an auth type for %s when temp credentials are enabled',
+    async (dataSourceType) => {
+      config.featureToggles.awsDatasourcesTempCredentials = true;
+      config.awsAllowedAuthProviders = [AwsAuthType.GrafanaAssumeRole, AwsAuthType.Credentials];
+      renderWithDataSourceType(dataSourceType);
+
+      await selectEvent.openMenu(screen.getByLabelText('Authentication Provider'));
+      expect(screen.getByText('Grafana Assume Role')).toBeInTheDocument();
+    }
+  );
+
+  it('should not render GrafanaAssumeRole as an auth type for TwinMaker because it does not support temp credentials', async () => {
     config.featureToggles.awsDatasourcesTempCredentials = true;
     config.awsAllowedAuthProviders = [AwsAuthType.GrafanaAssumeRole, AwsAuthType.Credentials];
-    const props = getProps();
-    const overwriteOptions = { ...props.options, type: 'cloudwatch' };
-    render(<ConnectionConfig {...props} options={overwriteOptions} />);
-    await selectEvent.openMenu(screen.getByLabelText('Authentication Provider'));
-    expect(screen.getByText('Credentials file')).toBeInTheDocument();
-    expect(screen.queryByText('Grafana Assume Role')).toBeInTheDocument();
-  });
-  it('should not render GrafanaAssumeRole as auth type if the feature flag is not enabled', async () => {
-    config.featureToggles.awsDatasourcesTempCredentials = false;
-    const props = getProps();
-    render(<ConnectionConfig {...props} />);
+    renderWithDataSourceType('grafana-iot-twinmaker-datasource');
+
     await selectEvent.openMenu(screen.getByLabelText('Authentication Provider'));
     expect(screen.getByText('Credentials file')).toBeInTheDocument();
     expect(screen.queryByText('Grafana Assume Role')).not.toBeInTheDocument();
   });
-  it('should not render GrafanaAssumeRole if the datasource is not a supported datasource type', async () => {
-    config.featureToggles.awsDatasourcesTempCredentials = true;
+
+  it('should not render GrafanaAssumeRole as an auth type if the feature flag is not enabled', async () => {
+    config.featureToggles.awsDatasourcesTempCredentials = false;
     config.awsAllowedAuthProviders = [AwsAuthType.GrafanaAssumeRole, AwsAuthType.Credentials];
-    const props = getProps();
-    const overwriteOptions = { ...props.options, type: 'grafana-dynamodb-datasource' };
-    render(<ConnectionConfig {...props} options={overwriteOptions} />);
+    renderWithDataSourceType('cloudwatch');
+
+    await selectEvent.openMenu(screen.getByLabelText('Authentication Provider'));
+    expect(screen.getByText('Credentials file')).toBeInTheDocument();
+    expect(screen.queryByText('Grafana Assume Role')).not.toBeInTheDocument();
+  });
+
+  it('should not render GrafanaAssumeRole as an auth type if it is not an allowed auth provider', async () => {
+    config.featureToggles.awsDatasourcesTempCredentials = true;
+    config.awsAllowedAuthProviders = [AwsAuthType.Credentials];
+    renderWithDataSourceType('cloudwatch');
+
     await selectEvent.openMenu(screen.getByLabelText('Authentication Provider'));
     expect(screen.queryByText('Grafana Assume Role')).not.toBeInTheDocument();
   });
