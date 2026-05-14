@@ -2,6 +2,30 @@
 
 All notable changes to this project will be documented in this file.
 
+## v0.10.3
+
+- Show Grafana Assume Role for the DynamoDB data source in [#467](https://github.com/grafana/grafana-aws-sdk-react/pull/467)
+- chore(deps): update EndBug/version-check action to v3 in [#439](https://github.com/grafana/grafana-aws-sdk-react/pull/439)
+- Set enable scripts to false in .yarnrc.yml in [#464](https://github.com/grafana/grafana-aws-sdk-react/pull/464)
+- chore(deps): update dependency @grafana/ui to v13 in [#462](https://github.com/grafana/grafana-aws-sdk-react/pull/462)
+- chore(deps): update grafana/shared-workflows/ action in [#456](https://github.com/grafana/grafana-aws-sdk-react/pull/456)
+- chore(deps): update actions/setup-node digest to 48b55a0 in [#455](https://github.com/grafana/grafana-aws-sdk-react/pull/455)
+- chore(deps): update dependency rollup-plugin-node-externals to v9 in [#453](https://github.com/grafana/grafana-aws-sdk-react/pull/453)
+- chore(deps): lock file maintenance in [#451](https://github.com/grafana/grafana-aws-sdk-react/pull/451)
+- chore(deps): lock file maintenance in [#450](https://github.com/grafana/grafana-aws-sdk-react/pull/450)
+- chore(deps): update dependency cspell to v10 in [#448](https://github.com/grafana/grafana-aws-sdk-react/pull/448)
+- chore(deps): lock file maintenance in [#447](https://github.com/grafana/grafana-aws-sdk-react/pull/447)
+- Update codeowners in [#446](https://github.com/grafana/grafana-aws-sdk-react/pull/446)
+- chore(deps): update grafana/shared-workflows/ action in [#445](https://github.com/grafana/grafana-aws-sdk-react/pull/445)
+- chore(deps): update grafana/shared-workflows/ action in [#444](https://github.com/grafana/grafana-aws-sdk-react/pull/444)
+- chore(deps): lock file maintenance in [#443](https://github.com/grafana/grafana-aws-sdk-react/pull/443)
+- chore(deps): lock file maintenance in [#442](https://github.com/grafana/grafana-aws-sdk-react/pull/442)
+- chore(deps): update grafana/shared-workflows/ action in [#441](https://github.com/grafana/grafana-aws-sdk-react/pull/441)
+- chore(deps): update actions/create-github-app-token action to v3 in [#438](https://github.com/grafana/grafana-aws-sdk-react/pull/438)
+- chore(deps): update actions/create-github-app-token digest to fee1f7d in [#437](https://github.com/grafana/grafana-aws-sdk-react/pull/437)
+- chore(deps): lock file maintenance in [#434](https://github.com/grafana/grafana-aws-sdk-react/pull/434)
+- chore(deps): update frontend dependencies to v10 in [#433](https://github.com/grafana/grafana-aws-sdk-react/pull/433)
+
 ## v0.10.2
 - Add config save event reporting to ConnectionConfig in [#435](https://github.com/grafana/grafana-aws-sdk-react/pull/435)
 - chore(deps): lock file maintenance in [#422](https://github.com/grafana/grafana-aws-sdk-react/pull/422)
