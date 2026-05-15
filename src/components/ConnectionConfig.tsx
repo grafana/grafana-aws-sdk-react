@@ -20,6 +20,7 @@ const DS_TYPES_THAT_SUPPORT_TEMP_CREDS = [
   'grafana-amazonprometheus-datasource',
   'grafana-athena-datasource',
   'grafana-aurora-datasource',
+  'grafana-dynamodb-datasource',
   'grafana-iot-sitewise-datasource',
   'grafana-opensearch-datasource',
   'grafana-redshift-datasource',
