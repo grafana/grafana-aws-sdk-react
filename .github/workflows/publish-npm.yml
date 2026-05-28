@@ -52,9 +52,13 @@ jobs:
         if: steps.version_check.outputs.changed == 'true'
         run: npm install -g npm@^11.5.1
 
+      - name: Enable Corepack
+        if: steps.version_check.outputs.changed == 'true'
+        run: corepack enable
+
       - name: Install dependencies
         if: steps.version_check.outputs.changed == 'true'
-        run: yarn
+        run: yarn install --immutable
 
       - name: Build library
         if: steps.version_check.outputs.changed == 'true'

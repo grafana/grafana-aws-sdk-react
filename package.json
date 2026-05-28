@@ -29,6 +29,9 @@
   },
   "author": "Grafana Labs <team@grafana.com> (https://grafana.com)",
   "license": "Apache-2.0",
+  "engines": {
+    "node": ">=24"
+  },
   "dependencies": {
     "@grafana/async-query-data": "0.4.2",
     "@grafana/plugin-ui": "^0.13.0"
@@ -37,6 +40,7 @@
     "@eslint/eslintrc": "^3.3.1",
     "@eslint/js": "^10.0.0",
     "@grafana/data": "12.3.3",
+    "@grafana/e2e-selectors": "12.3.3",
     "@grafana/eslint-config": "^9.0.0",
     "@grafana/runtime": "12.3.3",
     "@grafana/tsconfig": "^2.0.0",
@@ -45,6 +49,7 @@
     "@stylistic/eslint-plugin-ts": "^4.2.0",
     "@swc/core": "^1.14.0",
     "@swc/jest": "^0.2.36",
+    "@testing-library/dom": "10.4.1",
     "@testing-library/jest-dom": "6.9.1",
     "@testing-library/react": "16.3.2",
     "@testing-library/react-hooks": "8.0.1",
@@ -60,7 +65,6 @@
     "esbuild": "^0.27.2",
     "eslint": "^10.0.0",
     "eslint-config-prettier": "^10.0.1",
-    "eslint-plugin-deprecation": "^3.0.0",
     "eslint-plugin-jsdoc": "^62.0.0",
     "eslint-plugin-react": "^7.37.2",
     "eslint-plugin-react-hooks": "^7.0.0",
@@ -78,6 +82,7 @@
     "rollup-plugin-dts": "^6.3.0",
     "rollup-plugin-esbuild": "^6.1.1",
     "rollup-plugin-node-externals": "^9.0.0",
+    "rxjs": "7.8.2",
     "typescript": "^5.9.2"
   },
   "packageManager": "yarn@4.15.0",

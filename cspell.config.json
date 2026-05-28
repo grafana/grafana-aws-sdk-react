@@ -25,6 +25,7 @@
     "zizmor",
     "sitewise",
     "twinmaker",
-    "npmPreapprovedPackages"
+    "npmPreapprovedPackages",
+    "yarnrc"
   ]
 }
