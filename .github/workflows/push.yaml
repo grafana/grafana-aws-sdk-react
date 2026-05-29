@@ -6,11 +6,10 @@ on:
       - main
   pull_request:
 
-permissions:
-  contents: read
-
 jobs:
   check:
+    permissions:
+      contents: read
     name: Automated checks
     runs-on: ubuntu-latest
 
