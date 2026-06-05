@@ -1,9 +1,8 @@
 import React from 'react';
 
 import { DataQuery, DataSourceApi, DataSourceJsonData, LoadingState, QueryEditorProps } from '@grafana/data';
-import { EditorHeader, FlexItem } from '@grafana/plugin-ui';
+import { EditorHeader, FlexItem, RunQueryButtons } from '@grafana/plugin-ui';
 import { Button } from '@grafana/ui';
-import { RunQueryButtons } from '@grafana/async-query-data';
 
 export interface Props<
   Datasource extends DataSourceApi<TQuery, JsonData>,

@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## v0.10.4
+
+- chore(deps): migrated `@grafana/async-query-data` dependency to `@grafana/plugin-ui`
+
 ## v0.10.3
 
 - Show Grafana Assume Role for the DynamoDB data source in [#467](https://github.com/grafana/grafana-aws-sdk-react/pull/467)
