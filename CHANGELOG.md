@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## v0.11.0
+
+- **Breaking:** `@grafana/plugin-ui` is now a `peerDependency` — consuming plugins must declare it in their own dependencies in [#482](https://github.com/grafana/grafana-aws-sdk-react/pull/482)
+- **Breaking:** ship a proper dual ESM/CJS package (`"type": "module"`, `exports` map with `.cjs` output and separate `.d.ts`/`.d.cts` declarations) in [#482](https://github.com/grafana/grafana-aws-sdk-react/pull/482)
+- chore: update frontend dependencies, fix build/tsconfig output, and resolve `eslint-plugin-react-hooks` v7 lint errors in `ResourceSelector` in [#482](https://github.com/grafana/grafana-aws-sdk-react/pull/482)
+
 ## v0.10.4
 
 - chore(deps): migrated `@grafana/async-query-data` dependency to `@grafana/plugin-ui`

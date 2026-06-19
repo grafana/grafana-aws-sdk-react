@@ -1,6 +1,6 @@
 {
   "name": "@grafana/aws-sdk",
-  "version": "0.10.4",
+  "version": "0.11.0",
   "description": "Common AWS features for grafana",
   "type": "module",
   "main": "dist/cjs/index.cjs",
