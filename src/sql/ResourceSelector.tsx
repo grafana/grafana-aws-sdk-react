@@ -35,10 +35,14 @@ export function ResourceSelector(props: ResourceSelectorProps) {
   const fetched = useRef<boolean>(false);
   const resource = useRef<string | null>(props.value || props.default || null);
 
-  const [resources, setResources] = useState<Array<string | SelectableValue>>(
-    resource.current ? [resource.current] : []
-  );
+  const [fetchedResources, setFetchedResources] = useState<Array<string | SelectableValue>>(() => {
+    const initialResource = props.value || props.default || null;
+    return initialResource ? [initialResource] : [];
+  });
   const [isLoading, setIsLoading] = useState(false);
+
+  // Resources come either from the `resources` prop (controlled) or from `fetch()` results.
+  const resources = props.resources !== undefined ? props.resources : fetchedResources;
 
   const defaultOpts = useMemo(() => {
     const opts: Array<SelectableValue<string>> = [
@@ -53,25 +57,19 @@ export function ResourceSelector(props: ResourceSelectorProps) {
     }
     return opts;
   }, [props.default, props.value]);
-  const [options, setOptions] = useState<Array<SelectableValue<string>>>(props.default ? defaultOpts : []);
-  useEffect(() => {
-    if (props.resources !== undefined) {
-      setResources(props.resources);
+
+  const options = useMemo(() => {
+    if (!resources.length) {
+      return [];
     }
-  }, [props.resources]);
-  useEffect(() => {
     const newOptions: Array<SelectableValue<string>> = props.default ? defaultOpts : [];
-    if (resources.length) {
-      resources.forEach((r) => {
-        const value = typeof r === 'string' ? r : r.value;
-        if (!newOptions.find((o) => o.value === value)) {
-          typeof r === 'string' ? newOptions.push({ label: r, value: r }) : newOptions.push(r);
-        }
-      });
-      setOptions(newOptions);
-    } else {
-      setOptions([]);
-    }
+    resources.forEach((r) => {
+      const value = typeof r === 'string' ? r : r.value;
+      if (!newOptions.find((o) => o.value === value)) {
+        typeof r === 'string' ? newOptions.push({ label: r, value: r }) : newOptions.push(r);
+      }
+    });
+    return newOptions;
   }, [resources, defaultOpts, props.default]);
 
   useEffect(() => {
@@ -93,7 +91,7 @@ export function ResourceSelector(props: ResourceSelectorProps) {
     }
     try {
       const resources = (await props.fetch?.()) || [];
-      setResources(resources);
+      setFetchedResources(resources);
     } finally {
       fetched.current = true;
     }

@@ -1,4 +1,10 @@
 {
-  "exclude": ["**/*.test.ts", "**/*.test.tsx", "dist", "node_modules"],
-  "extends": "./tsconfig.json"
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "rootDir": "./src",
+    "declaration": true,
+    "declarationDir": "./compiled",
+    "emitDeclarationOnly": true
+  },
+  "exclude": ["**/*.test.ts", "**/*.test.tsx", "rollup.config.ts", "dist", "node_modules"]
 }

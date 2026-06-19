@@ -1,11 +1,22 @@
 {
-  "extends": "@grafana/tsconfig",
-  "include": ["src/**/*.ts", "src/**/*.tsx"],
   "compilerOptions": {
-    "baseUrl": "./src",
-    "rootDir": "./src",
-    "declarationDir": "./compiled",
-    "emitDeclarationOnly": true,
-    "isolatedModules": true
-  }
+    "alwaysStrict": true,
+    "typeRoots": ["./node_modules/@types"],
+    "resolveJsonModule": true,
+    "paths": {
+      "*": ["./src/*"]
+    },
+    "types": ["node"]
+  },
+  "ts-node": {
+    "compilerOptions": {
+      "module": "nodenext",
+      "target": "es2022",
+      "esModuleInterop": true,
+      "moduleResolution": "nodenext"
+    },
+    "transpileOnly": true
+  },
+  "include": ["./src", "./rollup.config.ts"],
+  "extends": "@grafana/tsconfig"
 }

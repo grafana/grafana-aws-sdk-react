@@ -19,7 +19,15 @@ export default [
     plugins: [
       nodeExternals({
         deps: true,
-        include: ['react', '@emotion/css', '@grafana/data', '@grafana/ui', '@grafana/runtime', 'lodash'],
+        include: [
+          'react',
+          '@emotion/css',
+          '@grafana/data',
+          '@grafana/ui',
+          '@grafana/runtime',
+          '@grafana/plugin-ui',
+          'lodash',
+        ],
         packagePath: './package.json',
       }),
       resolve(),
@@ -33,6 +41,8 @@ export default [
         format: 'cjs',
         sourcemap: true,
         dir: path.dirname(pkg.main),
+        entryFileNames: '[name].cjs',
+        chunkFileNames: '[name]-[hash].cjs',
         ...legacyOutputDefaults,
       },
       {
@@ -48,10 +58,18 @@ export default [
   {
     input: './compiled/index.d.ts',
     plugins: [dts()],
-    output: {
-      file: pkg.types,
-      format: 'es',
-    },
+    output: [
+      // CJS type declarations (require condition)
+      {
+        file: pkg.types,
+        format: 'es',
+      },
+      // ESM type declarations (import condition)
+      {
+        file: pkg.exports['.'].import.types,
+        format: 'es',
+      },
+    ],
     watch: {
       exclude: './compiled/**',
     },
