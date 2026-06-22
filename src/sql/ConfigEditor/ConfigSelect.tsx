@@ -5,8 +5,10 @@ import { AwsAuthDataSourceJsonData, AwsAuthDataSourceSecureJsonData } from '../.
 import { ResourceSelector } from '../ResourceSelector';
 import { DEFAULT_LABEL_WIDTH } from '../../components/ConnectionConfig';
 
-export interface ConfigSelectProps
-  extends DataSourcePluginOptionsEditorProps<AwsAuthDataSourceJsonData, AwsAuthDataSourceSecureJsonData> {
+export interface ConfigSelectProps extends DataSourcePluginOptionsEditorProps<
+  AwsAuthDataSourceJsonData,
+  AwsAuthDataSourceSecureJsonData
+> {
   value: string;
   fetch: () => Promise<Array<string | SelectableValue<string>>>;
   onChange: (e: SelectableValue<string> | null) => void;

@@ -3,7 +3,6 @@ import { render, screen } from '@testing-library/react';
 import { ConfigSelect, ConfigSelectProps } from './ConfigSelect';
 import { mockDatasourceOptions } from './__mocks__/datasource';
 import { select } from 'react-select-event';
-import { config } from '@grafana/runtime';
 
 const props: ConfigSelectProps = {
   ...mockDatasourceOptions,
