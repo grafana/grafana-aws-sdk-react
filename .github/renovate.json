@@ -35,6 +35,13 @@
         "rxjs"
       ],
       "enabled": false
+    },
+    {
+      "description": "Don't pin peerDependencies, keep them as ranges and only widen when needed",
+      "matchDepTypes": [
+        "peerDependencies"
+      ],
+      "rangeStrategy": "widen"
     }
   ]
 }
