@@ -16,6 +16,13 @@ export interface AwsAuthDataSourceJsonData extends DataSourceJsonData {
   authType?: AwsAuthType;
   assumeRoleArn?: string;
   externalId?: string;
+  /**
+   * Per-datasource external ID for Grafana Assume Role auth.
+   * Format: `{stackExternalId}-{dsUid}`. Set once (UI or server),
+   * then immutable. When unset, Grafana falls back to the stack-level
+   * external ID (legacy shared isolation).
+   */
+  grafanaExternalId?: string;
   profile?: string; // Credentials profile name, as specified in ~/.aws/credentials
   defaultRegion?: string; // region if it is not defined by your credentials file
   endpoint?: string;

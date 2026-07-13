@@ -1,5 +1,5 @@
 import React, { FC, useEffect, useMemo, useState } from 'react';
-import { Input, Select, ButtonGroup, ToolbarButton, Text, TextLink, Collapse, Field, Space } from '@grafana/ui';
+import { Input, Select, ButtonGroup, ToolbarButton, Text, TextLink, Collapse, Field, Space, Alert } from '@grafana/ui';
 import {
   onUpdateDatasourceJsonDataOptionSelect,
   onUpdateDatasourceResetOption,
@@ -12,6 +12,7 @@ import { standardRegions } from '../regions';
 import { AwsAuthType, ConnectionConfigProps } from '../types';
 import { awsAuthProviderOptions } from '../providers';
 import { assumeRoleInstructionsStyle } from './ConnectionConfig.styles';
+import { buildGrafanaExternalId, generateDatasourceUid } from './utils/grafanaExternalId';
 import { ConfigSection, ConfigSubSection } from '@grafana/plugin-ui';
 
 export const DEFAULT_LABEL_WIDTH = 28;
@@ -36,6 +37,7 @@ const isAwsAuthType = (value: any): value is AwsAuthType => {
 
 export const ConnectionConfig: FC<ConnectionConfigProps> = (props: ConnectionConfigProps) => {
   const [isARNInstructionsOpen, setIsARNInstructionsOpen] = useState(false);
+  const [showExternalIdChangeWarning, setShowExternalIdChangeWarning] = useState(false);
   const [regions, setRegions] = useState((props.standardRegions || standardRegions).map(toOption));
   const {
     loadRegions,
@@ -63,15 +65,35 @@ export const ConnectionConfig: FC<ConnectionConfigProps> = (props: ConnectionCon
         .filter(isAwsAuthType),
     [tempCredsFeatureEnabled]
   );
-  const externalId = useMemo(() => {
-    if (tempCredsFeatureEnabled && options.jsonData.authType === AwsAuthType.GrafanaAssumeRole) {
-      if (config.namespace.startsWith('stacks-')) {
-        return config.namespace.substring(config.namespace.indexOf('-') + 1);
-      }
+  const isGrafanaAssumeRole = options.jsonData.authType === AwsAuthType.GrafanaAssumeRole;
+  const perDatasourceExternalId = options.jsonData.grafanaExternalId;
+  const stackExternalId = props.externalId;
+  // Prefer per-DS ID; fall back to stack-level ID (props.externalId) for legacy datasources only.
+  const grafanaExternalIdDisplay = useMemo(() => {
+    if (!isGrafanaAssumeRole) {
+      return undefined;
     }
-    return props.externalId;
-  }, [tempCredsFeatureEnabled, options.jsonData.authType, props.externalId]);
+    if (perDatasourceExternalId) {
+      return perDatasourceExternalId;
+    }
+    return stackExternalId || undefined;
+  }, [isGrafanaAssumeRole, perDatasourceExternalId, stackExternalId]);
   const currentProvider = awsAuthProviderOptions.find((p) => p.value === options.jsonData.authType);
+
+  const applyGrafanaExternalId = (nextOptions = options) => {
+    if (nextOptions.jsonData.grafanaExternalId || !stackExternalId) {
+      return nextOptions;
+    }
+    const uid = nextOptions.uid || generateDatasourceUid();
+    return {
+      ...nextOptions,
+      uid,
+      jsonData: {
+        ...nextOptions.jsonData,
+        grafanaExternalId: buildGrafanaExternalId(stackExternalId, uid),
+      },
+    };
+  };
 
   useEffect(() => {
     // Make sure a authType exists in the current model
@@ -80,14 +102,21 @@ export const ConnectionConfig: FC<ConnectionConfigProps> = (props: ConnectionCon
       if (awsAllowedAuthProviders.includes(AwsAuthType.GrafanaAssumeRole)) {
         defaultAuthType = AwsAuthType.GrafanaAssumeRole;
       }
-      onOptionsChange({
+      let next = {
         ...options,
         jsonData: {
           ...options.jsonData,
           authType: defaultAuthType,
         },
-      });
+      };
+      // New datasources (no authType yet): mint a per-DS ID when defaulting to Grafana Assume Role.
+      // Legacy datasources already have authType set and are skipped by !currentProvider.
+      if (defaultAuthType === AwsAuthType.GrafanaAssumeRole) {
+        next = applyGrafanaExternalId(next);
+      }
+      onOptionsChange(next);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- only when auth provider is missing
   }, [currentProvider, options, onOptionsChange, awsAllowedAuthProviders]);
 
   useEffect(() => {
@@ -114,11 +143,41 @@ export const ConnectionConfig: FC<ConnectionConfigProps> = (props: ConnectionCon
               options={awsAuthProviderOptions.filter((opt) => awsAllowedAuthProviders.includes(opt.value!))}
               defaultValue={options.jsonData.authType}
               onChange={(option) => {
+                if (option.value === AwsAuthType.GrafanaAssumeRole) {
+                  const previousAuthType = options.jsonData.authType;
+                  const hadPerDatasourceExternalId = Boolean(options.jsonData.grafanaExternalId);
+                  const next = applyGrafanaExternalId({
+                    ...options,
+                    jsonData: {
+                      ...options.jsonData,
+                      authType: AwsAuthType.GrafanaAssumeRole,
+                    },
+                  });
+                  const mintedExternalId = !hadPerDatasourceExternalId && Boolean(next.jsonData.grafanaExternalId);
+                  // Warn when leaving another auth type causes a new per-DS external ID to be set.
+                  setShowExternalIdChangeWarning(
+                    Boolean(mintedExternalId && previousAuthType && previousAuthType !== AwsAuthType.GrafanaAssumeRole)
+                  );
+                  onOptionsChange(next);
+                  return;
+                }
+                setShowExternalIdChangeWarning(false);
                 onUpdateDatasourceJsonDataOptionSelect(props, 'authType')(option);
               }}
               menuShouldPortal={true}
             />
           </Field>
+          {showExternalIdChangeWarning && (
+            <Alert
+              severity="warning"
+              title="External ID will change on save"
+              data-testid="grafana-external-id-change-warning"
+            >
+              Saving will store a data source-specific external ID. If your IAM role trust policy still uses a different
+              value (for example the shared stack external ID), update the trust policy to match the new external ID or
+              Assume Role will fail.
+            </Alert>
+          )}
           {options.jsonData.authType === 'credentials' && (
             <Field
               label="Credentials Profile Name"
@@ -222,8 +281,9 @@ export const ConnectionConfig: FC<ConnectionConfigProps> = (props: ConnectionCon
                     </li>
                     <li>
                       <p>
-                        3. Enter the following external ID:{' '}
-                        <code>{externalId || 'External Id is currently unavailable'}</code> and click <code>Next</code>.
+                        3. Enter the following external ID (unique to this data source):{' '}
+                        <code>{grafanaExternalIdDisplay || 'External Id is currently unavailable'}</code> and click{' '}
+                        <code>Next</code>.
                       </p>
                     </li>
                     <li>
@@ -271,6 +331,19 @@ export const ConnectionConfig: FC<ConnectionConfigProps> = (props: ConnectionCon
                     onChange={onUpdateDatasourceJsonDataOption(props, 'assumeRoleArn')}
                   />
                 </Field>
+                {options.jsonData.authType === AwsAuthType.GrafanaAssumeRole && grafanaExternalIdDisplay && (
+                  <Field
+                    htmlFor="grafanaExternalId"
+                    label="External ID"
+                    description={
+                      perDatasourceExternalId
+                        ? 'Unique to this data source. Paste this value into your IAM role trust policy.'
+                        : 'Shared stack external ID (legacy). New data sources get a unique ID per data source for stronger isolation.'
+                    }
+                  >
+                    <Input id="grafanaExternalId" readOnly value={grafanaExternalIdDisplay} />
+                  </Field>
+                )}
                 {options.jsonData.authType !== AwsAuthType.GrafanaAssumeRole && (
                   <Field
                     htmlFor="externalId"

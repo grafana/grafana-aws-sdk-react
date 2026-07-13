@@ -206,12 +206,149 @@ describe('ConnectionConfig', () => {
     await waitFor(() => expect(screen.getByTestId('connection-config')).toBeInTheDocument());
     expect(screen.queryByText('Assume Role ARN')).toBeInTheDocument();
   });
-  it('should not render externalId field if GrafanaAssumeRole auth type is selected and the auth type is enabled', async () => {
+  it('should not render editable externalId field if GrafanaAssumeRole auth type is selected', async () => {
     config.featureToggles.awsDatasourcesTempCredentials = true;
     const props = getProps({ options: { jsonData: { authType: AwsAuthType.GrafanaAssumeRole } } });
     render(<ConnectionConfig {...props} />);
 
-    await waitFor(() => expect(screen.queryByLabelText('External ID')).not.toBeInTheDocument());
+    await waitFor(() => expect(screen.queryByPlaceholderText('External ID')).not.toBeInTheDocument());
+  });
+
+  it('should mint a per-datasource external ID when defaulting to GrafanaAssumeRole', async () => {
+    config.featureToggles.awsDatasourcesTempCredentials = true;
+    config.awsAllowedAuthProviders = [AwsAuthType.GrafanaAssumeRole, AwsAuthType.Credentials];
+    const onOptionsChange = jest.fn();
+    const props = getProps({
+      onOptionsChange,
+      externalId: 'stackABC',
+      options: {
+        id: 21,
+        uid: 'dsUid1',
+        type: 'cloudwatch',
+        jsonData: { authType: undefined },
+      },
+    });
+    render(<ConnectionConfig {...props} />);
+    await waitFor(() => expect(onOptionsChange).toHaveBeenCalled());
+    const update = onOptionsChange.mock.calls.find((call) => call[0]?.jsonData?.grafanaExternalId)?.[0];
+    expect(update.jsonData.grafanaExternalId).toBe('stackABC-dsUid1');
+  });
+
+  it('should show per-datasource external ID when grafanaExternalId is set', async () => {
+    config.featureToggles.awsDatasourcesTempCredentials = true;
+    config.awsAllowedAuthProviders = [AwsAuthType.GrafanaAssumeRole, AwsAuthType.Credentials];
+    const perDsId = 'stackABC-dsUid1';
+    const props = getProps({
+      options: {
+        id: 21,
+        uid: 'dsUid1',
+        type: 'cloudwatch',
+        jsonData: {
+          authType: AwsAuthType.GrafanaAssumeRole,
+          grafanaExternalId: perDsId,
+        },
+      },
+      externalId: 'stack-should-not-win',
+    });
+    render(<ConnectionConfig {...props} />);
+    await waitFor(() => expect(screen.getByDisplayValue(perDsId)).toBeInTheDocument());
+    expect(screen.queryByDisplayValue('stack-should-not-win')).not.toBeInTheDocument();
+  });
+
+  it('should fall back to stack external ID for legacy GrafanaAssumeRole datasources', async () => {
+    config.featureToggles.awsDatasourcesTempCredentials = true;
+    config.awsAllowedAuthProviders = [AwsAuthType.GrafanaAssumeRole, AwsAuthType.Credentials];
+    const props = getProps({
+      options: {
+        id: 21,
+        uid: 'abc123',
+        type: 'cloudwatch',
+        jsonData: { authType: AwsAuthType.GrafanaAssumeRole },
+      },
+      externalId: 'stack-external-id',
+    });
+    render(<ConnectionConfig {...props} />);
+    await waitFor(() => expect(screen.getByDisplayValue('stack-external-id')).toBeInTheDocument());
+    expect(screen.getByText(/Shared stack external ID \(legacy\)/i)).toBeInTheDocument();
+  });
+
+  it('should not auto-migrate legacy GrafanaAssumeRole datasources on load', async () => {
+    config.featureToggles.awsDatasourcesTempCredentials = true;
+    config.awsAllowedAuthProviders = [AwsAuthType.GrafanaAssumeRole, AwsAuthType.Credentials];
+    const onOptionsChange = jest.fn();
+    const props = getProps({
+      onOptionsChange,
+      externalId: 'stackABC',
+      options: {
+        id: 21,
+        uid: 'dsUid1',
+        type: 'cloudwatch',
+        jsonData: { authType: AwsAuthType.GrafanaAssumeRole },
+      },
+    });
+    render(<ConnectionConfig {...props} />);
+    await waitFor(() => expect(screen.getByDisplayValue('stackABC')).toBeInTheDocument());
+    expect(onOptionsChange).not.toHaveBeenCalledWith(
+      expect.objectContaining({
+        jsonData: expect.objectContaining({ grafanaExternalId: expect.any(String) }),
+      })
+    );
+  });
+
+  it('should warn when switching to GrafanaAssumeRole mints a new external ID', async () => {
+    config.featureToggles.awsDatasourcesTempCredentials = true;
+    config.awsAllowedAuthProviders = [AwsAuthType.Keys, AwsAuthType.GrafanaAssumeRole];
+    const onOptionsChange = jest.fn();
+    const props = getProps({
+      onOptionsChange,
+      externalId: 'stackABC',
+      options: {
+        id: 21,
+        uid: 'dsUid1',
+        type: 'cloudwatch',
+        jsonData: { authType: AwsAuthType.Keys },
+      },
+    });
+    render(<ConnectionConfig {...props} />);
+    await waitFor(() => expect(screen.getByLabelText('Authentication Provider')).toBeInTheDocument());
+    await selectEvent.select(screen.getByLabelText('Authentication Provider'), 'Grafana Assume Role', {
+      container: document.body,
+    });
+    expect(screen.getByTestId('grafana-external-id-change-warning')).toBeInTheDocument();
+    expect(screen.getByText(/External ID will change on save/i)).toBeInTheDocument();
+    expect(onOptionsChange).toHaveBeenCalledWith(
+      expect.objectContaining({
+        jsonData: expect.objectContaining({
+          authType: AwsAuthType.GrafanaAssumeRole,
+          grafanaExternalId: 'stackABC-dsUid1',
+        }),
+      })
+    );
+  });
+
+  it('should not warn when GrafanaAssumeRole already has a per-datasource external ID', async () => {
+    config.featureToggles.awsDatasourcesTempCredentials = true;
+    config.awsAllowedAuthProviders = [AwsAuthType.Keys, AwsAuthType.GrafanaAssumeRole];
+    const onOptionsChange = jest.fn();
+    const props = getProps({
+      onOptionsChange,
+      externalId: 'stackABC',
+      options: {
+        id: 21,
+        uid: 'dsUid1',
+        type: 'cloudwatch',
+        jsonData: {
+          authType: AwsAuthType.Keys,
+          grafanaExternalId: 'stackABC-dsUid1',
+        },
+      },
+    });
+    render(<ConnectionConfig {...props} />);
+    await waitFor(() => expect(screen.getByLabelText('Authentication Provider')).toBeInTheDocument());
+    await selectEvent.select(screen.getByLabelText('Authentication Provider'), 'Grafana Assume Role', {
+      container: document.body,
+    });
+    expect(screen.queryByTestId('grafana-external-id-change-warning')).not.toBeInTheDocument();
   });
   it('should render "Learn more about Grafana Assume Role" link when GrafanaAssumeRole is selected', async () => {
     config.featureToggles.awsDatasourcesTempCredentials = true;
