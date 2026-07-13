@@ -102,7 +102,7 @@ export const ConnectionConfig: FC<ConnectionConfigProps> = (props: ConnectionCon
       if (awsAllowedAuthProviders.includes(AwsAuthType.GrafanaAssumeRole)) {
         defaultAuthType = AwsAuthType.GrafanaAssumeRole;
       }
-      let next = {
+      let next: typeof options = {
         ...options,
         jsonData: {
           ...options.jsonData,
