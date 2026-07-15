@@ -645,6 +645,33 @@ describe('ConnectionConfig', () => {
       expect(screen.getByTestId('grafana-external-id-change-warning')).toBeInTheDocument();
     });
 
+    it('re-enabling toggle after a persisted disable mints per-datasource external ID', async () => {
+      config.featureToggles.awsDatasourcesTempCredentials = true;
+      config.featureToggles.awsAssumeRolePerDatasourceExternalId = true;
+      config.awsAllowedAuthProviders = [AwsAuthType.GrafanaAssumeRole, AwsAuthType.Credentials];
+      const onOptionsChange = jest.fn();
+      const props = getProps({
+        onOptionsChange,
+        externalId: 'stackABC',
+        options: {
+          id: 21,
+          uid: 'dsUid1',
+          type: 'cloudwatch',
+          jsonData: {
+            authType: AwsAuthType.GrafanaAssumeRole,
+            grafanaExternalId: '',
+          },
+        },
+      });
+      render(<ConnectionConfig {...props} />);
+      await userEvent.click(screen.getByTestId('per-ds-external-id-toggle'));
+      expect(onOptionsChange).toHaveBeenCalledWith(
+        expect.objectContaining({
+          jsonData: expect.objectContaining({ grafanaExternalId: 'stackABC-dsUid1' }),
+        })
+      );
+    });
+
     it('disabling toggle clears grafanaExternalId to empty string', async () => {
       config.featureToggles.awsDatasourcesTempCredentials = true;
       config.featureToggles.awsAssumeRolePerDatasourceExternalId = true;

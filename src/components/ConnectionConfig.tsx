@@ -130,7 +130,10 @@ export const ConnectionConfig: FC<ConnectionConfigProps> = (props: ConnectionCon
     }
     if (enabled) {
       pendingPerDsExternalIdRef.current = true;
-      const next = applyGrafanaExternalId(options);
+      // Drop a persisted empty grafanaExternalId key so applyGrafanaExternalId's stack-mode
+      // guard (present-but-empty key) doesn't block minting a fresh per-DS ID.
+      const { grafanaExternalId: _grafanaExternalId, ...restJsonData } = options.jsonData;
+      const next = applyGrafanaExternalId({ ...options, jsonData: restJsonData });
       setShowExternalIdChangeWarning(true);
       onOptionsChange(next);
       return;
