@@ -14,15 +14,3 @@ export function isValidGrafanaExternalId(id: string, stackExternalId: string, da
   }
   return id === buildGrafanaExternalId(stackExternalId, datasourceUid);
 }
-
-/**
- * Generates a short datasource UID suitable for pre-save ID construction.
- * Grafana assigns UIDs on create in the normal UI flow; this covers edge cases.
- */
-export function generateDatasourceUid(): string {
-  const bytes = new Uint8Array(8);
-  crypto.getRandomValues(bytes);
-  const hex = Array.from(bytes, (b) => b.toString(16).padStart(2, '0')).join('');
-  // Must start with a letter (k8s name / Grafana short UID convention).
-  return `a${hex}`;
-}

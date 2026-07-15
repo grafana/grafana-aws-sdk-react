@@ -262,6 +262,30 @@ describe('ConnectionConfig', () => {
     );
   });
 
+  it('should not mint a per-datasource external ID when datasource uid is missing', async () => {
+    config.featureToggles.awsDatasourcesTempCredentials = true;
+    config.featureToggles.awsAssumeRolePerDatasourceExternalId = true;
+    config.awsAllowedAuthProviders = [AwsAuthType.GrafanaAssumeRole, AwsAuthType.Credentials];
+    const onOptionsChange = jest.fn();
+    const props = getProps({
+      onOptionsChange,
+      externalId: 'stackABC',
+      options: {
+        id: 21,
+        uid: '',
+        type: 'cloudwatch',
+        jsonData: { authType: undefined },
+      },
+    });
+    render(<ConnectionConfig {...props} />);
+    await waitFor(() => expect(onOptionsChange).toHaveBeenCalled());
+    expect(onOptionsChange).not.toHaveBeenCalledWith(
+      expect.objectContaining({
+        jsonData: expect.objectContaining({ grafanaExternalId: expect.any(String) }),
+      })
+    );
+  });
+
   it('should mint per-datasource external ID after stack external ID loads asynchronously', async () => {
     config.featureToggles.awsDatasourcesTempCredentials = true;
     config.featureToggles.awsAssumeRolePerDatasourceExternalId = true;

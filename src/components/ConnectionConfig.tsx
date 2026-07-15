@@ -12,7 +12,7 @@ import { standardRegions } from '../regions';
 import { AwsAuthType, ConnectionConfigProps } from '../types';
 import { awsAuthProviderOptions } from '../providers';
 import { assumeRoleInstructionsStyle } from './ConnectionConfig.styles';
-import { buildGrafanaExternalId, generateDatasourceUid } from './utils/grafanaExternalId';
+import { buildGrafanaExternalId } from './utils/grafanaExternalId';
 import { ConfigSection, ConfigSubSection } from '@grafana/plugin-ui';
 
 export const DEFAULT_LABEL_WIDTH = 28;
@@ -86,16 +86,20 @@ export const ConnectionConfig: FC<ConnectionConfigProps> = (props: ConnectionCon
   const currentProvider = awsAuthProviderOptions.find((p) => p.value === options.jsonData.authType);
 
   const applyGrafanaExternalId = (nextOptions = options) => {
-    if (!perDsExternalIdFeatureEnabled || nextOptions.jsonData.grafanaExternalId || !stackExternalId) {
+    // Require a real datasource UID — never invent one client-side (collision risk; server mints on save).
+    if (
+      !perDsExternalIdFeatureEnabled ||
+      nextOptions.jsonData.grafanaExternalId ||
+      !stackExternalId ||
+      !nextOptions.uid
+    ) {
       return nextOptions;
     }
-    const uid = nextOptions.uid || generateDatasourceUid();
     return {
       ...nextOptions,
-      uid,
       jsonData: {
         ...nextOptions.jsonData,
-        grafanaExternalId: buildGrafanaExternalId(stackExternalId, uid),
+        grafanaExternalId: buildGrafanaExternalId(stackExternalId, nextOptions.uid),
       },
     };
   };
@@ -130,12 +134,12 @@ export const ConnectionConfig: FC<ConnectionConfigProps> = (props: ConnectionCon
     if (!perDsExternalIdFeatureEnabled || !pendingPerDsExternalIdRef.current) {
       return;
     }
-    if (!isGrafanaAssumeRole || perDatasourceExternalId || !stackExternalId) {
+    if (!isGrafanaAssumeRole || perDatasourceExternalId || !stackExternalId || !options.uid) {
       return;
     }
     onOptionsChange(applyGrafanaExternalId(options));
-    // eslint-disable-next-line react-hooks/exhaustive-deps -- retry minting only when stack ID becomes available
-  }, [stackExternalId, isGrafanaAssumeRole, perDatasourceExternalId, perDsExternalIdFeatureEnabled]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- retry minting when stack ID / uid become available
+  }, [stackExternalId, options.uid, isGrafanaAssumeRole, perDatasourceExternalId, perDsExternalIdFeatureEnabled]);
 
   useEffect(() => {
     if (!loadRegions) {
@@ -176,11 +180,11 @@ export const ConnectionConfig: FC<ConnectionConfigProps> = (props: ConnectionCon
                   });
                   const mintedExternalId = !hadPerDatasourceExternalId && Boolean(next.jsonData.grafanaExternalId);
                   // Warn when leaving another auth type causes a new per-DS external ID to be set.
-                  // Also warn if mint is pending (stack external ID not loaded yet) — save will still set it.
+                  // Also warn if mint is pending (stack ID / uid not ready yet) — save will still set it.
                   setShowExternalIdChangeWarning(
                     Boolean(
                       perDsExternalIdFeatureEnabled &&
-                      (mintedExternalId || (!hadPerDatasourceExternalId && !stackExternalId)) &&
+                      (mintedExternalId || (!hadPerDatasourceExternalId && (!stackExternalId || !options.uid))) &&
                       previousAuthType &&
                       previousAuthType !== AwsAuthType.GrafanaAssumeRole
                     )
