@@ -648,7 +648,7 @@ describe('ConnectionConfig', () => {
       expect(screen.getByTestId('grafana-external-id-change-warning')).toBeInTheDocument();
     });
 
-    it('re-enabling toggle after a persisted disable mints per-datasource external ID', async () => {
+    it('re-enabling toggle after a persisted disable reuses dormant per-datasource external ID', async () => {
       config.featureToggles.awsDatasourcesTempCredentials = true;
       config.featureToggles.awsAssumeRolePerDatasourceExternalId = true;
       config.awsAllowedAuthProviders = [AwsAuthType.GrafanaAssumeRole, AwsAuthType.Credentials];
@@ -663,7 +663,7 @@ describe('ConnectionConfig', () => {
           jsonData: {
             authType: AwsAuthType.GrafanaAssumeRole,
             usePerDatasourceExternalId: false,
-            grafanaExternalId: '',
+            grafanaExternalId: 'stackABC-dsUid1',
           },
         },
       });
@@ -679,7 +679,7 @@ describe('ConnectionConfig', () => {
       );
     });
 
-    it('disabling toggle sets usePerDatasourceExternalId false and clears grafanaExternalId', async () => {
+    it('disabling toggle sets usePerDatasourceExternalId false and keeps grafanaExternalId', async () => {
       config.featureToggles.awsDatasourcesTempCredentials = true;
       config.featureToggles.awsAssumeRolePerDatasourceExternalId = true;
       config.awsAllowedAuthProviders = [AwsAuthType.GrafanaAssumeRole, AwsAuthType.Credentials];
@@ -704,7 +704,7 @@ describe('ConnectionConfig', () => {
         expect.objectContaining({
           jsonData: expect.objectContaining({
             usePerDatasourceExternalId: false,
-            grafanaExternalId: '',
+            grafanaExternalId: 'stackABC-dsUid1',
           }),
         })
       );

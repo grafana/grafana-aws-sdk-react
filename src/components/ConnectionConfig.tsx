@@ -85,16 +85,20 @@ export const ConnectionConfig: FC<ConnectionConfigProps> = (props: ConnectionCon
   const isGrafanaAssumeRole = options.jsonData.authType === AwsAuthType.GrafanaAssumeRole;
   const perDatasourceExternalId = options.jsonData.grafanaExternalId;
   const stackExternalId = props.externalId;
-  // Prefer per-DS ID; fall back to stack-level ID (props.externalId) for legacy datasources only.
+  // Toggle on when bool is true, or legacy configs that only have grafanaExternalId set.
+  const usePerDatasourceExternalId =
+    options.jsonData.usePerDatasourceExternalId === true ||
+    (options.jsonData.usePerDatasourceExternalId === undefined && Boolean(perDatasourceExternalId));
+  // Active ID for STS/display: per-DS when mode on, otherwise stack.
   const grafanaExternalIdDisplay = useMemo(() => {
     if (!isGrafanaAssumeRole) {
       return undefined;
     }
-    if (perDatasourceExternalId) {
+    if (usePerDatasourceExternalId && perDatasourceExternalId) {
       return perDatasourceExternalId;
     }
     return stackExternalId || undefined;
-  }, [isGrafanaAssumeRole, perDatasourceExternalId, stackExternalId]);
+  }, [isGrafanaAssumeRole, usePerDatasourceExternalId, perDatasourceExternalId, stackExternalId]);
   const currentProvider = awsAuthProviderOptions.find((p) => p.value === options.jsonData.authType);
 
   const applyGrafanaExternalId = (nextOptions = options) => {
@@ -125,22 +129,16 @@ export const ConnectionConfig: FC<ConnectionConfigProps> = (props: ConnectionCon
     };
   };
 
-  // Toggle on when bool is true, or legacy configs that only have grafanaExternalId set.
-  const usePerDatasourceExternalId =
-    options.jsonData.usePerDatasourceExternalId === true ||
-    (options.jsonData.usePerDatasourceExternalId === undefined && Boolean(perDatasourceExternalId));
-
   const onPerDatasourceExternalIdToggle = (enabled: boolean) => {
     if (!perDsExternalIdFeatureEnabled || !isGrafanaAssumeRole) {
       return;
     }
     if (enabled) {
       pendingPerDsExternalIdRef.current = true;
-      const { grafanaExternalId: _cleared, ...restJsonData } = options.jsonData;
       const next = applyGrafanaExternalId({
         ...options,
         jsonData: {
-          ...restJsonData,
+          ...options.jsonData,
           usePerDatasourceExternalId: true,
         },
       });
@@ -155,7 +153,7 @@ export const ConnectionConfig: FC<ConnectionConfigProps> = (props: ConnectionCon
       jsonData: {
         ...options.jsonData,
         usePerDatasourceExternalId: false,
-        grafanaExternalId: '',
+        // Keep grafanaExternalId dormant; aws-sdk uses the bool for STS mode.
       },
     });
   };

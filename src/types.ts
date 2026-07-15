@@ -25,9 +25,9 @@ export interface AwsAuthDataSourceJsonData extends DataSourceJsonData {
   usePerDatasourceExternalId?: boolean;
   /**
    * Per-datasource external ID for Grafana Assume Role auth.
-   * Format: `{stackExternalId}-{dsUid}`. Cleared when
-   * `usePerDatasourceExternalId` is false. When unset with stack mode,
-   * Grafana falls back to the stack-level external ID.
+   * Format: `{stackExternalId}-{dsUid}`. Kept when
+   * `usePerDatasourceExternalId` is false (dormant); aws-sdk uses the bool
+   * to choose this vs the stack-level external ID at STS time.
    */
   grafanaExternalId?: string;
   profile?: string; // Credentials profile name, as specified in ~/.aws/credentials
