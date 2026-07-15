@@ -102,27 +102,33 @@ export const ConnectionConfig: FC<ConnectionConfigProps> = (props: ConnectionCon
     if (!perDsExternalIdFeatureEnabled || !stackExternalId || !nextOptions.uid) {
       return nextOptions;
     }
-    // Explicit stack mode: key present but empty means the user opted out — do not mint again.
-    if (
-      Object.prototype.hasOwnProperty.call(nextOptions.jsonData, 'grafanaExternalId') &&
-      !nextOptions.jsonData.grafanaExternalId
-    ) {
+    // Explicit stack mode via boolean — do not mint.
+    if (nextOptions.jsonData.usePerDatasourceExternalId === false) {
       return nextOptions;
     }
     if (nextOptions.jsonData.grafanaExternalId) {
-      return nextOptions;
+      return {
+        ...nextOptions,
+        jsonData: {
+          ...nextOptions.jsonData,
+          usePerDatasourceExternalId: true,
+        },
+      };
     }
     return {
       ...nextOptions,
       jsonData: {
         ...nextOptions.jsonData,
+        usePerDatasourceExternalId: true,
         grafanaExternalId: buildGrafanaExternalId(stackExternalId, nextOptions.uid),
       },
     };
   };
 
-  // Checked state of the per-datasource toggle: on only when a (non-empty) per-DS key is set.
-  const usePerDatasourceExternalId = Boolean(perDatasourceExternalId);
+  // Toggle on when bool is true, or legacy configs that only have grafanaExternalId set.
+  const usePerDatasourceExternalId =
+    options.jsonData.usePerDatasourceExternalId === true ||
+    (options.jsonData.usePerDatasourceExternalId === undefined && Boolean(perDatasourceExternalId));
 
   const onPerDatasourceExternalIdToggle = (enabled: boolean) => {
     if (!perDsExternalIdFeatureEnabled || !isGrafanaAssumeRole) {
@@ -130,10 +136,14 @@ export const ConnectionConfig: FC<ConnectionConfigProps> = (props: ConnectionCon
     }
     if (enabled) {
       pendingPerDsExternalIdRef.current = true;
-      // Drop a persisted empty grafanaExternalId key so applyGrafanaExternalId's stack-mode
-      // guard (present-but-empty key) doesn't block minting a fresh per-DS ID.
-      const { grafanaExternalId: _grafanaExternalId, ...restJsonData } = options.jsonData;
-      const next = applyGrafanaExternalId({ ...options, jsonData: restJsonData });
+      const { grafanaExternalId: _cleared, ...restJsonData } = options.jsonData;
+      const next = applyGrafanaExternalId({
+        ...options,
+        jsonData: {
+          ...restJsonData,
+          usePerDatasourceExternalId: true,
+        },
+      });
       setShowExternalIdChangeWarning(true);
       onOptionsChange(next);
       return;
@@ -144,6 +154,7 @@ export const ConnectionConfig: FC<ConnectionConfigProps> = (props: ConnectionCon
       ...options,
       jsonData: {
         ...options.jsonData,
+        usePerDatasourceExternalId: false,
         grafanaExternalId: '',
       },
     });
@@ -167,7 +178,13 @@ export const ConnectionConfig: FC<ConnectionConfigProps> = (props: ConnectionCon
       // Legacy datasources already have authType set and are skipped by !currentProvider.
       if (defaultAuthType === AwsAuthType.GrafanaAssumeRole && perDsExternalIdFeatureEnabled) {
         pendingPerDsExternalIdRef.current = true;
-        next = applyGrafanaExternalId(next);
+        next = applyGrafanaExternalId({
+          ...next,
+          jsonData: {
+            ...next.jsonData,
+            usePerDatasourceExternalId: true,
+          },
+        });
       }
       onOptionsChange(next);
     }
@@ -179,10 +196,24 @@ export const ConnectionConfig: FC<ConnectionConfigProps> = (props: ConnectionCon
     if (!perDsExternalIdFeatureEnabled || !pendingPerDsExternalIdRef.current) {
       return;
     }
-    if (!isGrafanaAssumeRole || perDatasourceExternalId || !stackExternalId || !options.uid) {
+    if (
+      !isGrafanaAssumeRole ||
+      options.jsonData.usePerDatasourceExternalId === false ||
+      perDatasourceExternalId ||
+      !stackExternalId ||
+      !options.uid
+    ) {
       return;
     }
-    onOptionsChange(applyGrafanaExternalId(options));
+    onOptionsChange(
+      applyGrafanaExternalId({
+        ...options,
+        jsonData: {
+          ...options.jsonData,
+          usePerDatasourceExternalId: true,
+        },
+      })
+    );
     // eslint-disable-next-line react-hooks/exhaustive-deps -- retry minting when stack ID / uid become available
   }, [stackExternalId, options.uid, isGrafanaAssumeRole, perDatasourceExternalId, perDsExternalIdFeatureEnabled]);
 
@@ -221,6 +252,7 @@ export const ConnectionConfig: FC<ConnectionConfigProps> = (props: ConnectionCon
                     jsonData: {
                       ...options.jsonData,
                       authType: AwsAuthType.GrafanaAssumeRole,
+                      usePerDatasourceExternalId: options.jsonData.usePerDatasourceExternalId === false ? false : true,
                     },
                   });
                   const mintedExternalId = !hadPerDatasourceExternalId && Boolean(next.jsonData.grafanaExternalId);

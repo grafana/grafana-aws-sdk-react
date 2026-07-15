@@ -639,7 +639,10 @@ describe('ConnectionConfig', () => {
       await userEvent.click(screen.getByTestId('per-ds-external-id-toggle'));
       expect(onOptionsChange).toHaveBeenCalledWith(
         expect.objectContaining({
-          jsonData: expect.objectContaining({ grafanaExternalId: 'stackABC-dsUid1' }),
+          jsonData: expect.objectContaining({
+            usePerDatasourceExternalId: true,
+            grafanaExternalId: 'stackABC-dsUid1',
+          }),
         })
       );
       expect(screen.getByTestId('grafana-external-id-change-warning')).toBeInTheDocument();
@@ -659,6 +662,7 @@ describe('ConnectionConfig', () => {
           type: 'cloudwatch',
           jsonData: {
             authType: AwsAuthType.GrafanaAssumeRole,
+            usePerDatasourceExternalId: false,
             grafanaExternalId: '',
           },
         },
@@ -667,12 +671,15 @@ describe('ConnectionConfig', () => {
       await userEvent.click(screen.getByTestId('per-ds-external-id-toggle'));
       expect(onOptionsChange).toHaveBeenCalledWith(
         expect.objectContaining({
-          jsonData: expect.objectContaining({ grafanaExternalId: 'stackABC-dsUid1' }),
+          jsonData: expect.objectContaining({
+            usePerDatasourceExternalId: true,
+            grafanaExternalId: 'stackABC-dsUid1',
+          }),
         })
       );
     });
 
-    it('disabling toggle clears grafanaExternalId to empty string', async () => {
+    it('disabling toggle sets usePerDatasourceExternalId false and clears grafanaExternalId', async () => {
       config.featureToggles.awsDatasourcesTempCredentials = true;
       config.featureToggles.awsAssumeRolePerDatasourceExternalId = true;
       config.awsAllowedAuthProviders = [AwsAuthType.GrafanaAssumeRole, AwsAuthType.Credentials];
@@ -686,6 +693,7 @@ describe('ConnectionConfig', () => {
           type: 'cloudwatch',
           jsonData: {
             authType: AwsAuthType.GrafanaAssumeRole,
+            usePerDatasourceExternalId: true,
             grafanaExternalId: 'stackABC-dsUid1',
           },
         },
@@ -694,7 +702,10 @@ describe('ConnectionConfig', () => {
       await userEvent.click(screen.getByTestId('per-ds-external-id-toggle'));
       expect(onOptionsChange).toHaveBeenCalledWith(
         expect.objectContaining({
-          jsonData: expect.objectContaining({ grafanaExternalId: '' }),
+          jsonData: expect.objectContaining({
+            usePerDatasourceExternalId: false,
+            grafanaExternalId: '',
+          }),
         })
       );
     });
