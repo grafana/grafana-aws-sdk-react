@@ -324,7 +324,7 @@ describe('ConnectionConfig', () => {
     expect(screen.getByText(/Unique to this data source/i)).toBeInTheDocument();
   });
 
-  it('should show per-datasource external ID when grafanaExternalId is set', async () => {
+  it('should show per-datasource external ID when mode is enabled', async () => {
     config.featureToggles.awsDatasourcesTempCredentials = true;
     config.featureToggles.awsAssumeRolePerDatasourceExternalId = true;
     config.awsAllowedAuthProviders = [AwsAuthType.GrafanaAssumeRole, AwsAuthType.Credentials];
@@ -336,6 +336,7 @@ describe('ConnectionConfig', () => {
         type: 'cloudwatch',
         jsonData: {
           authType: AwsAuthType.GrafanaAssumeRole,
+          usePerDatasourceExternalId: true,
           grafanaExternalId: perDsId,
         },
       },
@@ -344,6 +345,27 @@ describe('ConnectionConfig', () => {
     render(<ConnectionConfig {...props} />);
     await waitFor(() => expect(screen.getByDisplayValue(perDsId)).toBeInTheDocument());
     expect(screen.queryByDisplayValue('stack-should-not-win')).not.toBeInTheDocument();
+  });
+
+  it('should show stack external ID when bool unset even if grafanaExternalId is stored (legacy)', async () => {
+    config.featureToggles.awsDatasourcesTempCredentials = true;
+    config.featureToggles.awsAssumeRolePerDatasourceExternalId = true;
+    config.awsAllowedAuthProviders = [AwsAuthType.GrafanaAssumeRole, AwsAuthType.Credentials];
+    const props = getProps({
+      options: {
+        id: 21,
+        uid: 'dsUid1',
+        type: 'cloudwatch',
+        jsonData: {
+          authType: AwsAuthType.GrafanaAssumeRole,
+          grafanaExternalId: 'stackABC-dsUid1',
+        },
+      },
+      externalId: 'stack-external-id',
+    });
+    render(<ConnectionConfig {...props} />);
+    await waitFor(() => expect(screen.getByDisplayValue('stack-external-id')).toBeInTheDocument());
+    expect(screen.queryByDisplayValue('stackABC-dsUid1')).not.toBeInTheDocument();
   });
 
   it('should fall back to stack external ID for legacy GrafanaAssumeRole datasources', async () => {
@@ -379,6 +401,7 @@ describe('ConnectionConfig', () => {
         type: 'cloudwatch',
         jsonData: {
           authType: AwsAuthType.GrafanaAssumeRole,
+          usePerDatasourceExternalId: true,
           grafanaExternalId: perDsId,
         },
       },

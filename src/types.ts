@@ -18,9 +18,9 @@ export interface AwsAuthDataSourceJsonData extends DataSourceJsonData {
   externalId?: string;
   /**
    * When true, Grafana Assume Role uses a per-datasource external ID
-   * (`grafanaExternalId`). When false, uses the shared stack external ID.
-   * Omit to leave mode unchanged on update (e.g. Terraform). New UI configs
-   * default this to true when the feature toggle is on.
+   * (`grafanaExternalId`). When false or omitted, uses the shared stack
+   * external ID (legacy). New UI configs set this to true when the feature
+   * toggle is on. Omit on update to leave the stored value unchanged (Terraform).
    */
   usePerDatasourceExternalId?: boolean;
   /**

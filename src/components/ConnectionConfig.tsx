@@ -85,10 +85,8 @@ export const ConnectionConfig: FC<ConnectionConfigProps> = (props: ConnectionCon
   const isGrafanaAssumeRole = options.jsonData.authType === AwsAuthType.GrafanaAssumeRole;
   const perDatasourceExternalId = options.jsonData.grafanaExternalId;
   const stackExternalId = props.externalId;
-  // Toggle on when bool is true, or legacy configs that only have grafanaExternalId set.
-  const usePerDatasourceExternalId =
-    options.jsonData.usePerDatasourceExternalId === true ||
-    (options.jsonData.usePerDatasourceExternalId === undefined && Boolean(perDatasourceExternalId));
+  // Toggle reflects explicit bool only; unset (legacy) is stack mode.
+  const usePerDatasourceExternalId = options.jsonData.usePerDatasourceExternalId === true;
   // Active ID for STS/display: per-DS when mode on, otherwise stack.
   const grafanaExternalIdDisplay = useMemo(() => {
     if (!isGrafanaAssumeRole) {
