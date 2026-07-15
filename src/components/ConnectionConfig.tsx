@@ -1,5 +1,17 @@
 import React, { FC, useEffect, useMemo, useRef, useState } from 'react';
-import { Input, Select, ButtonGroup, ToolbarButton, Text, TextLink, Collapse, Field, Space, Alert } from '@grafana/ui';
+import {
+  Input,
+  Select,
+  ButtonGroup,
+  ToolbarButton,
+  Text,
+  TextLink,
+  Collapse,
+  Field,
+  Space,
+  Alert,
+  Switch,
+} from '@grafana/ui';
 import {
   onUpdateDatasourceJsonDataOptionSelect,
   onUpdateDatasourceResetOption,
@@ -87,12 +99,17 @@ export const ConnectionConfig: FC<ConnectionConfigProps> = (props: ConnectionCon
 
   const applyGrafanaExternalId = (nextOptions = options) => {
     // Require a real datasource UID — never invent one client-side (collision risk; server mints on save).
+    if (!perDsExternalIdFeatureEnabled || !stackExternalId || !nextOptions.uid) {
+      return nextOptions;
+    }
+    // Explicit stack mode: key present but empty means the user opted out — do not mint again.
     if (
-      !perDsExternalIdFeatureEnabled ||
-      nextOptions.jsonData.grafanaExternalId ||
-      !stackExternalId ||
-      !nextOptions.uid
+      Object.prototype.hasOwnProperty.call(nextOptions.jsonData, 'grafanaExternalId') &&
+      !nextOptions.jsonData.grafanaExternalId
     ) {
+      return nextOptions;
+    }
+    if (nextOptions.jsonData.grafanaExternalId) {
       return nextOptions;
     }
     return {
@@ -102,6 +119,31 @@ export const ConnectionConfig: FC<ConnectionConfigProps> = (props: ConnectionCon
         grafanaExternalId: buildGrafanaExternalId(stackExternalId, nextOptions.uid),
       },
     };
+  };
+
+  // Checked state of the per-datasource toggle: on only when a (non-empty) per-DS key is set.
+  const usePerDatasourceExternalId = Boolean(perDatasourceExternalId);
+
+  const onPerDatasourceExternalIdToggle = (enabled: boolean) => {
+    if (!perDsExternalIdFeatureEnabled || !isGrafanaAssumeRole) {
+      return;
+    }
+    if (enabled) {
+      pendingPerDsExternalIdRef.current = true;
+      const next = applyGrafanaExternalId(options);
+      setShowExternalIdChangeWarning(true);
+      onOptionsChange(next);
+      return;
+    }
+    pendingPerDsExternalIdRef.current = false;
+    setShowExternalIdChangeWarning(true);
+    onOptionsChange({
+      ...options,
+      jsonData: {
+        ...options.jsonData,
+        grafanaExternalId: '',
+      },
+    });
   };
 
   useEffect(() => {
@@ -204,9 +246,9 @@ export const ConnectionConfig: FC<ConnectionConfigProps> = (props: ConnectionCon
               title="External ID will change on save"
               data-testid="grafana-external-id-change-warning"
             >
-              Saving will store a data source-specific external ID. If your IAM role trust policy still uses a different
-              value (for example the shared stack external ID), update the trust policy to match the new external ID or
-              Assume Role will fail.
+              Saving will change the external ID used to assume this role (switching between the data source-specific ID
+              and the shared stack ID). Update your IAM role trust policy to match the new external ID or Assume Role
+              will fail.
             </Alert>
           )}
           {options.jsonData.authType === 'credentials' && (
@@ -367,6 +409,18 @@ export const ConnectionConfig: FC<ConnectionConfigProps> = (props: ConnectionCon
                     onChange={onUpdateDatasourceJsonDataOption(props, 'assumeRoleArn')}
                   />
                 </Field>
+                {perDsExternalIdFeatureEnabled && isGrafanaAssumeRole && (
+                  <Field
+                    label="Per-data-source external ID"
+                    description="When enabled, this data source uses a unique external ID. When disabled, it uses the shared stack external ID."
+                  >
+                    <Switch
+                      data-testid="per-ds-external-id-toggle"
+                      value={usePerDatasourceExternalId}
+                      onChange={(e) => onPerDatasourceExternalIdToggle(e.currentTarget.checked)}
+                    />
+                  </Field>
+                )}
                 {options.jsonData.authType === AwsAuthType.GrafanaAssumeRole && grafanaExternalIdDisplay && (
                   <Field
                     htmlFor="grafanaExternalId"
