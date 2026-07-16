@@ -732,6 +732,100 @@ describe('ConnectionConfig', () => {
         })
       );
     });
+
+    it('shows stack external ID when toggle is off even if externalId prop is the resolved per-DS ID', async () => {
+      config.featureToggles.awsDatasourcesTempCredentials = true;
+      config.featureToggles.awsAssumeRolePerDatasourceExternalId = true;
+      config.awsAllowedAuthProviders = [AwsAuthType.GrafanaAssumeRole, AwsAuthType.Credentials];
+      // CloudWatch passes /external-id (resolved) as props.externalId — often the per-DS value.
+      const props = getProps({
+        externalId: 'stackABC-dsUid1',
+        options: {
+          id: 21,
+          uid: 'dsUid1',
+          type: 'cloudwatch',
+          jsonData: {
+            authType: AwsAuthType.GrafanaAssumeRole,
+            usePerDatasourceExternalId: false,
+            grafanaExternalId: 'stackABC-dsUid1',
+          },
+        },
+      });
+      render(<ConnectionConfig {...props} />);
+      await waitFor(() => expect(screen.getByDisplayValue('stackABC')).toBeInTheDocument());
+      expect(screen.queryByDisplayValue('stackABC-dsUid1')).not.toBeInTheDocument();
+      expect(screen.getByText(/Shared stack external ID \(legacy\)/i)).toBeInTheDocument();
+    });
+
+    it('toggling off updates the displayed ID to the stack value', async () => {
+      config.featureToggles.awsDatasourcesTempCredentials = true;
+      config.featureToggles.awsAssumeRolePerDatasourceExternalId = true;
+      config.awsAllowedAuthProviders = [AwsAuthType.GrafanaAssumeRole, AwsAuthType.Credentials];
+
+      const Stateful = () => {
+        const [options, setOptions] = React.useState(
+          getProps({
+            options: {
+              id: 21,
+              uid: 'dsUid1',
+              type: 'cloudwatch',
+              jsonData: {
+                authType: AwsAuthType.GrafanaAssumeRole,
+                usePerDatasourceExternalId: true,
+                grafanaExternalId: 'stackABC-dsUid1',
+              },
+            },
+          }).options
+        );
+        return (
+          <ConnectionConfig
+            {...getProps()}
+            options={options}
+            // Resolved /external-id while mode was on
+            externalId="stackABC-dsUid1"
+            onOptionsChange={setOptions}
+          />
+        );
+      };
+
+      render(<Stateful />);
+      await waitFor(() => expect(screen.getByDisplayValue('stackABC-dsUid1')).toBeInTheDocument());
+      await userEvent.click(screen.getByTestId('per-ds-external-id-toggle'));
+      await waitFor(() => expect(screen.getByDisplayValue('stackABC')).toBeInTheDocument());
+      expect(screen.queryByDisplayValue('stackABC-dsUid1')).not.toBeInTheDocument();
+    });
+
+    it('clears the warning when the toggle is returned to its original value', async () => {
+      config.featureToggles.awsDatasourcesTempCredentials = true;
+      config.featureToggles.awsAssumeRolePerDatasourceExternalId = true;
+      config.awsAllowedAuthProviders = [AwsAuthType.GrafanaAssumeRole, AwsAuthType.Credentials];
+      const onOptionsChange = jest.fn();
+      const baseOptions = {
+        id: 21,
+        uid: 'dsUid1',
+        type: 'cloudwatch',
+        jsonData: {
+          authType: AwsAuthType.GrafanaAssumeRole,
+          usePerDatasourceExternalId: true,
+          grafanaExternalId: 'stackABC-dsUid1',
+        },
+      };
+      const props = getProps({
+        onOptionsChange,
+        externalId: 'stackABC',
+        options: baseOptions,
+      });
+      const { rerender } = render(<ConnectionConfig {...props} />);
+
+      await userEvent.click(screen.getByTestId('per-ds-external-id-toggle'));
+      expect(screen.getByTestId('grafana-external-id-change-warning')).toBeInTheDocument();
+
+      const afterDisable = onOptionsChange.mock.calls.at(-1)?.[0];
+      rerender(<ConnectionConfig {...props} options={afterDisable} />);
+
+      await userEvent.click(screen.getByTestId('per-ds-external-id-toggle'));
+      expect(screen.queryByTestId('grafana-external-id-change-warning')).not.toBeInTheDocument();
+    });
   });
 
   it('should show url fields if http proxy type is url', async () => {

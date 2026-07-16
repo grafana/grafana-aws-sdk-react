@@ -24,7 +24,7 @@ import { standardRegions } from '../regions';
 import { AwsAuthType, ConnectionConfigProps } from '../types';
 import { awsAuthProviderOptions } from '../providers';
 import { assumeRoleInstructionsStyle } from './ConnectionConfig.styles';
-import { buildGrafanaExternalId } from './utils/grafanaExternalId';
+import { buildGrafanaExternalId, stackExternalIdFromGrafanaExternalId } from './utils/grafanaExternalId';
 import { ConfigSection, ConfigSubSection } from '@grafana/plugin-ui';
 
 export const DEFAULT_LABEL_WIDTH = 28;
@@ -54,6 +54,8 @@ export const ConnectionConfig: FC<ConnectionConfigProps> = (props: ConnectionCon
   // When true, mint grafanaExternalId as soon as stack external ID (props.externalId) is available.
   // Set on auth default / user select of Grafana Assume Role — not for legacy DS that already use stack ID.
   const pendingPerDsExternalIdRef = useRef(false);
+  // Persisted/opened mode — warn only while the toggle differs from this value.
+  const initialUsePerDatasourceExternalIdRef = useRef(props.options.jsonData.usePerDatasourceExternalId === true);
   const {
     loadRegions,
     onOptionsChange,
@@ -84,7 +86,20 @@ export const ConnectionConfig: FC<ConnectionConfigProps> = (props: ConnectionCon
   );
   const isGrafanaAssumeRole = options.jsonData.authType === AwsAuthType.GrafanaAssumeRole;
   const perDatasourceExternalId = options.jsonData.grafanaExternalId;
-  const stackExternalId = props.externalId;
+  // props.externalId is often the resolved /external-id value (per-DS when that mode was active).
+  // When it matches a stored per-DS ID, derive the real stack prefix for stack-mode display/minting.
+  const stackExternalId = useMemo(() => {
+    const derived = stackExternalIdFromGrafanaExternalId(perDatasourceExternalId, options.uid);
+    const propsId = props.externalId;
+    if (
+      derived &&
+      propsId &&
+      (propsId === perDatasourceExternalId || (options.uid && propsId.endsWith(`-${options.uid}`)))
+    ) {
+      return derived;
+    }
+    return propsId || derived;
+  }, [perDatasourceExternalId, options.uid, props.externalId]);
   // Toggle reflects explicit bool only; unset (legacy) is stack mode.
   const usePerDatasourceExternalId = options.jsonData.usePerDatasourceExternalId === true;
   // Active ID for STS/display: per-DS when mode on, otherwise stack.
@@ -131,6 +146,7 @@ export const ConnectionConfig: FC<ConnectionConfigProps> = (props: ConnectionCon
     if (!perDsExternalIdFeatureEnabled || !isGrafanaAssumeRole) {
       return;
     }
+    setShowExternalIdChangeWarning(enabled !== initialUsePerDatasourceExternalIdRef.current);
     if (enabled) {
       pendingPerDsExternalIdRef.current = true;
       const next = applyGrafanaExternalId({
@@ -140,12 +156,10 @@ export const ConnectionConfig: FC<ConnectionConfigProps> = (props: ConnectionCon
           usePerDatasourceExternalId: true,
         },
       });
-      setShowExternalIdChangeWarning(true);
       onOptionsChange(next);
       return;
     }
     pendingPerDsExternalIdRef.current = false;
-    setShowExternalIdChangeWarning(true);
     onOptionsChange({
       ...options,
       jsonData: {
@@ -386,7 +400,7 @@ export const ConnectionConfig: FC<ConnectionConfigProps> = (props: ConnectionCon
                     <li>
                       <p>
                         3. Enter the following external ID (
-                        {perDatasourceExternalId
+                        {usePerDatasourceExternalId
                           ? 'unique to this data source'
                           : perDsExternalIdFeatureEnabled
                             ? 'shared stack external ID — legacy'
@@ -457,7 +471,7 @@ export const ConnectionConfig: FC<ConnectionConfigProps> = (props: ConnectionCon
                     htmlFor="grafanaExternalId"
                     label="External ID"
                     description={
-                      perDatasourceExternalId
+                      usePerDatasourceExternalId
                         ? 'Unique to this data source. Paste this value into your IAM role trust policy.'
                         : perDsExternalIdFeatureEnabled
                           ? 'Shared stack external ID (legacy). New data sources get a unique ID per data source for stronger isolation.'
