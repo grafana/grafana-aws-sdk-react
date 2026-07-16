@@ -24,7 +24,7 @@ import { standardRegions } from '../regions';
 import { AwsAuthType, ConnectionConfigProps } from '../types';
 import { awsAuthProviderOptions } from '../providers';
 import { assumeRoleInstructionsStyle } from './ConnectionConfig.styles';
-import { buildGrafanaExternalId, stackExternalIdFromGrafanaExternalId } from './utils/grafanaExternalId';
+import { buildGrafanaExternalId } from './utils/grafanaExternalId';
 import { ConfigSection, ConfigSubSection } from '@grafana/plugin-ui';
 
 export const DEFAULT_LABEL_WIDTH = 28;
@@ -89,20 +89,8 @@ export const ConnectionConfig: FC<ConnectionConfigProps> = (props: ConnectionCon
   // Only warn when an Assume Role ARN is already set — otherwise there is no trust policy
   // to update yet (covers Connections create-then-configure, where id is already assigned).
   const shouldWarnExternalIdChange = Boolean(options.jsonData.assumeRoleArn);
-  // props.externalId is often the resolved /external-id value (per-DS when that mode was active).
-  // When it matches a stored per-DS ID, derive the real stack prefix for stack-mode display/minting.
-  const stackExternalId = useMemo(() => {
-    const derived = stackExternalIdFromGrafanaExternalId(perDatasourceExternalId, options.uid);
-    const propsId = props.externalId;
-    if (
-      derived &&
-      propsId &&
-      (propsId === perDatasourceExternalId || (options.uid && propsId.endsWith(`-${options.uid}`)))
-    ) {
-      return derived;
-    }
-    return propsId || derived;
-  }, [perDatasourceExternalId, options.uid, props.externalId]);
+  // Stack ID from the plugin (e.g. CloudWatch /external-id → AWS_AUTH_EXTERNAL_ID).
+  const stackExternalId = props.externalId;
   // Toggle reflects explicit bool only; unset (legacy) is stack mode.
   const usePerDatasourceExternalId = options.jsonData.usePerDatasourceExternalId === true;
   // Active ID for STS/display: per-DS when mode on, otherwise stack.

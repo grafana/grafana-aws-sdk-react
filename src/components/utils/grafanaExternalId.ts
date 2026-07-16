@@ -14,23 +14,3 @@ export function isValidGrafanaExternalId(id: string, stackExternalId: string, da
   }
   return id === buildGrafanaExternalId(stackExternalId, datasourceUid);
 }
-
-/**
- * Extracts the stack external ID from a per-datasource ID (`{stack}-{uid}`).
- * Plugins often pass the resolved `/external-id` value as `props.externalId`,
- * which may be the per-DS ID — deriving from grafanaExternalId keeps stack mode display correct.
- */
-export function stackExternalIdFromGrafanaExternalId(
-  grafanaExternalId: string | undefined,
-  datasourceUid: string | undefined
-): string | undefined {
-  if (!grafanaExternalId || !datasourceUid) {
-    return undefined;
-  }
-  const suffix = `-${datasourceUid}`;
-  if (!grafanaExternalId.endsWith(suffix)) {
-    return undefined;
-  }
-  const stack = grafanaExternalId.slice(0, -suffix.length);
-  return stack || undefined;
-}

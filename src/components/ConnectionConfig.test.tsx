@@ -780,13 +780,12 @@ describe('ConnectionConfig', () => {
       );
     });
 
-    it('shows stack external ID when toggle is off even if externalId prop is the resolved per-DS ID', async () => {
+    it('shows stack external ID when toggle is off', async () => {
       config.featureToggles.awsDatasourcesTempCredentials = true;
       config.featureToggles.awsAssumeRolePerDatasourceExternalId = true;
       config.awsAllowedAuthProviders = [AwsAuthType.GrafanaAssumeRole, AwsAuthType.Credentials];
-      // CloudWatch passes /external-id (resolved) as props.externalId — often the per-DS value.
       const props = getProps({
-        externalId: 'stackABC-dsUid1',
+        externalId: 'stackABC',
         options: {
           id: 21,
           uid: 'dsUid1',
@@ -825,13 +824,7 @@ describe('ConnectionConfig', () => {
           }).options
         );
         return (
-          <ConnectionConfig
-            {...getProps()}
-            options={options}
-            // Resolved /external-id while mode was on
-            externalId="stackABC-dsUid1"
-            onOptionsChange={setOptions}
-          />
+          <ConnectionConfig {...getProps()} options={options} externalId="stackABC" onOptionsChange={setOptions} />
         );
       };
 
