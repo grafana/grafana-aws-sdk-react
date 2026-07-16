@@ -6,11 +6,3 @@
 export function buildGrafanaExternalId(stackExternalId: string, datasourceUid: string): string {
   return `${stackExternalId}-${datasourceUid}`;
 }
-
-/** True if id is bound to this stack + datasource UID. */
-export function isValidGrafanaExternalId(id: string, stackExternalId: string, datasourceUid: string): boolean {
-  if (!id || !stackExternalId || !datasourceUid) {
-    return false;
-  }
-  return id === buildGrafanaExternalId(stackExternalId, datasourceUid);
-}
