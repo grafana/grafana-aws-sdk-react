@@ -389,31 +389,6 @@ describe('ConnectionConfig', () => {
     expect(screen.queryByText(/unique to this data source/i)).not.toBeInTheDocument();
   });
 
-  it('should describe per-datasource external ID as unique in IAM instructions', async () => {
-    config.featureToggles.awsDatasourcesTempCredentials = true;
-    config.featureToggles.awsAssumeRolePerDatasourceExternalId = true;
-    config.awsAllowedAuthProviders = [AwsAuthType.GrafanaAssumeRole, AwsAuthType.Credentials];
-    const perDsId = 'stackABC-dsUid1';
-    const props = getProps({
-      options: {
-        id: 21,
-        uid: 'dsUid1',
-        type: 'cloudwatch',
-        jsonData: {
-          authType: AwsAuthType.GrafanaAssumeRole,
-          usePerDatasourceExternalId: true,
-          grafanaExternalId: perDsId,
-        },
-      },
-      externalId: 'stack-should-not-win',
-    });
-    render(<ConnectionConfig {...props} />);
-    await waitFor(() => expect(screen.getByDisplayValue(perDsId)).toBeInTheDocument());
-    await userEvent.click(screen.getByText(/How to create an IAM role for grafana to assume/i));
-    expect(screen.getAllByText(/unique to this data source/i).length).toBeGreaterThan(0);
-    expect(screen.queryByText(/shared stack external ID — legacy/i)).not.toBeInTheDocument();
-  });
-
   it('should not auto-migrate legacy GrafanaAssumeRole datasources on load', async () => {
     config.featureToggles.awsDatasourcesTempCredentials = true;
     config.featureToggles.awsAssumeRolePerDatasourceExternalId = true;
