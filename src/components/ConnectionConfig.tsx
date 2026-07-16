@@ -86,6 +86,9 @@ export const ConnectionConfig: FC<ConnectionConfigProps> = (props: ConnectionCon
   );
   const isGrafanaAssumeRole = options.jsonData.authType === AwsAuthType.GrafanaAssumeRole;
   const perDatasourceExternalId = options.jsonData.grafanaExternalId;
+  // Only warn when an Assume Role ARN is already set — otherwise there is no trust policy
+  // to update yet (covers Connections create-then-configure, where id is already assigned).
+  const shouldWarnExternalIdChange = Boolean(options.jsonData.assumeRoleArn);
   // props.externalId is often the resolved /external-id value (per-DS when that mode was active).
   // When it matches a stored per-DS ID, derive the real stack prefix for stack-mode display/minting.
   const stackExternalId = useMemo(() => {
@@ -146,7 +149,9 @@ export const ConnectionConfig: FC<ConnectionConfigProps> = (props: ConnectionCon
     if (!perDsExternalIdFeatureEnabled || !isGrafanaAssumeRole) {
       return;
     }
-    setShowExternalIdChangeWarning(enabled !== initialUsePerDatasourceExternalIdRef.current);
+    setShowExternalIdChangeWarning(
+      shouldWarnExternalIdChange && enabled !== initialUsePerDatasourceExternalIdRef.current
+    );
     if (enabled) {
       pendingPerDsExternalIdRef.current = true;
       const next = applyGrafanaExternalId({
@@ -268,8 +273,10 @@ export const ConnectionConfig: FC<ConnectionConfigProps> = (props: ConnectionCon
                   const mintedExternalId = !hadPerDatasourceExternalId && Boolean(next.jsonData.grafanaExternalId);
                   // Warn when leaving another auth type causes a new per-DS external ID to be set.
                   // Also warn if mint is pending (stack ID / uid not ready yet) — save will still set it.
+                  // Skip until Assume Role ARN is set — no trust policy to update yet.
                   setShowExternalIdChangeWarning(
                     Boolean(
+                      shouldWarnExternalIdChange &&
                       perDsExternalIdFeatureEnabled &&
                       (mintedExternalId || (!hadPerDatasourceExternalId && (!stackExternalId || !options.uid))) &&
                       previousAuthType &&

@@ -450,7 +450,7 @@ describe('ConnectionConfig', () => {
         id: 21,
         uid: 'dsUid1',
         type: 'cloudwatch',
-        jsonData: { authType: AwsAuthType.Keys },
+        jsonData: { authType: AwsAuthType.Keys, assumeRoleArn: 'arn:aws:iam::123:role/test' },
       },
     });
     render(<ConnectionConfig {...props} />);
@@ -468,6 +468,29 @@ describe('ConnectionConfig', () => {
         }),
       })
     );
+  });
+
+  it('should not warn when switching to GrafanaAssumeRole before Assume Role ARN is set', async () => {
+    config.featureToggles.awsDatasourcesTempCredentials = true;
+    config.featureToggles.awsAssumeRolePerDatasourceExternalId = true;
+    config.awsAllowedAuthProviders = [AwsAuthType.Keys, AwsAuthType.GrafanaAssumeRole];
+    const onOptionsChange = jest.fn();
+    const props = getProps({
+      onOptionsChange,
+      externalId: 'stackABC',
+      options: {
+        id: 21,
+        uid: 'dsUid1',
+        type: 'cloudwatch',
+        jsonData: { authType: AwsAuthType.Keys },
+      },
+    });
+    render(<ConnectionConfig {...props} />);
+    await waitFor(() => expect(screen.getByLabelText('Authentication Provider')).toBeInTheDocument());
+    await selectEvent.select(screen.getByLabelText('Authentication Provider'), 'Grafana Assume Role', {
+      container: document.body,
+    });
+    expect(screen.queryByTestId('grafana-external-id-change-warning')).not.toBeInTheDocument();
   });
 
   it('should not warn when switching to GrafanaAssumeRole while the feature toggle is off', async () => {
@@ -655,7 +678,10 @@ describe('ConnectionConfig', () => {
           id: 21,
           uid: 'dsUid1',
           type: 'cloudwatch',
-          jsonData: { authType: AwsAuthType.GrafanaAssumeRole },
+          jsonData: {
+            authType: AwsAuthType.GrafanaAssumeRole,
+            assumeRoleArn: 'arn:aws:iam::123:role/test',
+          },
         },
       });
       render(<ConnectionConfig {...props} />);
@@ -669,6 +695,27 @@ describe('ConnectionConfig', () => {
         })
       );
       expect(screen.getByTestId('grafana-external-id-change-warning')).toBeInTheDocument();
+    });
+
+    it('does not warn when toggling before Assume Role ARN is set', async () => {
+      config.featureToggles.awsDatasourcesTempCredentials = true;
+      config.featureToggles.awsAssumeRolePerDatasourceExternalId = true;
+      config.awsAllowedAuthProviders = [AwsAuthType.GrafanaAssumeRole, AwsAuthType.Credentials];
+      const onOptionsChange = jest.fn();
+      const props = getProps({
+        onOptionsChange,
+        externalId: 'stackABC',
+        options: {
+          // Connections create-then-configure already has an id
+          id: 21,
+          uid: 'dsUid1',
+          type: 'cloudwatch',
+          jsonData: { authType: AwsAuthType.GrafanaAssumeRole },
+        },
+      });
+      render(<ConnectionConfig {...props} />);
+      await userEvent.click(screen.getByTestId('per-ds-external-id-toggle'));
+      expect(screen.queryByTestId('grafana-external-id-change-warning')).not.toBeInTheDocument();
     });
 
     it('re-enabling toggle after a persisted disable reuses dormant per-datasource external ID', async () => {
@@ -806,6 +853,7 @@ describe('ConnectionConfig', () => {
         type: 'cloudwatch',
         jsonData: {
           authType: AwsAuthType.GrafanaAssumeRole,
+          assumeRoleArn: 'arn:aws:iam::123:role/test',
           usePerDatasourceExternalId: true,
           grafanaExternalId: 'stackABC-dsUid1',
         },
