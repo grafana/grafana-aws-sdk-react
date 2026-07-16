@@ -347,106 +347,40 @@ describe('ConnectionConfig', () => {
     expect(screen.queryByDisplayValue('stack-should-not-win')).not.toBeInTheDocument();
   });
 
-  it('should show stack external ID when bool unset even if grafanaExternalId is stored (legacy)', async () => {
+  it('should leave legacy GrafanaAssumeRole on stack mode without auto-migrating', async () => {
     config.featureToggles.awsDatasourcesTempCredentials = true;
     config.featureToggles.awsAssumeRolePerDatasourceExternalId = true;
     config.awsAllowedAuthProviders = [AwsAuthType.GrafanaAssumeRole, AwsAuthType.Credentials];
+    const onOptionsChange = jest.fn();
     const props = getProps({
+      onOptionsChange,
+      externalId: 'stackABC',
       options: {
         id: 21,
         uid: 'dsUid1',
         type: 'cloudwatch',
+        // Unset bool = stack mode even if a dormant per-DS ID is stored.
         jsonData: {
           authType: AwsAuthType.GrafanaAssumeRole,
           grafanaExternalId: 'stackABC-dsUid1',
         },
       },
-      externalId: 'stack-external-id',
-    });
-    render(<ConnectionConfig {...props} />);
-    await waitFor(() => expect(screen.getByDisplayValue('stack-external-id')).toBeInTheDocument());
-    expect(screen.queryByDisplayValue('stackABC-dsUid1')).not.toBeInTheDocument();
-  });
-
-  it('should fall back to stack external ID for legacy GrafanaAssumeRole datasources', async () => {
-    config.featureToggles.awsDatasourcesTempCredentials = true;
-    config.featureToggles.awsAssumeRolePerDatasourceExternalId = true;
-    config.awsAllowedAuthProviders = [AwsAuthType.GrafanaAssumeRole, AwsAuthType.Credentials];
-    const props = getProps({
-      options: {
-        id: 21,
-        uid: 'abc123',
-        type: 'cloudwatch',
-        jsonData: { authType: AwsAuthType.GrafanaAssumeRole },
-      },
-      externalId: 'stack-external-id',
-    });
-    render(<ConnectionConfig {...props} />);
-    await waitFor(() => expect(screen.getByDisplayValue('stack-external-id')).toBeInTheDocument());
-    expect(screen.getByText(/Shared stack external ID \(legacy\)/i)).toBeInTheDocument();
-    await userEvent.click(screen.getByText(/How to create an IAM role for grafana to assume/i));
-    expect(screen.getByText(/shared stack external ID — legacy/i)).toBeInTheDocument();
-    expect(screen.queryByText(/unique to this data source/i)).not.toBeInTheDocument();
-  });
-
-  it('should not auto-migrate legacy GrafanaAssumeRole datasources on load', async () => {
-    config.featureToggles.awsDatasourcesTempCredentials = true;
-    config.featureToggles.awsAssumeRolePerDatasourceExternalId = true;
-    config.awsAllowedAuthProviders = [AwsAuthType.GrafanaAssumeRole, AwsAuthType.Credentials];
-    const onOptionsChange = jest.fn();
-    const props = getProps({
-      onOptionsChange,
-      externalId: 'stackABC',
-      options: {
-        id: 21,
-        uid: 'dsUid1',
-        type: 'cloudwatch',
-        jsonData: { authType: AwsAuthType.GrafanaAssumeRole },
-      },
     });
     render(<ConnectionConfig {...props} />);
     await waitFor(() => expect(screen.getByDisplayValue('stackABC')).toBeInTheDocument());
+    expect(screen.queryByDisplayValue('stackABC-dsUid1')).not.toBeInTheDocument();
+    expect(screen.getByTestId('per-ds-external-id-toggle')).not.toBeChecked();
+    expect(screen.getByText(/Shared stack external ID \(legacy\)/i)).toBeInTheDocument();
     expect(onOptionsChange).not.toHaveBeenCalledWith(
       expect.objectContaining({
-        jsonData: expect.objectContaining({ grafanaExternalId: expect.any(String) }),
+        jsonData: expect.objectContaining({ usePerDatasourceExternalId: true }),
       })
     );
   });
 
-  it('should mint a per-DS external ID when switching to GrafanaAssumeRole without warning', async () => {
+  it('should mint a per-DS external ID when switching to GrafanaAssumeRole', async () => {
     config.featureToggles.awsDatasourcesTempCredentials = true;
     config.featureToggles.awsAssumeRolePerDatasourceExternalId = true;
-    config.awsAllowedAuthProviders = [AwsAuthType.Keys, AwsAuthType.GrafanaAssumeRole];
-    const onOptionsChange = jest.fn();
-    const props = getProps({
-      onOptionsChange,
-      externalId: 'stackABC',
-      options: {
-        id: 21,
-        uid: 'dsUid1',
-        type: 'cloudwatch',
-        jsonData: { authType: AwsAuthType.Keys, assumeRoleArn: 'arn:aws:iam::123:role/test' },
-      },
-    });
-    render(<ConnectionConfig {...props} />);
-    await waitFor(() => expect(screen.getByLabelText('Authentication Provider')).toBeInTheDocument());
-    await selectEvent.select(screen.getByLabelText('Authentication Provider'), 'Grafana Assume Role', {
-      container: document.body,
-    });
-    expect(screen.queryByTestId('grafana-external-id-change-warning')).not.toBeInTheDocument();
-    expect(onOptionsChange).toHaveBeenCalledWith(
-      expect.objectContaining({
-        jsonData: expect.objectContaining({
-          authType: AwsAuthType.GrafanaAssumeRole,
-          grafanaExternalId: 'stackABC-dsUid1',
-        }),
-      })
-    );
-  });
-
-  it('should not mint when switching to GrafanaAssumeRole while the feature toggle is off', async () => {
-    config.featureToggles.awsDatasourcesTempCredentials = true;
-    config.featureToggles.awsAssumeRolePerDatasourceExternalId = false;
     config.awsAllowedAuthProviders = [AwsAuthType.Keys, AwsAuthType.GrafanaAssumeRole];
     const onOptionsChange = jest.fn();
     const props = getProps({
@@ -464,9 +398,12 @@ describe('ConnectionConfig', () => {
     await selectEvent.select(screen.getByLabelText('Authentication Provider'), 'Grafana Assume Role', {
       container: document.body,
     });
-    expect(onOptionsChange).not.toHaveBeenCalledWith(
+    expect(onOptionsChange).toHaveBeenCalledWith(
       expect.objectContaining({
-        jsonData: expect.objectContaining({ grafanaExternalId: expect.any(String) }),
+        jsonData: expect.objectContaining({
+          authType: AwsAuthType.GrafanaAssumeRole,
+          grafanaExternalId: 'stackABC-dsUid1',
+        }),
       })
     );
   });
@@ -535,23 +472,6 @@ describe('ConnectionConfig', () => {
   });
 
   describe('per-datasource toggle', () => {
-    it('shows per-datasource toggle when FT on and GrafanaAssumeRole selected', async () => {
-      config.featureToggles.awsDatasourcesTempCredentials = true;
-      config.featureToggles.awsAssumeRolePerDatasourceExternalId = true;
-      config.awsAllowedAuthProviders = [AwsAuthType.GrafanaAssumeRole, AwsAuthType.Credentials];
-      const props = getProps({
-        externalId: 'stackABC',
-        options: {
-          id: 21,
-          uid: 'dsUid1',
-          type: 'cloudwatch',
-          jsonData: { authType: AwsAuthType.GrafanaAssumeRole, grafanaExternalId: 'stackABC-dsUid1' },
-        },
-      });
-      render(<ConnectionConfig {...props} />);
-      await waitFor(() => expect(screen.getByTestId('per-ds-external-id-toggle')).toBeInTheDocument());
-    });
-
     it('does not show per-datasource toggle when FT is off', async () => {
       config.featureToggles.awsDatasourcesTempCredentials = true;
       config.featureToggles.awsAssumeRolePerDatasourceExternalId = false;
@@ -570,28 +490,7 @@ describe('ConnectionConfig', () => {
       expect(screen.queryByTestId('per-ds-external-id-toggle')).not.toBeInTheDocument();
     });
 
-    it('legacy GAR starts with toggle off and stays on stack until enabled', async () => {
-      config.featureToggles.awsDatasourcesTempCredentials = true;
-      config.featureToggles.awsAssumeRolePerDatasourceExternalId = true;
-      config.awsAllowedAuthProviders = [AwsAuthType.GrafanaAssumeRole, AwsAuthType.Credentials];
-      const onOptionsChange = jest.fn();
-      const props = getProps({
-        onOptionsChange,
-        externalId: 'stackABC',
-        options: {
-          id: 21,
-          uid: 'dsUid1',
-          type: 'cloudwatch',
-          jsonData: { authType: AwsAuthType.GrafanaAssumeRole },
-        },
-      });
-      render(<ConnectionConfig {...props} />);
-      await waitFor(() => expect(screen.getByTestId('per-ds-external-id-toggle')).toBeInTheDocument());
-      expect(screen.getByTestId('per-ds-external-id-toggle')).not.toBeChecked();
-      expect(screen.getByDisplayValue('stackABC')).toBeInTheDocument();
-    });
-
-    it('enabling toggle mints per-datasource external ID', async () => {
+    it('enabling toggle mints per-datasource external ID and warns when ARN is set', async () => {
       config.featureToggles.awsDatasourcesTempCredentials = true;
       config.featureToggles.awsAssumeRolePerDatasourceExternalId = true;
       config.awsAllowedAuthProviders = [AwsAuthType.GrafanaAssumeRole, AwsAuthType.Credentials];
@@ -626,12 +525,9 @@ describe('ConnectionConfig', () => {
       config.featureToggles.awsDatasourcesTempCredentials = true;
       config.featureToggles.awsAssumeRolePerDatasourceExternalId = true;
       config.awsAllowedAuthProviders = [AwsAuthType.GrafanaAssumeRole, AwsAuthType.Credentials];
-      const onOptionsChange = jest.fn();
       const props = getProps({
-        onOptionsChange,
         externalId: 'stackABC',
         options: {
-          // Connections create-then-configure already has an id
           id: 21,
           uid: 'dsUid1',
           type: 'cloudwatch',
@@ -663,6 +559,8 @@ describe('ConnectionConfig', () => {
         },
       });
       render(<ConnectionConfig {...props} />);
+      await waitFor(() => expect(screen.getByDisplayValue('stackABC')).toBeInTheDocument());
+      expect(screen.queryByDisplayValue('stackABC-dsUid1')).not.toBeInTheDocument();
       await userEvent.click(screen.getByTestId('per-ds-external-id-toggle'));
       expect(onOptionsChange).toHaveBeenCalledWith(
         expect.objectContaining({
@@ -703,61 +601,6 @@ describe('ConnectionConfig', () => {
           }),
         })
       );
-    });
-
-    it('shows stack external ID when toggle is off', async () => {
-      config.featureToggles.awsDatasourcesTempCredentials = true;
-      config.featureToggles.awsAssumeRolePerDatasourceExternalId = true;
-      config.awsAllowedAuthProviders = [AwsAuthType.GrafanaAssumeRole, AwsAuthType.Credentials];
-      const props = getProps({
-        externalId: 'stackABC',
-        options: {
-          id: 21,
-          uid: 'dsUid1',
-          type: 'cloudwatch',
-          jsonData: {
-            authType: AwsAuthType.GrafanaAssumeRole,
-            usePerDatasourceExternalId: false,
-            grafanaExternalId: 'stackABC-dsUid1',
-          },
-        },
-      });
-      render(<ConnectionConfig {...props} />);
-      await waitFor(() => expect(screen.getByDisplayValue('stackABC')).toBeInTheDocument());
-      expect(screen.queryByDisplayValue('stackABC-dsUid1')).not.toBeInTheDocument();
-      expect(screen.getByText(/Shared stack external ID \(legacy\)/i)).toBeInTheDocument();
-    });
-
-    it('toggling off updates the displayed ID to the stack value', async () => {
-      config.featureToggles.awsDatasourcesTempCredentials = true;
-      config.featureToggles.awsAssumeRolePerDatasourceExternalId = true;
-      config.awsAllowedAuthProviders = [AwsAuthType.GrafanaAssumeRole, AwsAuthType.Credentials];
-
-      const Stateful = () => {
-        const [options, setOptions] = React.useState(
-          getProps({
-            options: {
-              id: 21,
-              uid: 'dsUid1',
-              type: 'cloudwatch',
-              jsonData: {
-                authType: AwsAuthType.GrafanaAssumeRole,
-                usePerDatasourceExternalId: true,
-                grafanaExternalId: 'stackABC-dsUid1',
-              },
-            },
-          }).options
-        );
-        return (
-          <ConnectionConfig {...getProps()} options={options} externalId="stackABC" onOptionsChange={setOptions} />
-        );
-      };
-
-      render(<Stateful />);
-      await waitFor(() => expect(screen.getByDisplayValue('stackABC-dsUid1')).toBeInTheDocument());
-      await userEvent.click(screen.getByTestId('per-ds-external-id-toggle'));
-      await waitFor(() => expect(screen.getByDisplayValue('stackABC')).toBeInTheDocument());
-      expect(screen.queryByDisplayValue('stackABC-dsUid1')).not.toBeInTheDocument();
     });
 
     it('clears the warning when the toggle is returned to its original value', async () => {
