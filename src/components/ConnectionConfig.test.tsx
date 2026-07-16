@@ -438,7 +438,7 @@ describe('ConnectionConfig', () => {
     );
   });
 
-  it('should warn when switching to GrafanaAssumeRole mints a new external ID', async () => {
+  it('should mint a per-DS external ID when switching to GrafanaAssumeRole without warning', async () => {
     config.featureToggles.awsDatasourcesTempCredentials = true;
     config.featureToggles.awsAssumeRolePerDatasourceExternalId = true;
     config.awsAllowedAuthProviders = [AwsAuthType.Keys, AwsAuthType.GrafanaAssumeRole];
@@ -458,8 +458,7 @@ describe('ConnectionConfig', () => {
     await selectEvent.select(screen.getByLabelText('Authentication Provider'), 'Grafana Assume Role', {
       container: document.body,
     });
-    expect(screen.getByTestId('grafana-external-id-change-warning')).toBeInTheDocument();
-    expect(screen.getByText(/External ID will change on save/i)).toBeInTheDocument();
+    expect(screen.queryByTestId('grafana-external-id-change-warning')).not.toBeInTheDocument();
     expect(onOptionsChange).toHaveBeenCalledWith(
       expect.objectContaining({
         jsonData: expect.objectContaining({
@@ -470,30 +469,7 @@ describe('ConnectionConfig', () => {
     );
   });
 
-  it('should not warn when switching to GrafanaAssumeRole before Assume Role ARN is set', async () => {
-    config.featureToggles.awsDatasourcesTempCredentials = true;
-    config.featureToggles.awsAssumeRolePerDatasourceExternalId = true;
-    config.awsAllowedAuthProviders = [AwsAuthType.Keys, AwsAuthType.GrafanaAssumeRole];
-    const onOptionsChange = jest.fn();
-    const props = getProps({
-      onOptionsChange,
-      externalId: 'stackABC',
-      options: {
-        id: 21,
-        uid: 'dsUid1',
-        type: 'cloudwatch',
-        jsonData: { authType: AwsAuthType.Keys },
-      },
-    });
-    render(<ConnectionConfig {...props} />);
-    await waitFor(() => expect(screen.getByLabelText('Authentication Provider')).toBeInTheDocument());
-    await selectEvent.select(screen.getByLabelText('Authentication Provider'), 'Grafana Assume Role', {
-      container: document.body,
-    });
-    expect(screen.queryByTestId('grafana-external-id-change-warning')).not.toBeInTheDocument();
-  });
-
-  it('should not warn when switching to GrafanaAssumeRole while the feature toggle is off', async () => {
+  it('should not mint when switching to GrafanaAssumeRole while the feature toggle is off', async () => {
     config.featureToggles.awsDatasourcesTempCredentials = true;
     config.featureToggles.awsAssumeRolePerDatasourceExternalId = false;
     config.awsAllowedAuthProviders = [AwsAuthType.Keys, AwsAuthType.GrafanaAssumeRole];
@@ -513,7 +489,6 @@ describe('ConnectionConfig', () => {
     await selectEvent.select(screen.getByLabelText('Authentication Provider'), 'Grafana Assume Role', {
       container: document.body,
     });
-    expect(screen.queryByTestId('grafana-external-id-change-warning')).not.toBeInTheDocument();
     expect(onOptionsChange).not.toHaveBeenCalledWith(
       expect.objectContaining({
         jsonData: expect.objectContaining({ grafanaExternalId: expect.any(String) }),
@@ -521,31 +496,6 @@ describe('ConnectionConfig', () => {
     );
   });
 
-  it('should not warn when GrafanaAssumeRole already has a per-datasource external ID', async () => {
-    config.featureToggles.awsDatasourcesTempCredentials = true;
-    config.featureToggles.awsAssumeRolePerDatasourceExternalId = true;
-    config.awsAllowedAuthProviders = [AwsAuthType.Keys, AwsAuthType.GrafanaAssumeRole];
-    const onOptionsChange = jest.fn();
-    const props = getProps({
-      onOptionsChange,
-      externalId: 'stackABC',
-      options: {
-        id: 21,
-        uid: 'dsUid1',
-        type: 'cloudwatch',
-        jsonData: {
-          authType: AwsAuthType.Keys,
-          grafanaExternalId: 'stackABC-dsUid1',
-        },
-      },
-    });
-    render(<ConnectionConfig {...props} />);
-    await waitFor(() => expect(screen.getByLabelText('Authentication Provider')).toBeInTheDocument());
-    await selectEvent.select(screen.getByLabelText('Authentication Provider'), 'Grafana Assume Role', {
-      container: document.body,
-    });
-    expect(screen.queryByTestId('grafana-external-id-change-warning')).not.toBeInTheDocument();
-  });
   it('should render "Learn more about Grafana Assume Role" link when GrafanaAssumeRole is selected', async () => {
     config.featureToggles.awsDatasourcesTempCredentials = true;
     config.awsAllowedAuthProviders = [AwsAuthType.GrafanaAssumeRole, AwsAuthType.Credentials];
