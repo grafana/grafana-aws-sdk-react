@@ -161,9 +161,12 @@ export const ConnectionConfig: FC<ConnectionConfigProps> = (props: ConnectionCon
       return;
     }
 
-    if (perDsExternalIdFeatureEnabled) {
-      pendingPerDsExternalIdRef.current = true;
+    if (!perDsExternalIdFeatureEnabled) {
+      onUpdateDatasourceJsonDataOptionSelect(props, 'authType')(option);
+      return;
     }
+
+    pendingPerDsExternalIdRef.current = true;
     onOptionsChange(
       applyGrafanaExternalId({
         ...options,
