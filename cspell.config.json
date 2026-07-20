@@ -1,5 +1,5 @@
 {
-  "ignorePaths": [".github/**", ".yarn/**", "node_modules/**", "dist/**", "yarn.lock"],
+  "ignorePaths": [".github/**", "node_modules/**", "dist/**", "package-lock.json"],
   "words": [
     "SIGV",
     "isob",
@@ -25,7 +25,6 @@
     "zizmor",
     "sitewise",
     "twinmaker",
-    "npmPreapprovedPackages",
-    "yarnrc"
+    "npmPreapprovedPackages"
   ]
 }

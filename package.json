@@ -24,12 +24,12 @@
     "access": "public"
   },
   "scripts": {
-    "dev": "yarn bundle --watch --watch.onStart=\"yarn typecheck\"",
-    "build": "yarn clean && yarn typecheck && yarn bundle",
+    "dev": "npm run bundle -- --watch --watch.onStart=\"npm run typecheck\"",
+    "build": "npm run clean && npm run typecheck && npm run bundle",
     "bundle": "rollup -c rollup.config.ts --configPlugin esbuild",
     "clean": "rimraf ./dist ./compiled",
-    "lint": "eslint --cache . && yarn spellcheck && yarn lint:package",
-    "lint:package": "yarn build && publint",
+    "lint": "eslint --cache . && npm run spellcheck && npm run lint:package",
+    "lint:package": "npm run build && publint",
     "spellcheck": "cspell -c cspell.config.json \"**/*.{ts,tsx,js,go,md,mdx,yml,yaml,json,scss,css}\"",
     "typecheck": "tsc -p ./tsconfig.build.json",
     "test": "jest --notify --watch",
@@ -46,7 +46,8 @@
   "author": "Grafana Labs <team@grafana.com> (https://grafana.com)",
   "license": "Apache-2.0",
   "engines": {
-    "node": ">=24"
+    "node": ">=24",
+    "npm": ">=11.12.1"
   },
   "peerDependencies": {
     "@grafana/plugin-ui": ">=0.14.0"
@@ -100,5 +101,5 @@
     "rxjs": "7.8.2",
     "typescript": "6.0.3"
   },
-  "packageManager": "yarn@4.17.0"
+  "packageManager": "npm@11.18.0"
 }
