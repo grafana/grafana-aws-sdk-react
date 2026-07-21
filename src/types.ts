@@ -16,6 +16,20 @@ export interface AwsAuthDataSourceJsonData extends DataSourceJsonData {
   authType?: AwsAuthType;
   assumeRoleArn?: string;
   externalId?: string;
+  /**
+   * When true, Grafana Assume Role uses a per-datasource external ID
+   * (`grafanaExternalId`). When false or omitted, uses the shared stack
+   * external ID (legacy). New UI configs set this to true when the feature
+   * toggle is on. Omit on update to leave the stored value unchanged (Terraform).
+   */
+  usePerDatasourceExternalId?: boolean;
+  /**
+   * Per-datasource external ID for Grafana Assume Role auth.
+   * Format: `{stackExternalId}-{dsUid}`. Kept when
+   * `usePerDatasourceExternalId` is false (dormant); aws-sdk uses the bool
+   * to choose this vs the stack-level external ID at STS time.
+   */
+  grafanaExternalId?: string;
   profile?: string; // Credentials profile name, as specified in ~/.aws/credentials
   defaultRegion?: string; // region if it is not defined by your credentials file
   endpoint?: string;
