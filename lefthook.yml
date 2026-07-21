@@ -4,8 +4,8 @@ pre-commit:
     frontend-lint:
       glob: '*.{js,ts,tsx}'
       run: |
-        yarn lint {staged_files}
-        yarn prettier --write {staged_files}
+        npm run lint -- {staged_files}
+        npx prettier --write {staged_files}
       stage_fixed: true
     spellcheck:
-      run: yarn spellcheck {staged_files}
+      run: npm run spellcheck -- {staged_files}
