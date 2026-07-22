@@ -2,6 +2,22 @@
 
 All notable changes to this project will be documented in this file.
 
+## v0.12.0
+
+- Add UI toggle for per-datasource grafanaExternalId (Grafana Assume Role) in [#496](https://github.com/grafana/grafana-aws-sdk-react/pull/496)
+- chore: use shared data-sources Renovate base preset in [#495](https://github.com/grafana/grafana-aws-sdk-react/pull/495)
+- Add add-to-project workflow and remove issue_commands in [#493](https://github.com/grafana/grafana-aws-sdk-react/pull/493)
+- chore(deps): update node.js to v24.18.0 in [#491](https://github.com/grafana/grafana-aws-sdk-react/pull/491), [#483](https://github.com/grafana/grafana-aws-sdk-react/pull/483)
+- fix(deps): pin dependencies in [#476](https://github.com/grafana/grafana-aws-sdk-react/pull/476)
+- chore: don't pin peerDependencies in renovate config in [#490](https://github.com/grafana/grafana-aws-sdk-react/pull/490)
+- Bump esbuild from 0.27.7 to 0.28.1 in [#489](https://github.com/grafana/grafana-aws-sdk-react/pull/489)
+- Bump @babel/core from 7.29.0 to 7.29.7 in [#488](https://github.com/grafana/grafana-aws-sdk-react/pull/488)
+- Bump ip-address from 10.1.0 to 10.2.0 in [#487](https://github.com/grafana/grafana-aws-sdk-react/pull/487)
+- Bump tar from 7.5.13 to 7.5.16 in [#485](https://github.com/grafana/grafana-aws-sdk-react/pull/485)
+- Bump protobufjs from 8.0.1 to 8.6.4 in [#486](https://github.com/grafana/grafana-aws-sdk-react/pull/486)
+- chore(deps): update actions/checkout action to v7 in [#484](https://github.com/grafana/grafana-aws-sdk-react/pull/484)
+- chore(deps): update actions/stale digest to eb5cf3a in [#469](https://github.com/grafana/grafana-aws-sdk-react/pull/469)
+
 ## v0.11.0
 
 - **Breaking:** `@grafana/plugin-ui` is now a `peerDependency` — consuming plugins must declare it in their own dependencies in [#482](https://github.com/grafana/grafana-aws-sdk-react/pull/482)
