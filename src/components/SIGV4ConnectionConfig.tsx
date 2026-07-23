@@ -11,19 +11,21 @@ export interface SIGV4ConnectionConfigProps extends DataSourcePluginOptionsEdito
 export const SIGV4ConnectionConfig: React.FC<SIGV4ConnectionConfigProps> = (props: SIGV4ConnectionConfigProps) => {
   const { onOptionsChange, options } = props;
 
-  // Map HttpSettings props to ConnectionConfigProps
   const connectionConfigProps: ConnectionConfigProps<AwsAuthDataSourceJsonData, AwsAuthDataSourceSecureJsonData> = {
     onOptionsChange: (awsDataSourceSettings) => {
+      const awsJson = awsDataSourceSettings.jsonData;
       const dataSourceSettings: DataSourceSettings<any, any> = {
         ...options,
         jsonData: {
           ...options.jsonData,
-          sigV4AuthType: awsDataSourceSettings.jsonData.authType,
-          sigV4Profile: awsDataSourceSettings.jsonData.profile,
-          sigV4AssumeRoleArn: awsDataSourceSettings.jsonData.assumeRoleArn,
-          sigV4ExternalId: awsDataSourceSettings.jsonData.externalId,
-          sigV4Region: awsDataSourceSettings.jsonData.defaultRegion,
-          sigV4Endpoint: awsDataSourceSettings.jsonData.endpoint,
+          sigV4AuthType: awsJson.authType,
+          sigV4Profile: awsJson.profile,
+          sigV4AssumeRoleArn: awsJson.assumeRoleArn,
+          sigV4ExternalId: awsJson.externalId,
+          sigV4Region: awsJson.defaultRegion,
+          sigV4Endpoint: awsJson.endpoint,
+          sigV4GrafanaExternalId: awsJson.grafanaExternalId,
+          sigV4UsePerDatasourceExternalId: awsJson.usePerDatasourceExternalId,
         },
         secureJsonFields: {
           sigV4AccessKey: awsDataSourceSettings.secureJsonFields?.accessKey,
@@ -39,13 +41,14 @@ export const SIGV4ConnectionConfig: React.FC<SIGV4ConnectionConfigProps> = (prop
     options: {
       ...options,
       jsonData: {
-        ...options.jsonData,
         authType: options.jsonData.sigV4AuthType,
         profile: options.jsonData.sigV4Profile,
         assumeRoleArn: options.jsonData.sigV4AssumeRoleArn,
         externalId: options.jsonData.sigV4ExternalId,
         defaultRegion: options.jsonData.sigV4Region,
         endpoint: options.jsonData.sigV4Endpoint,
+        grafanaExternalId: options.jsonData.sigV4GrafanaExternalId,
+        usePerDatasourceExternalId: options.jsonData.sigV4UsePerDatasourceExternalId,
       },
       secureJsonFields: {
         accessKey: options.secureJsonFields?.sigV4AccessKey,
