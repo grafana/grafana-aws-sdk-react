@@ -24,6 +24,8 @@ export const SIGV4ConnectionConfig: React.FC<SIGV4ConnectionConfigProps> = (prop
           sigV4ExternalId: awsDataSourceSettings.jsonData.externalId,
           sigV4Region: awsDataSourceSettings.jsonData.defaultRegion,
           sigV4Endpoint: awsDataSourceSettings.jsonData.endpoint,
+          sigV4GrafanaExternalId: awsDataSourceSettings.jsonData.grafanaExternalId,
+          sigV4UsePerDatasourceExternalId: awsDataSourceSettings.jsonData.usePerDatasourceExternalId,
         },
         secureJsonFields: {
           sigV4AccessKey: awsDataSourceSettings.secureJsonFields?.accessKey,
@@ -39,13 +41,14 @@ export const SIGV4ConnectionConfig: React.FC<SIGV4ConnectionConfigProps> = (prop
     options: {
       ...options,
       jsonData: {
-        ...options.jsonData,
         authType: options.jsonData.sigV4AuthType,
         profile: options.jsonData.sigV4Profile,
         assumeRoleArn: options.jsonData.sigV4AssumeRoleArn,
         externalId: options.jsonData.sigV4ExternalId,
         defaultRegion: options.jsonData.sigV4Region,
         endpoint: options.jsonData.sigV4Endpoint,
+        grafanaExternalId: options.jsonData.sigV4GrafanaExternalId,
+        usePerDatasourceExternalId: options.jsonData.sigV4UsePerDatasourceExternalId,
       },
       secureJsonFields: {
         accessKey: options.secureJsonFields?.sigV4AccessKey,
