@@ -86,6 +86,7 @@ describe('ConnectionConfig', () => {
     config.awsAllowedAuthProviders = [AwsAuthType.EC2IAMRole, AwsAuthType.Keys, AwsAuthType.Credentials];
     config.featureToggles.awsDatasourcesTempCredentials = false;
     config.featureToggles.awsAssumeRolePerDatasourceExternalId = false;
+    config.namespace = '';
     //@ts-ignore
     config.awsAssumeRoleEnabled = undefined;
   });
@@ -236,6 +237,28 @@ describe('ConnectionConfig', () => {
     await waitFor(() => expect(onOptionsChange).toHaveBeenCalled());
     const update = onOptionsChange.mock.calls.find((call) => call[0]?.jsonData?.grafanaExternalId)?.[0];
     expect(update.jsonData.grafanaExternalId).toBe('stackABC-dsUid1');
+  });
+
+  it('should derive stack external ID from config.namespace when props.externalId is missing (Cloud / SigV4 path)', async () => {
+    config.featureToggles.awsDatasourcesTempCredentials = true;
+    config.featureToggles.awsAssumeRolePerDatasourceExternalId = true;
+    config.awsAllowedAuthProviders = [AwsAuthType.GrafanaAssumeRole, AwsAuthType.Credentials];
+    config.namespace = 'stacks-12345';
+    const onOptionsChange = jest.fn();
+    const props = getProps({
+      onOptionsChange,
+      // No externalId prop — OpenSearch / SigV4 rely on namespace like Grafana Cloud.
+      options: {
+        id: 21,
+        uid: 'dsUid1',
+        type: 'grafana-opensearch-datasource',
+        jsonData: { authType: undefined },
+      },
+    });
+    render(<ConnectionConfig {...props} />);
+    await waitFor(() => expect(onOptionsChange).toHaveBeenCalled());
+    const update = onOptionsChange.mock.calls.find((call) => call[0]?.jsonData?.grafanaExternalId)?.[0];
+    expect(update.jsonData.grafanaExternalId).toBe('12345-dsUid1');
   });
 
   it('should not mint a per-datasource external ID when the feature toggle is off', async () => {
@@ -677,6 +700,55 @@ describe('ConnectionConfig', () => {
 
       await userEvent.click(screen.getByTestId('per-ds-external-id-toggle'));
       expect(screen.queryByTestId('grafana-external-id-change-warning')).not.toBeInTheDocument();
+    });
+
+    it('clears the warning and rebases after save (options.version bump)', async () => {
+      config.featureToggles.awsDatasourcesTempCredentials = true;
+      config.featureToggles.awsAssumeRolePerDatasourceExternalId = true;
+      config.awsAllowedAuthProviders = [AwsAuthType.GrafanaAssumeRole, AwsAuthType.Credentials];
+      const onOptionsChange = jest.fn();
+      const baseOptions = {
+        id: 21,
+        uid: 'dsUid1',
+        type: 'cloudwatch',
+        version: 1,
+        jsonData: {
+          authType: AwsAuthType.GrafanaAssumeRole,
+          assumeRoleArn: 'arn:aws:iam::123:role/test',
+          usePerDatasourceExternalId: true,
+          grafanaExternalId: 'stackABC-dsUid1',
+        },
+      };
+      const props = getProps({
+        onOptionsChange,
+        externalId: 'stackABC',
+        options: baseOptions,
+      });
+      const { rerender } = render(<ConnectionConfig {...props} />);
+
+      await userEvent.click(screen.getByTestId('per-ds-external-id-toggle'));
+      expect(screen.getByTestId('grafana-external-id-change-warning')).toBeInTheDocument();
+
+      const afterDisable = onOptionsChange.mock.calls.at(-1)?.[0];
+      // Simulate successful save: persisted toggle + bumped version.
+      rerender(
+        <ConnectionConfig
+          {...props}
+          options={{
+            ...afterDisable,
+            version: 2,
+            jsonData: {
+              ...afterDisable.jsonData,
+              usePerDatasourceExternalId: false,
+            },
+          }}
+        />
+      );
+      expect(screen.queryByTestId('grafana-external-id-change-warning')).not.toBeInTheDocument();
+
+      // Changing again after save should warn relative to the newly saved baseline (false).
+      await userEvent.click(screen.getByTestId('per-ds-external-id-toggle'));
+      expect(screen.getByTestId('grafana-external-id-change-warning')).toBeInTheDocument();
     });
   });
 

@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## v0.12.1
+
+- Support per-datasource Grafana Assume Role external IDs for SigV4 datasources in [#501](https://github.com/grafana/grafana-aws-sdk-react/pull/501)
+
 ## v0.12.0
 
 - Add UI toggle for per-datasource grafanaExternalId (Grafana Assume Role) in [#496](https://github.com/grafana/grafana-aws-sdk-react/pull/496)

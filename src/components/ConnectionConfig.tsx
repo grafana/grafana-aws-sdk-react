@@ -56,6 +56,7 @@ export const ConnectionConfig: FC<ConnectionConfigProps> = (props: ConnectionCon
   const pendingPerDsExternalIdRef = useRef(false);
   // Persisted/opened mode — warn only while the toggle differs from this value.
   const initialUsePerDatasourceExternalIdRef = useRef(props.options.jsonData.usePerDatasourceExternalId === true);
+  const savedOptionsVersionRef = useRef(props.options.version);
   const {
     loadRegions,
     onOptionsChange,
@@ -66,6 +67,16 @@ export const ConnectionConfig: FC<ConnectionConfigProps> = (props: ConnectionCon
     showHttpProxySettings = false,
   } = props;
   useConfigSaveReporter(options.type, options.jsonData.authType);
+
+  // After save Grafana bumps options.version — treat current toggle as the new baseline and clear the warning.
+  useEffect(() => {
+    if (savedOptionsVersionRef.current === options.version) {
+      return;
+    }
+    savedOptionsVersionRef.current = options.version;
+    initialUsePerDatasourceExternalIdRef.current = options.jsonData.usePerDatasourceExternalId === true;
+    setShowExternalIdChangeWarning(false);
+  }, [options.version, options.jsonData.usePerDatasourceExternalId]);
   let profile = options.jsonData.profile;
   if (profile === undefined) {
     profile = options.database;
@@ -89,8 +100,12 @@ export const ConnectionConfig: FC<ConnectionConfigProps> = (props: ConnectionCon
   // Only warn when an Assume Role ARN is already set — otherwise there is no trust policy
   // to update yet (covers Connections create-then-configure, where id is already assigned).
   const shouldWarnExternalIdChange = Boolean(options.jsonData.assumeRoleArn);
-  // Stack ID from the plugin (e.g. CloudWatch /external-id → AWS_AUTH_EXTERNAL_ID).
-  const stackExternalId = props.externalId;
+  // Stack ID: plugin fetch (CloudWatch /external-id) wins; else Cloud-style namespace
+  // (`stacks-<id>` from [environment] stack_id) — same path OpenSearch uses on Grafana Cloud.
+  const stackExternalIdFromNamespace = config.namespace?.startsWith('stacks-')
+    ? config.namespace.substring(config.namespace.indexOf('-') + 1)
+    : undefined;
+  const stackExternalId = props.externalId || stackExternalIdFromNamespace;
   // Toggle reflects explicit bool only; unset (legacy) is stack mode.
   const usePerDatasourceExternalId = options.jsonData.usePerDatasourceExternalId === true;
   // Active ID for STS/display: per-DS when mode on, otherwise stack.
