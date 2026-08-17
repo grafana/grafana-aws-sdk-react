@@ -213,7 +213,7 @@ export const ConnectionConfig: FC<ConnectionConfigProps> = (props: ConnectionCon
           authType: defaultAuthType,
         },
       };
-      // New datasources (no authType yet): mint a per-DS ID when defaulting to Grafana Assume Role.
+      // New datasources (no authType yet): enable per-DS mode when defaulting to Grafana Assume Role.
       // Legacy datasources already have authType set and are skipped by !currentProvider.
       if (defaultAuthType === AwsAuthType.GrafanaAssumeRole && perDsExternalIdFeatureEnabled) {
         pendingPerDsExternalIdRef.current = true;
