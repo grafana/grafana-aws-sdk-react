@@ -11,6 +11,8 @@ import { ConnectionConfig } from './ConnectionConfig';
 import selectEvent from 'react-select-event';
 import { config } from '@grafana/runtime';
 
+const serverMintedId = 'stackABC-dsUid1-a1b2c3d4e5f67890';
+
 const getProps = (propOverrides?: object) => {
   const props: ConnectionConfigProps<AwsAuthDataSourceJsonData, AwsAuthDataSourceSecureJsonData> = {
     options: {
@@ -242,32 +244,7 @@ describe('ConnectionConfig', () => {
     expect(update.jsonData.grafanaExternalId).toBeUndefined();
   });
 
-  it('should enable per-datasource mode from config.namespace without minting (Cloud / SigV4 path)', async () => {
-    config.featureToggles.awsDatasourcesTempCredentials = true;
-    config.featureToggles.awsAssumeRolePerDatasourceExternalId = true;
-    config.awsAllowedAuthProviders = [AwsAuthType.GrafanaAssumeRole, AwsAuthType.Credentials];
-    config.namespace = 'stacks-12345';
-    const onOptionsChange = jest.fn();
-    const props = getProps({
-      onOptionsChange,
-      // No externalId prop — OpenSearch / SigV4 rely on namespace like Grafana Cloud.
-      options: {
-        id: 21,
-        uid: 'dsUid1',
-        type: 'grafana-opensearch-datasource',
-        jsonData: { authType: undefined },
-      },
-    });
-    render(<ConnectionConfig {...props} />);
-    await waitFor(() => expect(onOptionsChange).toHaveBeenCalled());
-    const update = onOptionsChange.mock.calls.find(
-      (call) => call[0]?.jsonData?.usePerDatasourceExternalId === true
-    )?.[0];
-    expect(update.jsonData.usePerDatasourceExternalId).toBe(true);
-    expect(update.jsonData.grafanaExternalId).toBeUndefined();
-  });
-
-  it('should not mint a per-datasource external ID when the feature toggle is off', async () => {
+  it('should not enable per-datasource mode when defaulting to GrafanaAssumeRole with FT off', async () => {
     config.featureToggles.awsDatasourcesTempCredentials = true;
     config.featureToggles.awsAssumeRolePerDatasourceExternalId = false;
     config.awsAllowedAuthProviders = [AwsAuthType.GrafanaAssumeRole, AwsAuthType.Credentials];
@@ -286,82 +263,16 @@ describe('ConnectionConfig', () => {
     await waitFor(() => expect(onOptionsChange).toHaveBeenCalled());
     expect(onOptionsChange).not.toHaveBeenCalledWith(
       expect.objectContaining({
-        jsonData: expect.objectContaining({ grafanaExternalId: expect.any(String) }),
+        jsonData: expect.objectContaining({ usePerDatasourceExternalId: true }),
       })
     );
-  });
-
-  it('should not mint a per-datasource external ID when datasource uid is missing', async () => {
-    config.featureToggles.awsDatasourcesTempCredentials = true;
-    config.featureToggles.awsAssumeRolePerDatasourceExternalId = true;
-    config.awsAllowedAuthProviders = [AwsAuthType.GrafanaAssumeRole, AwsAuthType.Credentials];
-    const onOptionsChange = jest.fn();
-    const props = getProps({
-      onOptionsChange,
-      externalId: 'stackABC',
-      options: {
-        id: 21,
-        uid: '',
-        type: 'cloudwatch',
-        jsonData: { authType: undefined },
-      },
-    });
-    render(<ConnectionConfig {...props} />);
-    await waitFor(() => expect(onOptionsChange).toHaveBeenCalled());
-    expect(onOptionsChange).not.toHaveBeenCalledWith(
-      expect.objectContaining({
-        jsonData: expect.objectContaining({ grafanaExternalId: expect.any(String) }),
-      })
-    );
-  });
-
-  it('should show save placeholder after stack external ID loads without minting', async () => {
-    config.featureToggles.awsDatasourcesTempCredentials = true;
-    config.featureToggles.awsAssumeRolePerDatasourceExternalId = true;
-    config.awsAllowedAuthProviders = [AwsAuthType.GrafanaAssumeRole, AwsAuthType.Credentials];
-
-    const Stateful = () => {
-      const [externalId, setExternalId] = React.useState('');
-      const [options, setOptions] = React.useState(
-        getProps({
-          options: {
-            id: 21,
-            uid: 'dsUid1',
-            type: 'cloudwatch',
-            jsonData: { authType: undefined },
-          },
-        }).options
-      );
-
-      React.useEffect(() => {
-        const t = window.setTimeout(() => setExternalId('stackABC'), 10);
-        return () => window.clearTimeout(t);
-      }, []);
-
-      return (
-        <ConnectionConfig
-          {...getProps()}
-          options={options}
-          externalId={externalId}
-          onOptionsChange={(next) => setOptions(next)}
-        />
-      );
-    };
-
-    render(<Stateful />);
-    await waitFor(() =>
-      expect(screen.getByDisplayValue('Save the data source to generate an external ID')).toBeInTheDocument()
-    );
-    expect(screen.queryByDisplayValue('stackABC-dsUid1')).not.toBeInTheDocument();
-    expect(screen.queryByDisplayValue('stackABC')).not.toBeInTheDocument();
-    expect(screen.getByText(/Save this data source first to generate a unique external ID/i)).toBeInTheDocument();
   });
 
   it('should show per-datasource external ID when mode is enabled', async () => {
     config.featureToggles.awsDatasourcesTempCredentials = true;
     config.featureToggles.awsAssumeRolePerDatasourceExternalId = true;
     config.awsAllowedAuthProviders = [AwsAuthType.GrafanaAssumeRole, AwsAuthType.Credentials];
-    const perDsId = 'stackABC-dsUid1';
+    const perDsId = serverMintedId;
     const props = getProps({
       options: {
         id: 21,
@@ -395,13 +306,13 @@ describe('ConnectionConfig', () => {
         // Unset bool = stack mode even if a dormant per-DS ID is stored.
         jsonData: {
           authType: AwsAuthType.GrafanaAssumeRole,
-          grafanaExternalId: 'stackABC-dsUid1',
+          grafanaExternalId: serverMintedId,
         },
       },
     });
     render(<ConnectionConfig {...props} />);
     await waitFor(() => expect(screen.getByDisplayValue('stackABC')).toBeInTheDocument());
-    expect(screen.queryByDisplayValue('stackABC-dsUid1')).not.toBeInTheDocument();
+    expect(screen.queryByDisplayValue(serverMintedId)).not.toBeInTheDocument();
     expect(screen.getByTestId('per-ds-external-id-toggle')).not.toBeChecked();
     expect(screen.getByText(/Shared stack external ID \(legacy\)/i)).toBeInTheDocument();
     expect(onOptionsChange).not.toHaveBeenCalledWith(
@@ -627,7 +538,6 @@ describe('ConnectionConfig', () => {
       config.featureToggles.awsAssumeRolePerDatasourceExternalId = true;
       config.awsAllowedAuthProviders = [AwsAuthType.GrafanaAssumeRole, AwsAuthType.Credentials];
       const onOptionsChange = jest.fn();
-      const serverMintedId = 'stackABC-dsUid1-a1b2c3d4e5f67890';
       const props = getProps({
         onOptionsChange,
         externalId: 'stackABC',
@@ -694,7 +604,7 @@ describe('ConnectionConfig', () => {
           jsonData: {
             authType: AwsAuthType.GrafanaAssumeRole,
             usePerDatasourceExternalId: true,
-            grafanaExternalId: 'stackABC-dsUid1',
+            grafanaExternalId: serverMintedId,
           },
         },
       });
@@ -704,7 +614,7 @@ describe('ConnectionConfig', () => {
         expect.objectContaining({
           jsonData: expect.objectContaining({
             usePerDatasourceExternalId: false,
-            grafanaExternalId: 'stackABC-dsUid1',
+            grafanaExternalId: serverMintedId,
           }),
         })
       );
@@ -723,7 +633,7 @@ describe('ConnectionConfig', () => {
           authType: AwsAuthType.GrafanaAssumeRole,
           assumeRoleArn: 'arn:aws:iam::123:role/test',
           usePerDatasourceExternalId: true,
-          grafanaExternalId: 'stackABC-dsUid1',
+          grafanaExternalId: serverMintedId,
         },
       };
       const props = getProps({
@@ -757,7 +667,7 @@ describe('ConnectionConfig', () => {
           authType: AwsAuthType.GrafanaAssumeRole,
           assumeRoleArn: 'arn:aws:iam::123:role/test',
           usePerDatasourceExternalId: true,
-          grafanaExternalId: 'stackABC-dsUid1',
+          grafanaExternalId: serverMintedId,
         },
       };
       const props = getProps({

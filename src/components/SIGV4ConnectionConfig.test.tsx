@@ -166,7 +166,7 @@ describe('SIGV4ConnectionConfig', () => {
           sigV4Auth: true,
           sigV4AuthType: AwsAuthType.GrafanaAssumeRole,
           sigV4AssumeRoleArn: 'arn:aws:iam::123:role/test',
-          sigV4GrafanaExternalId: 'stackABC-dsUid1',
+          sigV4GrafanaExternalId: 'stackABC-dsUid1-a1b2c3d4e5f67890',
           sigV4UsePerDatasourceExternalId: true,
           sigV4Region: 'us-east-2',
         },
@@ -175,7 +175,7 @@ describe('SIGV4ConnectionConfig', () => {
     });
 
     expect(screen.getByTestId('per-ds-external-id-toggle')).toBeChecked();
-    expect(screen.getByDisplayValue('stackABC-dsUid1')).toBeInTheDocument();
+    expect(screen.getByDisplayValue('stackABC-dsUid1-a1b2c3d4e5f67890')).toBeInTheDocument();
   });
 
   it('should persist per-datasource mode under sigV4-prefixed keys only without minting', async () => {
@@ -230,7 +230,7 @@ describe('SIGV4ConnectionConfig', () => {
           sigV4Auth: true,
           sigV4AuthType: AwsAuthType.GrafanaAssumeRole,
           sigV4AssumeRoleArn: 'arn:aws:iam::123:role/test',
-          sigV4GrafanaExternalId: 'stackABC-dsUid1',
+          sigV4GrafanaExternalId: 'stackABC-dsUid1-a1b2c3d4e5f67890',
           sigV4UsePerDatasourceExternalId: true,
         },
       },
@@ -243,7 +243,7 @@ describe('SIGV4ConnectionConfig', () => {
         expect.objectContaining({
           jsonData: expect.objectContaining({
             sigV4UsePerDatasourceExternalId: false,
-            sigV4GrafanaExternalId: 'stackABC-dsUid1',
+            sigV4GrafanaExternalId: 'stackABC-dsUid1-a1b2c3d4e5f67890',
           }),
         })
       )
