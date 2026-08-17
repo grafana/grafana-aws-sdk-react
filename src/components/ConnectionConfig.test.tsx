@@ -218,7 +218,7 @@ describe('ConnectionConfig', () => {
     await waitFor(() => expect(screen.queryByPlaceholderText('External ID')).not.toBeInTheDocument());
   });
 
-  it('should mint a per-datasource external ID when defaulting to GrafanaAssumeRole', async () => {
+  it('should enable per-datasource mode without minting when defaulting to GrafanaAssumeRole', async () => {
     config.featureToggles.awsDatasourcesTempCredentials = true;
     config.featureToggles.awsAssumeRolePerDatasourceExternalId = true;
     config.awsAllowedAuthProviders = [AwsAuthType.GrafanaAssumeRole, AwsAuthType.Credentials];
@@ -235,11 +235,14 @@ describe('ConnectionConfig', () => {
     });
     render(<ConnectionConfig {...props} />);
     await waitFor(() => expect(onOptionsChange).toHaveBeenCalled());
-    const update = onOptionsChange.mock.calls.find((call) => call[0]?.jsonData?.grafanaExternalId)?.[0];
-    expect(update.jsonData.grafanaExternalId).toBe('stackABC-dsUid1');
+    const update = onOptionsChange.mock.calls.find(
+      (call) => call[0]?.jsonData?.usePerDatasourceExternalId === true
+    )?.[0];
+    expect(update.jsonData.usePerDatasourceExternalId).toBe(true);
+    expect(update.jsonData.grafanaExternalId).toBeUndefined();
   });
 
-  it('should derive stack external ID from config.namespace when props.externalId is missing (Cloud / SigV4 path)', async () => {
+  it('should enable per-datasource mode from config.namespace without minting (Cloud / SigV4 path)', async () => {
     config.featureToggles.awsDatasourcesTempCredentials = true;
     config.featureToggles.awsAssumeRolePerDatasourceExternalId = true;
     config.awsAllowedAuthProviders = [AwsAuthType.GrafanaAssumeRole, AwsAuthType.Credentials];
@@ -257,8 +260,11 @@ describe('ConnectionConfig', () => {
     });
     render(<ConnectionConfig {...props} />);
     await waitFor(() => expect(onOptionsChange).toHaveBeenCalled());
-    const update = onOptionsChange.mock.calls.find((call) => call[0]?.jsonData?.grafanaExternalId)?.[0];
-    expect(update.jsonData.grafanaExternalId).toBe('12345-dsUid1');
+    const update = onOptionsChange.mock.calls.find(
+      (call) => call[0]?.jsonData?.usePerDatasourceExternalId === true
+    )?.[0];
+    expect(update.jsonData.usePerDatasourceExternalId).toBe(true);
+    expect(update.jsonData.grafanaExternalId).toBeUndefined();
   });
 
   it('should not mint a per-datasource external ID when the feature toggle is off', async () => {
@@ -309,7 +315,7 @@ describe('ConnectionConfig', () => {
     );
   });
 
-  it('should mint per-datasource external ID after stack external ID loads asynchronously', async () => {
+  it('should show save placeholder after stack external ID loads without minting', async () => {
     config.featureToggles.awsDatasourcesTempCredentials = true;
     config.featureToggles.awsAssumeRolePerDatasourceExternalId = true;
     config.awsAllowedAuthProviders = [AwsAuthType.GrafanaAssumeRole, AwsAuthType.Credentials];
@@ -343,8 +349,12 @@ describe('ConnectionConfig', () => {
     };
 
     render(<Stateful />);
-    await waitFor(() => expect(screen.getByDisplayValue('stackABC-dsUid1')).toBeInTheDocument());
-    expect(screen.getByText(/Unique to this data source/i)).toBeInTheDocument();
+    await waitFor(() =>
+      expect(screen.getByDisplayValue('Save the data source to generate an external ID')).toBeInTheDocument()
+    );
+    expect(screen.queryByDisplayValue('stackABC-dsUid1')).not.toBeInTheDocument();
+    expect(screen.queryByDisplayValue('stackABC')).not.toBeInTheDocument();
+    expect(screen.getByText(/Save this data source first to generate a unique external ID/i)).toBeInTheDocument();
   });
 
   it('should show per-datasource external ID when mode is enabled', async () => {
@@ -401,7 +411,7 @@ describe('ConnectionConfig', () => {
     );
   });
 
-  it('should mint a per-DS external ID when switching to GrafanaAssumeRole', async () => {
+  it('should enable per-datasource mode without minting when switching to GrafanaAssumeRole', async () => {
     config.featureToggles.awsDatasourcesTempCredentials = true;
     config.featureToggles.awsAssumeRolePerDatasourceExternalId = true;
     config.awsAllowedAuthProviders = [AwsAuthType.Keys, AwsAuthType.GrafanaAssumeRole];
@@ -425,7 +435,14 @@ describe('ConnectionConfig', () => {
       expect.objectContaining({
         jsonData: expect.objectContaining({
           authType: AwsAuthType.GrafanaAssumeRole,
-          grafanaExternalId: 'stackABC-dsUid1',
+          usePerDatasourceExternalId: true,
+        }),
+      })
+    );
+    expect(onOptionsChange).not.toHaveBeenCalledWith(
+      expect.objectContaining({
+        jsonData: expect.objectContaining({
+          grafanaExternalId: expect.anything(),
         }),
       })
     );
@@ -556,7 +573,7 @@ describe('ConnectionConfig', () => {
       expect(screen.queryByTestId('per-ds-external-id-toggle')).not.toBeInTheDocument();
     });
 
-    it('enabling toggle mints per-datasource external ID and warns when ARN is set', async () => {
+    it('enabling toggle sets per-datasource mode without minting and warns when ARN is set', async () => {
       config.featureToggles.awsDatasourcesTempCredentials = true;
       config.featureToggles.awsAssumeRolePerDatasourceExternalId = true;
       config.awsAllowedAuthProviders = [AwsAuthType.GrafanaAssumeRole, AwsAuthType.Credentials];
@@ -580,10 +597,10 @@ describe('ConnectionConfig', () => {
         expect.objectContaining({
           jsonData: expect.objectContaining({
             usePerDatasourceExternalId: true,
-            grafanaExternalId: 'stackABC-dsUid1',
           }),
         })
       );
+      expect(onOptionsChange.mock.calls.at(-1)?.[0].jsonData.grafanaExternalId).toBeUndefined();
       expect(screen.getByTestId('grafana-external-id-change-warning')).toBeInTheDocument();
     });
 
@@ -605,11 +622,12 @@ describe('ConnectionConfig', () => {
       expect(screen.queryByTestId('grafana-external-id-change-warning')).not.toBeInTheDocument();
     });
 
-    it('re-enabling toggle after a persisted disable reuses dormant per-datasource external ID', async () => {
+    it('re-enabling toggle after a persisted disable does not invent a new per-datasource external ID', async () => {
       config.featureToggles.awsDatasourcesTempCredentials = true;
       config.featureToggles.awsAssumeRolePerDatasourceExternalId = true;
       config.awsAllowedAuthProviders = [AwsAuthType.GrafanaAssumeRole, AwsAuthType.Credentials];
       const onOptionsChange = jest.fn();
+      const serverMintedId = 'stackABC-dsUid1-a1b2c3d4e5f67890';
       const props = getProps({
         onOptionsChange,
         externalId: 'stackABC',
@@ -620,22 +638,45 @@ describe('ConnectionConfig', () => {
           jsonData: {
             authType: AwsAuthType.GrafanaAssumeRole,
             usePerDatasourceExternalId: false,
-            grafanaExternalId: 'stackABC-dsUid1',
+            grafanaExternalId: serverMintedId,
           },
         },
       });
       render(<ConnectionConfig {...props} />);
       await waitFor(() => expect(screen.getByDisplayValue('stackABC')).toBeInTheDocument());
-      expect(screen.queryByDisplayValue('stackABC-dsUid1')).not.toBeInTheDocument();
+      expect(screen.queryByDisplayValue(serverMintedId)).not.toBeInTheDocument();
       await userEvent.click(screen.getByTestId('per-ds-external-id-toggle'));
       expect(onOptionsChange).toHaveBeenCalledWith(
         expect.objectContaining({
           jsonData: expect.objectContaining({
             usePerDatasourceExternalId: true,
-            grafanaExternalId: 'stackABC-dsUid1',
+            grafanaExternalId: serverMintedId,
           }),
         })
       );
+    });
+
+    it('shows save placeholder when per-datasource mode is on and no server external ID exists', async () => {
+      config.featureToggles.awsDatasourcesTempCredentials = true;
+      config.featureToggles.awsAssumeRolePerDatasourceExternalId = true;
+      config.awsAllowedAuthProviders = [AwsAuthType.GrafanaAssumeRole, AwsAuthType.Credentials];
+      const props = getProps({
+        externalId: 'stackABC',
+        options: {
+          id: 21,
+          uid: 'dsUid1',
+          type: 'cloudwatch',
+          jsonData: {
+            authType: AwsAuthType.GrafanaAssumeRole,
+            usePerDatasourceExternalId: true,
+          },
+        },
+      });
+      render(<ConnectionConfig {...props} />);
+      await waitFor(() =>
+        expect(screen.getByDisplayValue('Save the data source to generate an external ID')).toBeInTheDocument()
+      );
+      expect(screen.queryByDisplayValue('stackABC')).not.toBeInTheDocument();
     });
 
     it('disabling toggle sets usePerDatasourceExternalId false and keeps grafanaExternalId', async () => {

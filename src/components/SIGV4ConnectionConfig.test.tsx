@@ -178,7 +178,7 @@ describe('SIGV4ConnectionConfig', () => {
     expect(screen.getByDisplayValue('stackABC-dsUid1')).toBeInTheDocument();
   });
 
-  it('should persist minted per-datasource external ID under sigV4-prefixed keys only', async () => {
+  it('should persist per-datasource mode under sigV4-prefixed keys only without minting', async () => {
     config.featureToggles.awsDatasourcesTempCredentials = true;
     // @ts-ignore not yet in published @grafana/data FeatureToggles
     config.featureToggles.awsAssumeRolePerDatasourceExternalId = true;
@@ -202,10 +202,12 @@ describe('SIGV4ConnectionConfig', () => {
     });
 
     await waitFor(() => expect(onOptionsChange).toHaveBeenCalled());
-    const update = onOptionsChange.mock.calls.find((call) => call[0]?.jsonData?.sigV4GrafanaExternalId)?.[0];
+    const update = onOptionsChange.mock.calls.find(
+      (call) => call[0]?.jsonData?.sigV4UsePerDatasourceExternalId === true
+    )?.[0];
 
-    expect(update.jsonData.sigV4GrafanaExternalId).toBe('stackABC-dsUid1');
     expect(update.jsonData.sigV4UsePerDatasourceExternalId).toBe(true);
+    expect(update.jsonData.sigV4GrafanaExternalId).toBeUndefined();
     expect(update.jsonData.sigV4AuthType).toBe(AwsAuthType.GrafanaAssumeRole);
     expect(update.jsonData.grafanaExternalId).toBeUndefined();
     expect(update.jsonData.usePerDatasourceExternalId).toBeUndefined();
