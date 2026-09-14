@@ -314,7 +314,9 @@ describe('ConnectionConfig', () => {
     await waitFor(() => expect(screen.getByDisplayValue('stackABC')).toBeInTheDocument());
     expect(screen.queryByDisplayValue(serverMintedId)).not.toBeInTheDocument();
     expect(screen.getByTestId('per-ds-external-id-toggle')).not.toBeChecked();
-    expect(screen.getByText(/Shared stack external ID \(legacy\)/i)).toBeInTheDocument();
+    expect(
+      screen.getByText(/Shared stack external ID\. You can enable a unique ID per data source/i)
+    ).toBeInTheDocument();
     expect(onOptionsChange).not.toHaveBeenCalledWith(
       expect.objectContaining({
         jsonData: expect.objectContaining({ usePerDatasourceExternalId: true }),

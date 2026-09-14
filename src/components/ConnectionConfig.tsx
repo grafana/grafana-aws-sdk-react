@@ -123,7 +123,7 @@ export const ConnectionConfig: FC<ConnectionConfigProps> = (props: ConnectionCon
       ? 'Unique to this data source. Paste this value into your IAM role trust policy.'
       : 'Save this data source first to generate a unique external ID, then update your IAM role trust policy.'
     : perDsExternalIdFeatureEnabled
-      ? 'Shared stack external ID (legacy). New data sources get a unique ID per data source for stronger isolation.'
+      ? 'Shared stack external ID. You can enable a unique ID per data source for stronger isolation.'
       : 'Shared stack external ID. Paste this value into your IAM role trust policy.';
   const currentProvider = awsAuthProviderOptions.find((p) => p.value === options.jsonData.authType);
 
@@ -379,11 +379,7 @@ export const ConnectionConfig: FC<ConnectionConfigProps> = (props: ConnectionCon
                     <li>
                       <p>
                         3. Enter the following external ID (
-                        {usePerDatasourceExternalId
-                          ? 'unique to this data source'
-                          : perDsExternalIdFeatureEnabled
-                            ? 'shared stack external ID — legacy'
-                            : 'shared stack external ID'}
+                        {usePerDatasourceExternalId ? 'unique to this data source' : 'shared stack external ID'}
                         ): <code>{externalIdFieldValue || 'External Id is currently unavailable'}</code> and click{' '}
                         <code>Next</code>.
                       </p>
