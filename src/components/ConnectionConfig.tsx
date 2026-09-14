@@ -150,24 +150,14 @@ export const ConnectionConfig: FC<ConnectionConfigProps> = (props: ConnectionCon
     setShowExternalIdChangeWarning(
       shouldWarnExternalIdChange && enabled !== initialUsePerDatasourceExternalIdRef.current
     );
-    if (enabled) {
-      pendingPerDsExternalIdRef.current = true;
-      onOptionsChange({
-        ...options,
-        jsonData: {
-          ...options.jsonData,
-          usePerDatasourceExternalId: true,
-        },
-      });
-      return;
-    }
-    pendingPerDsExternalIdRef.current = false;
+    pendingPerDsExternalIdRef.current = enabled;
+    // Backend strips grafanaExternalId on save and does not restore it when
+    // stack mode is explicit, so the frontend does not need to clear it.
     onOptionsChange({
       ...options,
       jsonData: {
         ...options.jsonData,
-        usePerDatasourceExternalId: false,
-        // Keep grafanaExternalId dormant; aws-sdk uses the bool for STS mode.
+        usePerDatasourceExternalId: enabled,
       },
     });
   };
