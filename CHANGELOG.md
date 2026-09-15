@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## v0.12.2
+
+- Stop client-minting grafanaExternalId; server mints on save in [#503](https://github.com/grafana/grafana-aws-sdk-react/pull/503)
+
 ## v0.12.1
 
 - Support per-datasource Grafana Assume Role external IDs for SigV4 datasources in [#501](https://github.com/grafana/grafana-aws-sdk-react/pull/501)
