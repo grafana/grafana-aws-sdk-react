@@ -439,12 +439,12 @@ export const ConnectionConfig: FC<ConnectionConfigProps> = (props: ConnectionCon
                 {showExternalIdChangeWarning && (
                   <Alert
                     severity="warning"
-                    title="External ID will change on save"
+                    title="External ID will change on Save."
                     data-testid="grafana-external-id-change-warning"
                   >
-                    Saving will change the external ID used to assume this role (switching between the data
-                    source-specific ID and the shared stack ID). Update your IAM role trust policy to match the new
-                    external ID or Assume Role will fail.
+                    Switching between the data source-specific ID and the shared stack ID will change the external ID
+                    used to assume this role. Update your IAM role trust policy to match the new external ID or Assume
+                    Role will fail.
                   </Alert>
                 )}
                 {options.jsonData.authType !== AwsAuthType.GrafanaAssumeRole && (
