@@ -86,7 +86,7 @@
     "jest": "30.4.2",
     "jest-environment-jsdom": "30.4.1",
     "lefthook": "2.1.9",
-    "node-notifier": "10.0.1",
+    "node-notifier": "11.0.0",
     "prettier": "3.9.0",
     "publint": "0.3.21",
     "react": "18.3.1",
