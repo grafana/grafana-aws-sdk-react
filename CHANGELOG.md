@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## v0.12.4
+
+- fix(deps): bump undici to 8.12.3 in [#513](https://github.com/grafana/grafana-aws-sdk-react/pull/513)
+- chore(deps): update frontend dependencies in [#494](https://github.com/grafana/grafana-aws-sdk-react/pull/494)
+- chore(deps): update node.js to v24.22.1 in [#502](https://github.com/grafana/grafana-aws-sdk-react/pull/502)
+- chore(deps): update actions/setup-node action to v7 in [#508](https://github.com/grafana/grafana-aws-sdk-react/pull/508)
+
 ## v0.12.3
 
 - fix(deps): resolve security vulnerabilities in [#507](https://github.com/grafana/grafana-aws-sdk-react/pull/507)
