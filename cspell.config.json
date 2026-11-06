@@ -26,6 +26,7 @@
     "sitewise",
     "twinmaker",
     "npmPreapprovedPackages",
-    "yarnrc"
+    "yarnrc",
+    "smol"
   ]
 }

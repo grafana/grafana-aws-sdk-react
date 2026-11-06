@@ -1,5 +1,17 @@
-import React, { FC, useEffect, useMemo, useState } from 'react';
-import { Input, Select, ButtonGroup, ToolbarButton, Text, TextLink, Collapse, Field, Space } from '@grafana/ui';
+import React, { FC, useEffect, useMemo, useRef, useState } from 'react';
+import {
+  Input,
+  Select,
+  ButtonGroup,
+  ToolbarButton,
+  Text,
+  TextLink,
+  Collapse,
+  Field,
+  Space,
+  Alert,
+  Switch,
+} from '@grafana/ui';
 import {
   onUpdateDatasourceJsonDataOptionSelect,
   onUpdateDatasourceResetOption,
@@ -36,7 +48,14 @@ const isAwsAuthType = (value: any): value is AwsAuthType => {
 
 export const ConnectionConfig: FC<ConnectionConfigProps> = (props: ConnectionConfigProps) => {
   const [isARNInstructionsOpen, setIsARNInstructionsOpen] = useState(false);
+  const [showExternalIdChangeWarning, setShowExternalIdChangeWarning] = useState(false);
   const [regions, setRegions] = useState((props.standardRegions || standardRegions).map(toOption));
+  // When true, enable per-DS mode as soon as stack external ID (props.externalId) is available.
+  // Set on auth default / user select of Grafana Assume Role — not for legacy DS that already use stack ID.
+  const pendingPerDsExternalIdRef = useRef(false);
+  // Persisted/opened mode — warn only while the toggle differs from this value.
+  const initialUsePerDatasourceExternalIdRef = useRef(props.options.jsonData.usePerDatasourceExternalId === true);
+  const savedOptionsVersionRef = useRef(props.options.version);
   const {
     loadRegions,
     onOptionsChange,
@@ -47,12 +66,24 @@ export const ConnectionConfig: FC<ConnectionConfigProps> = (props: ConnectionCon
     showHttpProxySettings = false,
   } = props;
   useConfigSaveReporter(options.type, options.jsonData.authType);
+
+  // After save Grafana bumps options.version — treat current toggle as the new baseline and clear the warning.
+  useEffect(() => {
+    if (savedOptionsVersionRef.current === options.version) {
+      return;
+    }
+    savedOptionsVersionRef.current = options.version;
+    initialUsePerDatasourceExternalIdRef.current = options.jsonData.usePerDatasourceExternalId === true;
+    setShowExternalIdChangeWarning(false);
+  }, [options.version, options.jsonData.usePerDatasourceExternalId]);
   let profile = options.jsonData.profile;
   if (profile === undefined) {
     profile = options.database;
   }
   const tempCredsFeatureEnabled =
     config.featureToggles.awsDatasourcesTempCredentials && DS_TYPES_THAT_SUPPORT_TEMP_CREDS.includes(options.type);
+  // @ts-ignore not yet in published @grafana/data FeatureToggles
+  const perDsExternalIdFeatureEnabled = Boolean(config.featureToggles.awsAssumeRolePerDatasourceExternalId);
   // @ts-ignore ignore feature toggle type error
   const httpProxySettingEnabled = showHttpProxySettings && (config.awsPerDatasourceHTTPProxyEnabled ?? false);
   const awsAssumeRoleEnabled = config.awsAssumeRoleEnabled ?? true;
@@ -63,15 +94,100 @@ export const ConnectionConfig: FC<ConnectionConfigProps> = (props: ConnectionCon
         .filter(isAwsAuthType),
     [tempCredsFeatureEnabled]
   );
-  const externalId = useMemo(() => {
-    if (tempCredsFeatureEnabled && options.jsonData.authType === AwsAuthType.GrafanaAssumeRole) {
-      if (config.namespace.startsWith('stacks-')) {
-        return config.namespace.substring(config.namespace.indexOf('-') + 1);
-      }
-    }
-    return props.externalId;
-  }, [tempCredsFeatureEnabled, options.jsonData.authType, props.externalId]);
+  const isGrafanaAssumeRole = options.jsonData.authType === AwsAuthType.GrafanaAssumeRole;
+  const perDatasourceExternalId = options.jsonData.grafanaExternalId;
+  // Only warn when an Assume Role ARN is already set — otherwise there is no trust policy
+  // to update yet (covers Connections create-then-configure, where id is already assigned).
+  const shouldWarnExternalIdChange = Boolean(options.jsonData.assumeRoleArn);
+  // Stack ID: plugin fetch (CloudWatch /external-id) wins; else Cloud-style namespace
+  // (`stacks-<id>` from [environment] stack_id) — same path OpenSearch uses on Grafana Cloud.
+  const stackExternalIdFromNamespace = config.namespace?.startsWith('stacks-')
+    ? config.namespace.substring(config.namespace.indexOf('-') + 1)
+    : undefined;
+  const stackExternalId = props.externalId || stackExternalIdFromNamespace;
+  // Toggle reflects explicit bool only; unset (legacy) is stack mode.
+  const usePerDatasourceExternalId = options.jsonData.usePerDatasourceExternalId === true;
+  // Active ID for STS/display: per-DS server value when mode on, otherwise stack.
+  const grafanaExternalIdDisplay = !isGrafanaAssumeRole
+    ? undefined
+    : usePerDatasourceExternalId
+      ? perDatasourceExternalId || undefined
+      : stackExternalId || undefined;
+  const externalIdFieldValue = usePerDatasourceExternalId
+    ? perDatasourceExternalId || 'Save the data source to generate an external ID'
+    : grafanaExternalIdDisplay;
+  const showExternalIdField =
+    isGrafanaAssumeRole && (usePerDatasourceExternalId ? true : Boolean(grafanaExternalIdDisplay));
+  const externalIdFieldDescription = usePerDatasourceExternalId
+    ? perDatasourceExternalId
+      ? 'Unique to this data source. Paste this value into your IAM role trust policy.'
+      : 'Save this data source first to generate a unique external ID, then update your IAM role trust policy.'
+    : perDsExternalIdFeatureEnabled
+      ? 'Shared stack external ID. You can enable a unique ID per data source for stronger isolation.'
+      : 'Shared stack external ID. Paste this value into your IAM role trust policy.';
   const currentProvider = awsAuthProviderOptions.find((p) => p.value === options.jsonData.authType);
+
+  const withPerDsMode = (nextOptions = options) => {
+    if (!perDsExternalIdFeatureEnabled) {
+      return nextOptions;
+    }
+    if (nextOptions.jsonData.usePerDatasourceExternalId === false) {
+      return nextOptions;
+    }
+    return {
+      ...nextOptions,
+      jsonData: {
+        ...nextOptions.jsonData,
+        usePerDatasourceExternalId: true,
+      },
+    };
+  };
+
+  const onPerDatasourceExternalIdToggle = (enabled: boolean) => {
+    if (!perDsExternalIdFeatureEnabled || !isGrafanaAssumeRole) {
+      return;
+    }
+    setShowExternalIdChangeWarning(
+      shouldWarnExternalIdChange && enabled !== initialUsePerDatasourceExternalIdRef.current
+    );
+    pendingPerDsExternalIdRef.current = enabled;
+    // Backend strips grafanaExternalId on save and does not restore it when
+    // stack mode is explicit, so the frontend does not need to clear it.
+    onOptionsChange({
+      ...options,
+      jsonData: {
+        ...options.jsonData,
+        usePerDatasourceExternalId: enabled,
+      },
+    });
+  };
+
+  const onAuthProviderChange = (option: { value?: AwsAuthType | null }) => {
+    // Warning is only for stack ↔ per-DS toggle while already on Grafana Assume Role.
+    setShowExternalIdChangeWarning(false);
+    if (option.value !== AwsAuthType.GrafanaAssumeRole) {
+      onUpdateDatasourceJsonDataOptionSelect(props, 'authType')(option);
+      return;
+    }
+
+    if (!perDsExternalIdFeatureEnabled) {
+      onUpdateDatasourceJsonDataOptionSelect(props, 'authType')(option);
+      return;
+    }
+
+    pendingPerDsExternalIdRef.current = true;
+    onOptionsChange(
+      withPerDsMode({
+        ...options,
+        jsonData: {
+          ...options.jsonData,
+          authType: AwsAuthType.GrafanaAssumeRole,
+          // Keep explicit stack mode; otherwise default to per-DS for this auth switch.
+          usePerDatasourceExternalId: options.jsonData.usePerDatasourceExternalId === false ? false : true,
+        },
+      })
+    );
+  };
 
   useEffect(() => {
     // Make sure a authType exists in the current model
@@ -80,15 +196,47 @@ export const ConnectionConfig: FC<ConnectionConfigProps> = (props: ConnectionCon
       if (awsAllowedAuthProviders.includes(AwsAuthType.GrafanaAssumeRole)) {
         defaultAuthType = AwsAuthType.GrafanaAssumeRole;
       }
-      onOptionsChange({
+      let next: typeof options = {
         ...options,
         jsonData: {
           ...options.jsonData,
           authType: defaultAuthType,
         },
-      });
+      };
+      // New datasources (no authType yet): enable per-DS mode when defaulting to Grafana Assume Role.
+      // Legacy datasources already have authType set and are skipped by !currentProvider.
+      if (defaultAuthType === AwsAuthType.GrafanaAssumeRole && perDsExternalIdFeatureEnabled) {
+        pendingPerDsExternalIdRef.current = true;
+        next = withPerDsMode(next);
+      }
+      onOptionsChange(next);
     }
-  }, [currentProvider, options, onOptionsChange, awsAllowedAuthProviders]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- only when auth provider is missing
+  }, [currentProvider, options, onOptionsChange, awsAllowedAuthProviders, perDsExternalIdFeatureEnabled]);
+
+  // props.externalId is often loaded async (e.g. CloudWatch /external-id). Retry enabling per-DS mode once it arrives.
+  useEffect(() => {
+    if (!perDsExternalIdFeatureEnabled || !pendingPerDsExternalIdRef.current) {
+      return;
+    }
+    if (
+      !isGrafanaAssumeRole ||
+      options.jsonData.usePerDatasourceExternalId === false ||
+      options.jsonData.usePerDatasourceExternalId === true ||
+      !stackExternalId ||
+      !options.uid
+    ) {
+      return;
+    }
+    onOptionsChange(withPerDsMode());
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- retry mode when stack ID / uid become available
+  }, [
+    stackExternalId,
+    options.uid,
+    isGrafanaAssumeRole,
+    options.jsonData.usePerDatasourceExternalId,
+    perDsExternalIdFeatureEnabled,
+  ]);
 
   useEffect(() => {
     if (!loadRegions) {
@@ -113,9 +261,7 @@ export const ConnectionConfig: FC<ConnectionConfigProps> = (props: ConnectionCon
               value={currentProvider}
               options={awsAuthProviderOptions.filter((opt) => awsAllowedAuthProviders.includes(opt.value!))}
               defaultValue={options.jsonData.authType}
-              onChange={(option) => {
-                onUpdateDatasourceJsonDataOptionSelect(props, 'authType')(option);
-              }}
+              onChange={onAuthProviderChange}
               menuShouldPortal={true}
             />
           </Field>
@@ -222,8 +368,10 @@ export const ConnectionConfig: FC<ConnectionConfigProps> = (props: ConnectionCon
                     </li>
                     <li>
                       <p>
-                        3. Enter the following external ID:{' '}
-                        <code>{externalId || 'External Id is currently unavailable'}</code> and click <code>Next</code>.
+                        3. Enter the following external ID (
+                        {usePerDatasourceExternalId ? 'unique to this data source' : 'shared stack external ID'}
+                        ): <code>{externalIdFieldValue || 'External Id is currently unavailable'}</code> and click{' '}
+                        <code>Next</code>.
                       </p>
                     </li>
                     <li>
@@ -271,6 +419,34 @@ export const ConnectionConfig: FC<ConnectionConfigProps> = (props: ConnectionCon
                     onChange={onUpdateDatasourceJsonDataOption(props, 'assumeRoleArn')}
                   />
                 </Field>
+                {perDsExternalIdFeatureEnabled && isGrafanaAssumeRole && (
+                  <Field
+                    label="Per Data Source External ID"
+                    description="When enabled, this data source uses a unique external ID. When disabled, it uses the shared stack external ID."
+                  >
+                    <Switch
+                      data-testid="per-ds-external-id-toggle"
+                      value={usePerDatasourceExternalId}
+                      onChange={(e) => onPerDatasourceExternalIdToggle(e.currentTarget.checked)}
+                    />
+                  </Field>
+                )}
+                {showExternalIdField && (
+                  <Field htmlFor="grafanaExternalId" label="External ID" description={externalIdFieldDescription}>
+                    <Input id="grafanaExternalId" readOnly value={externalIdFieldValue} />
+                  </Field>
+                )}
+                {showExternalIdChangeWarning && (
+                  <Alert
+                    severity="warning"
+                    title="External ID will change on Save."
+                    data-testid="grafana-external-id-change-warning"
+                  >
+                    Switching between the data source-specific ID and the shared stack ID will change the external ID
+                    used to assume this role. Update your IAM role trust policy to match the new external ID or Assume
+                    Role will fail.
+                  </Alert>
+                )}
                 {options.jsonData.authType !== AwsAuthType.GrafanaAssumeRole && (
                   <Field
                     htmlFor="externalId"
