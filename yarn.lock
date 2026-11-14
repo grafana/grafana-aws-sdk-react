@@ -1861,7 +1861,7 @@ __metadata:
     "@testing-library/dom": "npm:10.4.2"
     "@testing-library/jest-dom": "npm:7.0.1"
     "@testing-library/react": "npm:16.3.3"
-    "@testing-library/user-event": "npm:14.6.8"
+    "@testing-library/user-event": "npm:14.6.9"
     "@types/jest": "npm:30.0.0"
     "@types/lodash": "npm:4.17.27"
     "@types/node": "npm:24.19.2"
@@ -1882,7 +1882,7 @@ __metadata:
     jest-environment-jsdom: "npm:30.5.2"
     lefthook: "npm:2.2.2"
     node-notifier: "npm:10.0.1"
-    prettier: "npm:3.9.10"
+    prettier: "npm:3.10.0"
     publint: "npm:0.3.25"
     react: "npm:18.3.1"
     react-dom: "npm:18.3.1"
@@ -4007,12 +4007,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@testing-library/user-event@npm:14.6.8":
-  version: 14.6.8
-  resolution: "@testing-library/user-event@npm:14.6.8"
+"@testing-library/user-event@npm:14.6.9":
+  version: 14.6.9
+  resolution: "@testing-library/user-event@npm:14.6.9"
   peerDependencies:
     "@testing-library/dom": ">=7.21.4"
-  checksum: 10c0/374bbf9f477fdc278f4bf56d6a27f88b1801c90cce9dffc414777dbf33fb1e421efc7341ee169cb286435bb742076a7899bb463c9927d2acca95aafaa5324820
+  checksum: 10c0/cb23d520bbfe2a9bf1586b2c508729014e06c8e04a19e3015c4a3e8a4eaca62884dcf74c38b7da04f4d90fea92dd55d909b22b9a65afd98ea578900443607691
   languageName: node
   linkType: hard
 
@@ -9601,12 +9601,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"prettier@npm:3.9.10":
-  version: 3.9.10
-  resolution: "prettier@npm:3.9.10"
+"prettier@npm:3.10.0":
+  version: 3.10.0
+  resolution: "prettier@npm:3.10.0"
   bin:
     prettier: bin/prettier.cjs
-  checksum: 10c0/0b3531593aa6fb36ac6baf629cb058bda472c59a6938774f931fe55283a07c62e6f56e621b043a82d8a3e21fc284c08c34f9e539fc70072635f79b7bae1a1067
+  checksum: 10c0/f06fa310104fc6a27ce605bfb93d1afa336c7f88115029f8b6edafe59422cb905588bc4f8fe4f00d2d72a0d9020346fea8ffdc3bf342d4659e78ded1582aac61
   languageName: node
   linkType: hard
 
