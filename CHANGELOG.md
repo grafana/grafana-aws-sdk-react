@@ -2,6 +2,22 @@
 
 All notable changes to this project will be documented in this file.
 
+## v0.12.5
+
+- chore(deps): update zod to 4.6.6 in TBD
+- chore(deps): update node.js to v24.22.3 in [#525](https://github.com/grafana/grafana-aws-sdk-react/pull/525)
+- chore(deps): update dependency @testing-library/user-event to v14.6.9 in [#524](https://github.com/grafana/grafana-aws-sdk-react/pull/524)
+- chore(deps): update dependency rollup to v4.68.2 in [#523](https://github.com/grafana/grafana-aws-sdk-react/pull/523)
+- chore(deps): update frontend dependencies to v13.3.1 in [#522](https://github.com/grafana/grafana-aws-sdk-react/pull/522)
+- chore(deps): update frontend dependencies in [#521](https://github.com/grafana/grafana-aws-sdk-react/pull/521)
+- chore(deps): update frontend dependencies in [#520](https://github.com/grafana/grafana-aws-sdk-react/pull/520)
+- chore(deps): update dependency rimraf to v6.1.4 in [#515](https://github.com/grafana/grafana-aws-sdk-react/pull/515)
+- chore(deps): update node.js to v24.22.2 in [#516](https://github.com/grafana/grafana-aws-sdk-react/pull/516)
+- chore(deps): update dependency uuid to v14 in [#512](https://github.com/grafana/grafana-aws-sdk-react/pull/512)
+- chore(deps): pin dependencies in [#514](https://github.com/grafana/grafana-aws-sdk-react/pull/514)
+- chore(deps): update dependency @testing-library/jest-dom to v7 in [#509](https://github.com/grafana/grafana-aws-sdk-react/pull/509)
+
+
 ## v0.12.4
 
 - fix(deps): bump undici to 8.12.3 in [#513](https://github.com/grafana/grafana-aws-sdk-react/pull/513)
