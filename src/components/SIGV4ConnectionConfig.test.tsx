@@ -30,6 +30,13 @@ interface SetupOptions {
   onOptionsChange?: (options: DataSourceSettings<any, any>) => void;
 }
 
+jest.mock('../featureFlags', () => ({
+  AWS_SDK_OPEN_FEATURE_DOMAIN: '@grafana/aws-sdk',
+  initAwsFeatureFlags: jest.fn(),
+  usePerDatasourceExternalIdEnabled: () =>
+    require('@grafana/runtime').config.featureToggles.awsAssumeRolePerDatasourceExternalId === true,
+}));
+
 describe('SIGV4ConnectionConfig', () => {
   beforeEach(() => {
     config.awsAllowedAuthProviders = [AwsAuthType.Credentials, AwsAuthType.Keys];

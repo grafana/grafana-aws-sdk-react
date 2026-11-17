@@ -27,6 +27,8 @@
     "twinmaker",
     "npmPreapprovedPackages",
     "yarnrc",
-    "smol"
+    "smol",
+    "openfeature",
+    "OFREP"
   ]
 }

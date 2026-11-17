@@ -1,4 +1,5 @@
 import React, { FC, useEffect, useMemo, useRef, useState } from 'react';
+import { OpenFeatureProvider } from '@openfeature/react-sdk';
 import {
   Input,
   Select,
@@ -25,6 +26,7 @@ import { AwsAuthType, ConnectionConfigProps } from '../types';
 import { awsAuthProviderOptions } from '../providers';
 import { assumeRoleInstructionsStyle } from './ConnectionConfig.styles';
 import { ConfigSection, ConfigSubSection } from '@grafana/plugin-ui';
+import { AWS_SDK_OPEN_FEATURE_DOMAIN, initAwsFeatureFlags, usePerDatasourceExternalIdEnabled } from '../featureFlags';
 
 export const DEFAULT_LABEL_WIDTH = 28;
 const DS_TYPES_THAT_SUPPORT_TEMP_CREDS = [
@@ -47,6 +49,15 @@ const isAwsAuthType = (value: any): value is AwsAuthType => {
 };
 
 export const ConnectionConfig: FC<ConnectionConfigProps> = (props: ConnectionConfigProps) => {
+  initAwsFeatureFlags();
+  return (
+    <OpenFeatureProvider domain={AWS_SDK_OPEN_FEATURE_DOMAIN}>
+      <ConnectionConfigForm {...props} />
+    </OpenFeatureProvider>
+  );
+};
+
+const ConnectionConfigForm: FC<ConnectionConfigProps> = (props: ConnectionConfigProps) => {
   const [isARNInstructionsOpen, setIsARNInstructionsOpen] = useState(false);
   const [showExternalIdChangeWarning, setShowExternalIdChangeWarning] = useState(false);
   const [regions, setRegions] = useState((props.standardRegions || standardRegions).map(toOption));
@@ -82,8 +93,7 @@ export const ConnectionConfig: FC<ConnectionConfigProps> = (props: ConnectionCon
   }
   const tempCredsFeatureEnabled =
     config.featureToggles.awsDatasourcesTempCredentials && DS_TYPES_THAT_SUPPORT_TEMP_CREDS.includes(options.type);
-  // @ts-ignore not yet in published @grafana/data FeatureToggles
-  const perDsExternalIdFeatureEnabled = Boolean(config.featureToggles.awsAssumeRolePerDatasourceExternalId);
+  const perDsExternalIdFeatureEnabled = usePerDatasourceExternalIdEnabled();
   // @ts-ignore ignore feature toggle type error
   const httpProxySettingEnabled = showHttpProxySettings && (config.awsPerDatasourceHTTPProxyEnabled ?? false);
   const awsAssumeRoleEnabled = config.awsAssumeRoleEnabled ?? true;

@@ -76,6 +76,13 @@ jest.mock('@grafana/runtime', () => ({
   }),
 }));
 
+jest.mock('../featureFlags', () => ({
+  AWS_SDK_OPEN_FEATURE_DOMAIN: '@grafana/aws-sdk',
+  initAwsFeatureFlags: jest.fn(),
+  usePerDatasourceExternalIdEnabled: () =>
+    require('@grafana/runtime').config.featureToggles.awsAssumeRolePerDatasourceExternalId === true,
+}));
+
 describe('ConnectionConfig', () => {
   const renderWithDataSourceType = (type: string) => {
     const props = getProps();
