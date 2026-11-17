@@ -215,7 +215,7 @@ const ConnectionConfigForm: FC<ConnectionConfigProps> = (props: ConnectionConfig
       };
       // New datasources (no authType yet): enable per-DS mode when defaulting to Grafana Assume Role.
       // Legacy datasources already have authType set and are skipped by !currentProvider.
-      if (defaultAuthType === AwsAuthType.GrafanaAssumeRole && perDsExternalIdFeatureEnabled) {
+      if (defaultAuthType === AwsAuthType.GrafanaAssumeRole) {
         pendingPerDsExternalIdRef.current = true;
         next = withPerDsMode(next);
       }
@@ -224,7 +224,8 @@ const ConnectionConfigForm: FC<ConnectionConfigProps> = (props: ConnectionConfig
     // eslint-disable-next-line react-hooks/exhaustive-deps -- only when auth provider is missing
   }, [currentProvider, options, onOptionsChange, awsAllowedAuthProviders, perDsExternalIdFeatureEnabled]);
 
-  // props.externalId is often loaded async (e.g. CloudWatch /external-id). Retry enabling per-DS mode once it arrives.
+  // props.externalId (e.g. CloudWatch /external-id) and the OpenFeature flag can both resolve after mount.
+  // Retry enabling per-DS mode once they arrive.
   useEffect(() => {
     if (!perDsExternalIdFeatureEnabled || !pendingPerDsExternalIdRef.current) {
       return;
