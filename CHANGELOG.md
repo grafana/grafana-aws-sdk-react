@@ -2,9 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## v0.13.0
+
+- Read the per-datasource Grafana Assume Role external ID flag through OpenFeature in [#530](https://github.com/grafana/grafana-aws-sdk-react/pull/530)
+
 ## v0.12.5
 
-- chore(deps): update zod to 4.6.6 in TBD
+- chore(deps): update zod to 4.6.6 in [#528](https://github.com/grafana/grafana-aws-sdk-react/pull/528)
 - chore(deps): update node.js to v24.22.3 in [#525](https://github.com/grafana/grafana-aws-sdk-react/pull/525)
 - chore(deps): update dependency @testing-library/user-event to v14.6.9 in [#524](https://github.com/grafana/grafana-aws-sdk-react/pull/524)
 - chore(deps): update dependency rollup to v4.68.2 in [#523](https://github.com/grafana/grafana-aws-sdk-react/pull/523)
