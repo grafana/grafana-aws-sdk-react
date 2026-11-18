@@ -8,7 +8,7 @@ export const AWS_SDK_OPEN_FEATURE_DOMAIN = '@grafana/aws-sdk';
 const PER_DATASOURCE_EXTERNAL_ID_FLAG = 'awsAssumeRolePerDatasourceExternalId';
 
 export function initAwsFeatureFlags(): void {
-  // These helpers ship with Grafana 13.3+. Older hosts get no provider, so the flag reads as off instead of throwing.
+  // These helpers ship with Grafana 13.2+. Older hosts get no provider, so the flag reads as off instead of throwing.
   if (
     typeof createOpenFeatureLocalStorageProvider !== 'function' ||
     typeof createOpenFeatureOFREPWebProvider !== 'function'
