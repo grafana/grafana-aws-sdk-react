@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## v0.13.1
+
+- Apply the per-datasource external ID default when the flag resolves after mount in [#531](https://github.com/grafana/grafana-aws-sdk-react/pull/531)
+- fix(deps): restore @grafana/plugin-ui peer range to >=0.14.0 in [#532](https://github.com/grafana/grafana-aws-sdk-react/pull/532)
+
 ## v0.13.0
 
 - Read the per-datasource Grafana Assume Role external ID flag through OpenFeature in [#530](https://github.com/grafana/grafana-aws-sdk-react/pull/530)
