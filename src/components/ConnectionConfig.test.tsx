@@ -76,6 +76,13 @@ jest.mock('@grafana/runtime', () => ({
   }),
 }));
 
+jest.mock('../featureFlags', () => ({
+  AWS_SDK_OPEN_FEATURE_DOMAIN: '@grafana/aws-sdk',
+  initAwsFeatureFlags: jest.fn(),
+  usePerDatasourceExternalIdEnabled: () =>
+    require('@grafana/runtime').config.featureToggles.awsAssumeRolePerDatasourceExternalId === true,
+}));
+
 describe('ConnectionConfig', () => {
   const renderWithDataSourceType = (type: string) => {
     const props = getProps();
@@ -265,6 +272,40 @@ describe('ConnectionConfig', () => {
       expect.objectContaining({
         jsonData: expect.objectContaining({ usePerDatasourceExternalId: true }),
       })
+    );
+  });
+
+  it('should enable per-datasource mode when the FT resolves after defaulting to GrafanaAssumeRole', async () => {
+    config.featureToggles.awsDatasourcesTempCredentials = true;
+    config.awsAllowedAuthProviders = [AwsAuthType.GrafanaAssumeRole, AwsAuthType.Credentials];
+    const onOptionsChange = jest.fn();
+    const props = getProps({
+      onOptionsChange,
+      externalId: 'stackABC',
+      options: {
+        id: 21,
+        uid: 'dsUid1',
+        type: 'cloudwatch',
+        jsonData: { authType: undefined },
+      },
+    });
+    const { rerender } = render(<ConnectionConfig {...props} />);
+    await waitFor(() => expect(onOptionsChange).toHaveBeenCalled());
+    const defaulted = onOptionsChange.mock.calls[0][0];
+    expect(defaulted.jsonData.authType).toBe(AwsAuthType.GrafanaAssumeRole);
+
+    config.featureToggles.awsAssumeRolePerDatasourceExternalId = true;
+    rerender(<ConnectionConfig {...props} options={defaulted} />);
+
+    await waitFor(() =>
+      expect(onOptionsChange).toHaveBeenCalledWith(
+        expect.objectContaining({
+          jsonData: expect.objectContaining({
+            authType: AwsAuthType.GrafanaAssumeRole,
+            usePerDatasourceExternalId: true,
+          }),
+        })
+      )
     );
   });
 
