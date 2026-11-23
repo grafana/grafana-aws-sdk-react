@@ -23,20 +23,17 @@ jobs:
         with:
           node-version-file: '.nvmrc'
 
-      - name: Enable Corepack
-        run: corepack enable
-
       - name: Install dependencies
-        run: yarn install --immutable
+        run: npm ci
 
       - name: Spellcheck
-        run: yarn spellcheck
+        run: npm run spellcheck
 
       - name: Lint files
-        run: yarn lint
+        run: npm run lint
 
       - name: Run tests
-        run: yarn test:ci
+        run: npm run test:ci
 
       - name: Run build
-        run: yarn build
+        run: npm run build
