@@ -60,7 +60,7 @@
     "@grafana/tsconfig": "2.2.0",
     "@grafana/ui": "13.3.1",
     "@rollup/plugin-node-resolve": "16.0.3",
-    "@stylistic/eslint-plugin": "5.10.0",
+    "@stylistic/eslint-plugin": "6.0.1",
     "@swc/core": "1.16.22",
     "@swc/jest": "0.2.39",
     "@testing-library/dom": "10.4.2",
